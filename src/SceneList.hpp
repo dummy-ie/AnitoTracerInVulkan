@@ -38,6 +38,7 @@ public:
 	static SceneAssets GDGRAP2_SphereWorld(CameraInitialState& camera);
 	static SceneAssets GDGRAP2_CornellBox(CameraInitialState& camera);
 	static SceneAssets GDGRAP2_BoxWorld(CameraInitialState& camera);
+	static SceneAssets AnitoTracer_DemoScene(CameraInitialState& camera);
 	static std::vector<Assets::Texture> AssembleTextureList();
 
 	static const std::vector<std::pair<std::string, std::function<SceneAssets (CameraInitialState&)>>> AllScenes;

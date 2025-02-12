@@ -241,6 +241,35 @@ Model Model::CreateBox(const vec3& p0, const vec3& p1, const Material& material)
 		nullptr);
 }
 
+Model Model::CreatePlane(const glm::vec3& p0, const glm::vec3& p1, const Material& material)
+{
+	std::vector<Vertex> vertices =
+	{
+		Vertex{vec3(p0.x, p0.y, p0.z), vec3(0, -1, 0), vec2(0), 0},
+		Vertex{vec3(p1.x, p0.y, p0.z), vec3(0, -1, 0), vec2(0), 0},
+		Vertex{vec3(p1.x, p0.y, p1.z), vec3(0, -1, 0), vec2(0), 0},
+		Vertex{vec3(p0.x, p0.y, p1.z), vec3(0, -1, 0), vec2(0), 0},
+
+		Vertex{vec3(p1.x, p1.y, p0.z), vec3(0, 1, 0), vec2(0), 0},
+		Vertex{vec3(p0.x, p1.y, p0.z), vec3(0, 1, 0), vec2(0), 0},
+		Vertex{vec3(p0.x, p1.y, p1.z), vec3(0, 1, 0), vec2(0), 0},
+		Vertex{vec3(p1.x, p1.y, p1.z), vec3(0, 1, 0), vec2(0), 0},
+	};
+
+	std::vector<uint32_t> indices =
+	{
+		0, 1, 2, 0, 2, 3
+	};
+
+	return Model(
+		std::move(vertices),
+		std::move(indices),
+		std::vector<Material>{material},
+		nullptr);
+
+	return {};
+}
+
 Model Model::CreateSphere(const vec3& center, float radius, const Material& material, const bool isProcedural)
 {
 	const int slices = 32;

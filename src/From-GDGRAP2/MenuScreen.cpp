@@ -41,6 +41,7 @@ void MenuScreen::drawUI()
 			if (ImGui::MenuItem("Exit Editor", "Ctrl+W"))
 			{
 				// Walnut::Application::Get().Close();
+				exit(0); // temp exit lol 
 			}
 			ImGui::EndMenu();
 		}
@@ -50,6 +51,7 @@ void MenuScreen::drawUI()
 			if (ImGui::MenuItem("Load Sphere World")) { this->OnLoadSphereWorld(); }
 			if (ImGui::MenuItem("Load Box World")) { this->OnLoadBoxWorld(); }
 			if (ImGui::MenuItem("Load Cornell Box")) {this->OnLoadCornellBox();}
+			if (ImGui::MenuItem("Load AnitoTracer Demo")) {this->OnLoadAnitoTracerDemo();}
 
 			ImGui::EndMenu();
 		}
@@ -150,5 +152,13 @@ void MenuScreen::OnLoadCornellBox()
 	ModelManager::getInstance()->clearAllObjects();
 	std::shared_ptr<Parameters> parameters = std::make_shared<Parameters>(EventNames::ON_SCENE_LOADED);
 	parameters->encodeInt("SCENE_INDEX", 7);
+	EventBroadcaster::getInstance()->broadcastEventWithParams(EventNames::ON_SCENE_LOADED, parameters);
+}
+
+void MenuScreen::OnLoadAnitoTracerDemo()
+{
+	ModelManager::getInstance()->clearAllObjects();
+	std::shared_ptr<Parameters> parameters = std::make_shared<Parameters>(EventNames::ON_SCENE_LOADED);
+	parameters->encodeInt("SCENE_INDEX", 9);
 	EventBroadcaster::getInstance()->broadcastEventWithParams(EventNames::ON_SCENE_LOADED, parameters);
 }

@@ -18,6 +18,7 @@ private:
 	void OnLoadSphereWorld();
 	void OnLoadBoxWorld();
 	void OnLoadCornellBox();
+	void OnLoadAnitoTracerDemo();
 
 	friend class UIManager;
 

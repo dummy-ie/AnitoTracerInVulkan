@@ -12,6 +12,7 @@
 #include "From-GDGRAP2/ObjectGroup.h"
 #include "From-GDGRAP2/ModelManager.h"
 #include "From-GDGRAP2/VectorUtils.h"
+#include "Utilities/Exception.hpp"
 
 using namespace glm;
 using Assets::Material;
@@ -21,7 +22,7 @@ using Assets::Texture;
 namespace
 {
 
-	void AddRayTracingInOneWeekendCommonScene(std::vector<Assets::Model>& models, const bool& isProc, std::function<float ()>& random)
+	void AddRayTracingInOneWeekendCommonScene(std::vector<Assets::Model>& models, const bool& isProc, std::function<float()>& random)
 	{
 		// Common models from the final scene from Ray Tracing In One Weekend book. Only the three central spheres are missing.
 		// Calls to random() are always explicit and non-inlined to avoid C++ undefined evaluation order of function arguments,
@@ -68,7 +69,7 @@ namespace
 
 }
 
-const std::vector<std::pair<std::string, std::function<SceneAssets (SceneList::CameraInitialState&)>>> SceneList::AllScenes =
+const std::vector<std::pair<std::string, std::function<SceneAssets(SceneList::CameraInitialState&)>>> SceneList::AllScenes =
 {
 	{"Cube And Spheres", CubeAndSpheres},
 	{"Ray Tracing In One Weekend", RayTracingInOneWeekend},
@@ -78,13 +79,14 @@ const std::vector<std::pair<std::string, std::function<SceneAssets (SceneList::C
 	{"Cornell Box & Lucy", CornellBoxLucy},
 	{"GDGRAP2 - Sphere World", GDGRAP2_SphereWorld},
 	{"GRGRAP2 - Cornell Box", GDGRAP2_CornellBox},
-	{"GDGRAP2 - Box World", GDGRAP2_BoxWorld}
+	{"GDGRAP2 - Box World", GDGRAP2_BoxWorld},
+	{"AnitoTracer - Demo Scene", AnitoTracer_DemoScene}
 };
 
 SceneAssets SceneList::CubeAndSpheres(CameraInitialState& camera)
 {
 	// Basic test scene.
-	
+
 	camera.ModelView = translate(mat4(1), vec3(0, 0, -2));
 	camera.FieldOfView = 90;
 	camera.Aperture = 0.05f;
@@ -109,7 +111,7 @@ SceneAssets SceneList::CubeAndSpheres(CameraInitialState& camera)
 SceneAssets SceneList::RayTracingInOneWeekend(CameraInitialState& camera)
 {
 	// Final scene from Ray Tracing In One Weekend book.
-	
+
 	camera.ModelView = lookAt(vec3(13, 2, 3), vec3(0, 0, 0), vec3(0, 1, 0));
 	camera.FieldOfView = 20;
 	camera.Aperture = 0.1f;
@@ -121,7 +123,7 @@ SceneAssets SceneList::RayTracingInOneWeekend(CameraInitialState& camera)
 	const bool isProc = true;
 
 	std::mt19937 engine(42);
-	std::function<float ()> random = std::bind(std::uniform_real_distribution<float>(), engine);
+	std::function<float()> random = std::bind(std::uniform_real_distribution<float>(), engine);
 
 	std::vector<Model> models;
 
@@ -137,7 +139,7 @@ SceneAssets SceneList::RayTracingInOneWeekend(CameraInitialState& camera)
 SceneAssets SceneList::PlanetsInOneWeekend(CameraInitialState& camera)
 {
 	// Same as RayTracingInOneWeekend but using textures.
-	
+
 	camera.ModelView = lookAt(vec3(13, 2, 3), vec3(0, 0, 0), vec3(0, 1, 0));
 	camera.FieldOfView = 20;
 	camera.Aperture = 0.1f;
@@ -170,7 +172,7 @@ SceneAssets SceneList::PlanetsInOneWeekend(CameraInitialState& camera)
 SceneAssets SceneList::LucyInOneWeekend(CameraInitialState& camera)
 {
 	// Same as RayTracingInOneWeekend but using the Lucy 3D model.
-	
+
 	camera.ModelView = lookAt(vec3(13, 2, 3), vec3(0, 1.0, 0), vec3(0, 1, 0));
 	camera.FieldOfView = 20;
 	camera.Aperture = 0.05f;
@@ -185,7 +187,7 @@ SceneAssets SceneList::LucyInOneWeekend(CameraInitialState& camera)
 	std::function<float()> random = std::bind(std::uniform_real_distribution<float>(), engine);
 
 	std::vector<Model> models;
-	
+
 	AddRayTracingInOneWeekendCommonScene(models, isProc, random);
 
 	auto lucy0 = Model::LoadModel("../assets/models/lucy.obj");
@@ -198,7 +200,7 @@ SceneAssets SceneList::LucyInOneWeekend(CameraInitialState& camera)
 	lucy0.Transform(
 		rotate(
 			scale(
-				translate(i, vec3(0, -0.08f, 0)), 
+				translate(i, vec3(0, -0.08f, 0)),
 				vec3(scaleFactor)),
 			radians(90.0f), vec3(0, 1, 0)));
 
@@ -271,7 +273,7 @@ SceneAssets SceneList::CornellBoxLucy(CameraInitialState& camera)
 	lucy0.Transform(
 		rotate(
 			scale(
-				translate(i, vec3(555 - 300 - 165/2, -9, -295 - 165/2)),
+				translate(i, vec3(555 - 300 - 165 / 2, -9, -295 - 165 / 2)),
 				vec3(0.6f)),
 			radians(75.0f), vec3(0, 1, 0)));
 
@@ -285,8 +287,8 @@ SceneAssets SceneList::CornellBoxLucy(CameraInitialState& camera)
 
 /**
  * \brief Replication of the sphere world from GDGRAP2.
- * \param camera 
- * \return 
+ * \param camera
+ * \return
  */
 SceneAssets SceneList::GDGRAP2_SphereWorld(CameraInitialState& camera)
 {
@@ -324,7 +326,7 @@ SceneAssets SceneList::GDGRAP2_SphereWorld(CameraInitialState& camera)
 	std::shared_ptr<GameObject> sphere4 = std::make_shared<GameObject>("RightSphere", GameObject::PrimitiveType::SPHERE, std::make_shared<Model>(sphere4Model));
 	ModelManager::getInstance()->addObject(sphere4);
 
-	for(int repeats = 0; repeats < 2; repeats++)
+	for (int repeats = 0; repeats < 2; repeats++)
 	{
 		for (int a = -11; a < 11; a++)
 		{
@@ -335,14 +337,14 @@ SceneAssets SceneList::GDGRAP2_SphereWorld(CameraInitialState& camera)
 				if ((center - vec3(4.0, 0.2f, 0.0f)).length() > 0.9f)
 				{
 					Material materialInstance;
-	
+
 					if (matVal < 0.8)
 					{
 						vec3 albedo = 2.0f * VectorUtils::randomFloatVec3();
 						float fuzziness = MathUtils::randomFloat(0.0f, 0.95f);
 						materialInstance = Material::Metallic(albedo, fuzziness, MathUtils::randomInt(0, 3));
 					}
-					else if(matVal < 0.95)
+					else if (matVal < 0.95)
 					{
 						materialInstance = Material::Dielectric(MathUtils::randomFloat(0.5f, 2.5f));
 					}
@@ -351,20 +353,20 @@ SceneAssets SceneList::GDGRAP2_SphereWorld(CameraInitialState& camera)
 						vec3 albedo = VectorUtils::randomFloatVec3();
 						materialInstance = Material::DiffuseLight(albedo);
 					}
-	
+
 					Model modelInstance = Model::CreateSphere(center, MathUtils::randomFloat(0.2f, 0.4f), materialInstance, isProcedural);
 					std::shared_ptr<GameObject> objectInstance = std::make_shared<GameObject>("SmallSphere", GameObject::PrimitiveType::SPHERE, std::make_shared<Model>(modelInstance));
 					ModelManager::getInstance()->addObject(objectInstance);
 				}
 			}
 		}
-	
+
 		for (int a = -5; a < 5; a++)
 		{
 			for (int b = -5; b < 5; b++)
 			{
 				vec3 center(a + 0.9f * MathUtils::randomFloat(), 0.2 + (5 * MathUtils::randomFloat()), b + 0.9 * MathUtils::randomFloat());
-	
+
 				//add additional reflective spheres
 				Material materialInstance = Material::Dielectric(1.5f);
 				Model modelInstance = Model::CreateSphere(center, MathUtils::randomFloat(0.1f, 0.2f), materialInstance, isProcedural);
@@ -421,7 +423,7 @@ SceneAssets SceneList::GDGRAP2_CornellBox(CameraInitialState& camera)
 
 SceneAssets SceneList::GDGRAP2_BoxWorld(CameraInitialState& camera)
 {
-	camera.ModelView = lookAt(vec3(478, 278,-600), vec3(278, 278, 0), vec3(0, 1, 0));
+	camera.ModelView = lookAt(vec3(478, 278, -600), vec3(278, 278, 0), vec3(0, 1, 0));
 	camera.FieldOfView = 40;
 	camera.Aperture = 0.0f;
 	camera.FocusDistance = 10.0f;
@@ -493,7 +495,7 @@ SceneAssets SceneList::GDGRAP2_BoxWorld(CameraInitialState& camera)
 	ModelManager::getInstance()->addObject(metalObj);
 
 	std::shared_ptr<ObjectGroup> sphereGroup = std::make_shared<ObjectGroup>("SphereGroup");
-	for(int i = 0; i < 1000; i++)
+	for (int i = 0; i < 1000; i++)
 	{
 		Material metalMat = Material::Metallic(vec3(0.73, 0.73, 0.73), MathUtils::randomFloat(0.0f, 0.5f));
 		Model sphereInstance = Model::CreateSphere(VectorUtils::randomFloatVec3(0, 165), 10.0f, metalMat, false);
@@ -506,6 +508,99 @@ SceneAssets SceneList::GDGRAP2_BoxWorld(CameraInitialState& camera)
 
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
 	std::vector<Texture> textures = AssembleTextureList();
+	return std::forward_as_tuple(std::move(models), std::move(textures));
+}
+
+SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
+{
+	camera.ModelView = lookAt(vec3(278, 278, 800), vec3(278, 278, 0), vec3(0, 1, 0));
+	camera.FieldOfView = 40;
+	camera.Aperture = 0.0f;
+	camera.FocusDistance = 10.0f;
+	camera.ControlSpeed = 500.0f;
+	camera.GammaCorrection = true;
+	camera.HasSky = false;
+
+	std::mt19937 engine(1);
+	std::function<float()> random = std::bind(std::uniform_real_distribution<float>(), engine);
+
+	bool isProcedural = false;
+
+	Material areaLight = Material::DiffuseLight(vec3(0.73, 0.73, 0.73) * 7.0f);
+	Model areaLightModel = Model::CreateBox(vec3(0, 0, 0), vec3(1000, 10, 1000), areaLight);
+	std::shared_ptr<GameObject> areaLightObject = std::make_shared<GameObject>("AreaLight", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(areaLightModel));
+	areaLightObject->setPosition(1000.0f, 1000.0f, -500.0f);
+	ModelManager::getInstance()->addObject(areaLightObject);
+
+	const auto i = mat4(1);
+	const auto white = Material::Lambertian(vec3(0.73f, 0.73f, 0.73f));
+	const auto mirror = Material::Metallic(vec3(0.21f, 0.43f, 0.71f), 0.0f);
+	//const auto mirror = Material::Dielectric(1.6f, 0.0f);
+
+	Model box0 = Model::CreateBox(vec3(0, 0, -165), vec3(165, 165, 0), white);
+	Model box1 = Model::CreateBox(vec3(0, 0, -165), vec3(165, 330, 0), white);
+	
+	box0.Transform(rotate(translate(i, vec3(555 - 130 - 165, 0, -65)), radians(-18.0f), vec3(0, 1, 0)));
+	box1.Transform(rotate(translate(i, vec3(555 - 265 - 165, 0, -295)), radians(15.0f), vec3(0, 1, 0)));
+	
+	std::shared_ptr<GameObject> box0Obj = std::make_shared<GameObject>("Box", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(box0));
+	ModelManager::getInstance()->addObject(box0Obj);
+	
+	std::shared_ptr<GameObject> box1Obj = std::make_shared<GameObject>("Box", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(box1));
+	ModelManager::getInstance()->addObject(box1Obj);
+	
+	Model cornellBoxModel = Model::CreateCornellBox(555);
+	std::shared_ptr<GameObject> cornellBoxObject = std::make_shared<GameObject>("CornellBox", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(cornellBoxModel));
+	ModelManager::getInstance()->addObject(cornellBoxObject);
+	
+	auto lucy0 = Model::LoadModel("../assets/models/lucy.obj");
+	
+	lucy0.Transform(
+		rotate(
+			scale(
+				translate(i, vec3(555 - 300 - 165 / 2, -9, -295 - 165 / 2)),
+				vec3(0.6f)),
+			radians(75.0f), vec3(0, 1, 0)));
+
+	std::shared_ptr<GameObject> lucyObj = std::make_shared<GameObject>("Lucy", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(lucy0));
+	ModelManager::getInstance()->addObject(lucyObj);
+
+	Model teapot = Model::LoadModel("../assets/models/teapot.obj");
+	teapot.SetMaterial(white);
+	teapot.Transform(
+		rotate(
+			scale(
+				translate(i, vec3(1)),
+				vec3(75.0f)),
+			radians(0.0f), vec3(0, 1, 0)));
+
+	std::shared_ptr<GameObject> teapotObj = std::make_shared<GameObject>("Teapot", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(teapot));
+	ModelManager::getInstance()->addObject(teapotObj);
+
+	Model bunny = Model::LoadModel("../assets/models/bunny.obj");
+	bunny.SetMaterial(white);
+	bunny.Transform(
+		rotate(
+			scale(
+				translate(i, vec3(1)),
+				vec3(1500.0f)),
+			radians(0.0f), vec3(0, 1, 0)));
+	std::shared_ptr<GameObject> bunnyObj = std::make_shared<GameObject>("Bunny", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(bunny));
+	ModelManager::getInstance()->addObject(bunnyObj);
+
+	Model plane = Model::CreatePlane(vec3(0, 0, -1), vec3(1, 1, 0), mirror);
+	std::shared_ptr<GameObject> planeObj = std::make_shared<GameObject>("Plane", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(plane));
+	ModelManager::getInstance()->addObject(planeObj);
+	planeObj->setScale(vec3(5000));
+
+	teapotObj->setPosition(1000, 0, 0);
+	bunnyObj->setPosition(1750, -10, 0);
+	lucyObj->setPosition(2500, 0, 0);
+	planeObj->setPosition(-500, 0, 2500);
+
+	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
+	std::vector<Texture> textures = AssembleTextureList();
+
 	return std::forward_as_tuple(std::move(models), std::move(textures));
 }
 
