@@ -37,6 +37,7 @@ public:
 	static void destroy();
 
 	void drawAllUI();
+	bool* getEnabled(const std::string& name);
 	void setEnabled(String uiName, bool flag);
 	std::shared_ptr<AUIScreen> findUIByName(String uiName);
 

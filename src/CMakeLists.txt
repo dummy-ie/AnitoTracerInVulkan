@@ -37,6 +37,8 @@ set(src_files_utilities
 	Utilities/Glm.hpp
 	Utilities/StbImage.cpp
 	Utilities/StbImage.hpp
+	Utilities/FileUtils.cpp
+	Utilities/FileUtils.h
 )
 
 set(src_files_vulkan

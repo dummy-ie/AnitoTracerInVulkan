@@ -2,6 +2,9 @@
 
 #include <iostream>
 
+#include "Debug.h"
+#include "Utilities/FileUtils.h"
+
 ModelManager* ModelManager::sharedInstance = nullptr;
 ModelManager* ModelManager::getInstance()
 {
@@ -126,6 +129,26 @@ void ModelManager::createObject(GameObject::PrimitiveType type)
 void ModelManager::createObjectFromFile(String name, GameObject::PrimitiveType type, vec3 position, vec3 rotation,
 	vec3 scale)
 {
+	std::string meshFilePath;
+	std::string fileName;
+
+	if (!FileUtils::getFilePath(meshFilePath, fileName))
+	{
+		Debug::Log("Cancelled loading OBJ from path: " + meshFilePath);
+
+		return;
+	}
+
+	if (!meshFilePath.empty()) {
+		Debug::Log("Loading OBJ from path: " + meshFilePath);
+	}
+
+	auto model = Assets::Model::LoadModel(meshFilePath);
+	std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>(name, type, std::make_shared<Assets::Model>(model));
+	gameObject->setPosition(position);
+	gameObject->setRotAngles(rotation);
+	gameObject->setScale(scale);
+	addObject(gameObject);
 }
 
 void ModelManager::deleteObject(std::shared_ptr<GameObject> gameObject)
