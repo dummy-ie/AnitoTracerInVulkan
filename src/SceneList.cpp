@@ -5,7 +5,7 @@
 #include <functional>
 #include <random>
 
-#include "Assets/Sphere.hpp"
+#include "Assets/SphereProc.hpp"
 #include "From-GDGRAP2/GameObject.h"
 #include "From-GDGRAP2/GlobalConfig.h"
 #include "From-GDGRAP2/MathUtils.h"
@@ -552,7 +552,15 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	Model cornellBoxModel = Model::CreateCornellBox(555);
 	std::shared_ptr<GameObject> cornellBoxObject = std::make_shared<GameObject>("CornellBox", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(cornellBoxModel));
 	ModelManager::getInstance()->addObject(cornellBoxObject);
-	
+
+	//Model capsuleTest = Model::CreateCapsule(vec3(2000,500,300), 100, 500, white);
+	//std::shared_ptr<GameObject> capsuleObject = std::make_shared<GameObject>("Cylinder", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(capsuleTest));
+	//ModelManager::getInstance()->addObject(capsuleObject);
+
+	//Model cylinderTest = Model::CreateCylinder(vec3(2000, 200, 0), 100, 200, white);
+	//std::shared_ptr<GameObject> cylinderObject = std::make_shared<GameObject>("Cylinder", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(cylinderTest));
+	//ModelManager::getInstance()->addObject(cylinderObject);
+
 	auto lucy0 = Model::LoadModel("../assets/models/lucy.obj");
 	
 	lucy0.Transform(

@@ -1,6 +1,6 @@
 #include "Scene.hpp"
 #include "Model.hpp"
-#include "Sphere.hpp"
+#include "SphereProc.hpp"
 #include "Texture.hpp"
 #include "TextureImage.hpp"
 #include "Vulkan/BufferUtil.hpp"
@@ -45,7 +45,7 @@ Scene::Scene(Vulkan::CommandPool& commandPool, std::vector<Model>&& models, std:
 		}
 
 		// Add optional procedurals.
-		const auto* const sphere = dynamic_cast<const Sphere*>(model.Procedural());
+		const auto* const sphere = dynamic_cast<const SphereProc*>(model.Procedural());
 		if (sphere != nullptr)
 		{
 			const auto aabb = sphere->BoundingBox();

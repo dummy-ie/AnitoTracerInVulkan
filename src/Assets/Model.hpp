@@ -17,6 +17,8 @@ namespace Assets
 		static Model CreateBox(const glm::vec3& p0, const glm::vec3& p1, const Material& material);
 		static Model CreatePlane(const glm::vec3& p0, const glm::vec3& p1, const Material& material);
 		static Model CreateSphere(const glm::vec3& center, float radius, const Material& material, bool isProcedural);
+		static Model CreateCylinder(const glm::vec3& center, float radius, float height, const Material& material);
+		static Model CreateCapsule(const glm::vec3& center, float radius, float height, const Material& material);
 		
 		Model& operator = (const Model&) = delete;
 		Model& operator = (Model&&) = delete;
@@ -25,6 +27,7 @@ namespace Assets
 		Model(const Model&) = default;
 		Model(Model&&) = default;
 		~Model() = default;
+		Model(std::vector<Vertex>&& vertices, std::vector<uint32_t>&& indices, std::vector<Material>&& materials, const class Procedural* procedural);
 
 		void SetMaterial(const Material& material);
 		void Transform(const glm::mat4& transform);
@@ -41,7 +44,6 @@ namespace Assets
 
 	private:
 
-		Model(std::vector<Vertex>&& vertices, std::vector<uint32_t>&& indices, std::vector<Material>&& materials, const class Procedural* procedural);
 
 		std::vector<Vertex> vertices_;
 		std::vector<uint32_t> indices_;

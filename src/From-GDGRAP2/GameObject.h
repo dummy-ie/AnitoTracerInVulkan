@@ -10,6 +10,7 @@ class GameObject
 public:
 	~GameObject() = default;
 
+	// TODO ADD NEW PRIMITIVES
 	enum PrimitiveType {
 		CAMERA,
 		CUBE,

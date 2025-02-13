@@ -1,7 +1,8 @@
 #include "Model.hpp"
 #include "CornellBox.hpp"
+#include "Box.hpp"
 #include "Procedural.hpp"
-#include "Sphere.hpp"
+#include "SphereProc.hpp"
 #include "Utilities/Exception.hpp"
 #include "Utilities/Console.hpp"
 
@@ -15,6 +16,11 @@
 #include <iostream>
 #include <unordered_map>
 #include <vector>
+
+#include "Capsule.hpp"
+#include "Cylinder.hpp"
+#include "Plane.hpp"
+#include "Sphere.hpp"
 
 using namespace glm;
 
@@ -191,48 +197,10 @@ Model Model::CreateCornellBox(const float scale)
 
 Model Model::CreateBox(const vec3& p0, const vec3& p1, const Material& material)
 {
-	std::vector<Vertex> vertices = 
-	{
-		Vertex{vec3(p0.x, p0.y, p0.z), vec3(-1, 0, 0), vec2(0), 0},
-		Vertex{vec3(p0.x, p0.y, p1.z), vec3(-1, 0, 0), vec2(0), 0},
-		Vertex{vec3(p0.x, p1.y, p1.z), vec3(-1, 0, 0), vec2(0), 0},
-		Vertex{vec3(p0.x, p1.y, p0.z), vec3(-1, 0, 0), vec2(0), 0},
+	std::vector<Vertex> vertices;
+	std::vector<uint32_t> indices;
 
-		Vertex{vec3(p1.x, p0.y, p1.z), vec3(1, 0, 0), vec2(0), 0},
-		Vertex{vec3(p1.x, p0.y, p0.z), vec3(1, 0, 0), vec2(0), 0},
-		Vertex{vec3(p1.x, p1.y, p0.z), vec3(1, 0, 0), vec2(0), 0},
-		Vertex{vec3(p1.x, p1.y, p1.z), vec3(1, 0, 0), vec2(0), 0},
-
-		Vertex{vec3(p1.x, p0.y, p0.z), vec3(0, 0, -1), vec2(0), 0},
-		Vertex{vec3(p0.x, p0.y, p0.z), vec3(0, 0, -1), vec2(0), 0},
-		Vertex{vec3(p0.x, p1.y, p0.z), vec3(0, 0, -1), vec2(0), 0},
-		Vertex{vec3(p1.x, p1.y, p0.z), vec3(0, 0, -1), vec2(0), 0},
-
-		Vertex{vec3(p0.x, p0.y, p1.z), vec3(0, 0, 1), vec2(0), 0},
-		Vertex{vec3(p1.x, p0.y, p1.z), vec3(0, 0, 1), vec2(0), 0},
-		Vertex{vec3(p1.x, p1.y, p1.z), vec3(0, 0, 1), vec2(0), 0},
-		Vertex{vec3(p0.x, p1.y, p1.z), vec3(0, 0, 1), vec2(0), 0},
-
-		Vertex{vec3(p0.x, p0.y, p0.z), vec3(0, -1, 0), vec2(0), 0},
-		Vertex{vec3(p1.x, p0.y, p0.z), vec3(0, -1, 0), vec2(0), 0},
-		Vertex{vec3(p1.x, p0.y, p1.z), vec3(0, -1, 0), vec2(0), 0},
-		Vertex{vec3(p0.x, p0.y, p1.z), vec3(0, -1, 0), vec2(0), 0},
-
-		Vertex{vec3(p1.x, p1.y, p0.z), vec3(0, 1, 0), vec2(0), 0},
-		Vertex{vec3(p0.x, p1.y, p0.z), vec3(0, 1, 0), vec2(0), 0},
-		Vertex{vec3(p0.x, p1.y, p1.z), vec3(0, 1, 0), vec2(0), 0},
-		Vertex{vec3(p1.x, p1.y, p1.z), vec3(0, 1, 0), vec2(0), 0},
-	};
-
-	std::vector<uint32_t> indices =
-	{
-		0, 1, 2, 0, 2, 3,
-		4, 5, 6, 4, 6, 7,
-		8, 9, 10, 8, 10, 11,
-		12, 13, 14, 12, 14, 15,
-		16, 17, 18, 16, 18, 19,
-		20, 21, 22, 20, 22, 23
-	};
+	Box::Create(p0, p1, vertices, indices);
 
 	return Model(
 		std::move(vertices),
@@ -243,23 +211,10 @@ Model Model::CreateBox(const vec3& p0, const vec3& p1, const Material& material)
 
 Model Model::CreatePlane(const glm::vec3& p0, const glm::vec3& p1, const Material& material)
 {
-	std::vector<Vertex> vertices =
-	{
-		Vertex{vec3(p0.x, p0.y, p0.z), vec3(0, -1, 0), vec2(0), 0},
-		Vertex{vec3(p1.x, p0.y, p0.z), vec3(0, -1, 0), vec2(0), 0},
-		Vertex{vec3(p1.x, p0.y, p1.z), vec3(0, -1, 0), vec2(0), 0},
-		Vertex{vec3(p0.x, p0.y, p1.z), vec3(0, -1, 0), vec2(0), 0},
+	std::vector<Vertex> vertices;
+	std::vector<uint32_t> indices;
 
-		Vertex{vec3(p1.x, p1.y, p0.z), vec3(0, 1, 0), vec2(0), 0},
-		Vertex{vec3(p0.x, p1.y, p0.z), vec3(0, 1, 0), vec2(0), 0},
-		Vertex{vec3(p0.x, p1.y, p1.z), vec3(0, 1, 0), vec2(0), 0},
-		Vertex{vec3(p1.x, p1.y, p1.z), vec3(0, 1, 0), vec2(0), 0},
-	};
-
-	std::vector<uint32_t> indices =
-	{
-		0, 1, 2, 0, 2, 3
-	};
+	Plane::Create(p0, p1, vertices, indices);
 
 	return Model(
 		std::move(vertices),
@@ -272,72 +227,44 @@ Model Model::CreatePlane(const glm::vec3& p0, const glm::vec3& p1, const Materia
 
 Model Model::CreateSphere(const vec3& center, float radius, const Material& material, const bool isProcedural)
 {
-	const int slices = 32;
-	const int stacks = 16;
-	
 	std::vector<Vertex> vertices;
 	std::vector<uint32_t> indices;
 
-	const float pi = 3.14159265358979f;
-	
-	for (int j = 0; j <= stacks; ++j) 
-	{
-		const float j0 = pi * j / stacks;
-
-		// Vertex
-		const float v = radius * -std::sin(j0);
-		const float z = radius * std::cos(j0);
-		
-		// Normals		
-		const float n0 = -std::sin(j0);
-		const float n1 = std::cos(j0);
-
-		for (int i = 0; i <= slices; ++i) 
-		{
-			const float i0 = 2 * pi * i / slices;
-
-			const vec3 position(
-				center.x + v * std::sin(i0),
-				center.y + z,
-				center.z + v * std::cos(i0));
-			
-			const vec3 normal(
-				n0 * std::sin(i0),
-				n1,
-				n0 * std::cos(i0));
-
-			const vec2 texCoord(
-				static_cast<float>(i) / slices,
-				static_cast<float>(j) / stacks);
-
-			vertices.push_back(Vertex{ position, normal, texCoord, 0 });
-		}
-	}
-
-	for (int j = 0; j < stacks; ++j)
-	{
-		for (int i = 0; i < slices; ++i)
-		{
-			const auto j0 = (j + 0) * (slices + 1);
-			const auto j1 = (j + 1) * (slices + 1);
-			const auto i0 = i + 0;
-			const auto i1 = i + 1;
-			
-			indices.push_back(j0 + i0);
-			indices.push_back(j1 + i0);
-			indices.push_back(j1 + i1);
-			
-			indices.push_back(j0 + i0);
-			indices.push_back(j1 + i1);
-			indices.push_back(j0 + i1);
-		}
-	}
+	Sphere::Create(center, radius, vertices, indices);
 
 	return Model(
 		std::move(vertices),
 		std::move(indices),
 		std::vector<Material>{material},
-		isProcedural ? new Sphere(center, radius) : nullptr);
+		isProcedural ? new SphereProc(center, radius) : nullptr);
+}
+
+Model Model::CreateCylinder(const glm::vec3& center, float radius, float height, const Material& material)
+{
+	std::vector<Vertex> vertices;
+	std::vector<uint32_t> indices;
+
+	Assets::Cylinder::Create(center, radius, height, vertices, indices);
+
+	return Model(
+		std::move(vertices),
+		std::move(indices),
+		std::vector<Material>{material},
+		nullptr);
+}
+
+Model Model::CreateCapsule(const glm::vec3& center, float radius, float height, const Material& material)
+{
+	std::vector<Vertex> vertices;
+	std::vector<uint32_t> indices;
+
+	Assets::Capsule::Create(center, radius, height, vertices, indices);
+
+	return Model(
+		std::move(vertices),
+		std::move(indices),
+		std::vector<Material>{material},
+		nullptr);
 }
 
 void Model::SetMaterial(const Material& material)

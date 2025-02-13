@@ -1,27 +1,16 @@
 #pragma once
 
-#include "Procedural.hpp"
-#include "Utilities/Glm.hpp"
+#include "Material.hpp"
+#include "Vertex.hpp"
+#include <vector>
 
 namespace Assets
 {
-	
-	class Sphere final : public Procedural
+	class Sphere final
 	{
 	public:
 
-		Sphere(const glm::vec3& center, const float radius) :
-			Center(center), Radius(radius)
-		{
-		}
-
-		const glm::vec3 Center;
-		const float Radius;
-
-		std::pair<glm::vec3, glm::vec3> BoundingBox() const override
-		{
-			return std::make_pair(Center - Radius, Center + Radius);
-		}
+		static void Create(const glm::vec3& center, float radius, std::vector<Vertex>& vertices, std::vector<uint32_t>& indices);
 
 	};
 
