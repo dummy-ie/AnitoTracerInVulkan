@@ -145,6 +145,8 @@ set(src_files_from_gdgrap2
 	From-GDGRAP2/MenuScreen.h
 	From-GDGRAP2/ProfilerScreen.cpp
 	From-GDGRAP2/ProfilerScreen.h
+	From-GDGRAP2/PlaybackScreen.cpp
+	From-GDGRAP2/PlaybackScreen.h
 	From-GDGRAP2/RTRules.cpp
 	From-GDGRAP2/RTRules.h
 	From-GDGRAP2/UIManager.cpp
