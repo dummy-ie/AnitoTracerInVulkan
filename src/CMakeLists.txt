@@ -26,6 +26,8 @@ set(src_files_imgui
 	ImGui/imgui_impl_glfw.h
 	ImGui/imgui_impl_vulkan.cpp
 	ImGui/imgui_impl_vulkan.h
+	ImGui/imgui_stdlib.cpp
+	ImGui/imgui_stdlib.h
 )
 
 set(src_files_utilities
