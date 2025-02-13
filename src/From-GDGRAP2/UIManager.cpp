@@ -7,7 +7,7 @@
 #include "InspectorScreen.h"
 #include "PlaybackScreen.h"
 #include "ProfilerScreen.h"
-
+#include "ViewportScreen.h"
 
 UIManager* UIManager::sharedInstance = NULL;
 
@@ -87,6 +87,12 @@ UIManager::UIManager()
 	std::shared_ptr<gdeng03::PlaybackScreen> playbackScreen = std::make_shared<gdeng03::PlaybackScreen>();
 	this->uiTable[uiNames.PLAYBACK_SCREEN] = playbackScreen;
 	this->uiList.push_back(playbackScreen);
+
+	// nawt working yet lol!
+	// std::shared_ptr<ViewportScreen> viewportScreen = std::make_shared<ViewportScreen>();
+	// this->uiTable[uiNames.VIEWPORT_SCREEN] = viewportScreen;
+	// this->uiList.push_back(viewportScreen);
+
 	//
 	// MaterialScreen* materialScreen = new MaterialScreen();
 	// this->uiTable[uiNames.MATERIAL_SCREEN] = materialScreen;

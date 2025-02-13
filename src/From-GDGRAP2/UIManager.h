@@ -5,6 +5,9 @@
 #include <unordered_map>
 #include "imgui.h"
 #include "AUIScreen.h"
+#include "Vulkan/Image.hpp"
+#include "Vulkan/ImageView.hpp"
+#include "Vulkan/Sampler.hpp"
 
 typedef std::string String;
 
@@ -18,6 +21,7 @@ public:
 	const String ACTION_SCREEN = "ACTION_SCREEN";
 	const String CONSOLE_SCREEN = "CONSOLE_SCREEN";
 	const String MATERIAL_SCREEN = "MATERIAL_SCREEN";
+	const String VIEWPORT_SCREEN = "VIEWPORT_SCREEN";
 };
 
 class Viewport;
@@ -36,6 +40,12 @@ public:
 	void setEnabled(String uiName, bool flag);
 	std::shared_ptr<AUIScreen> findUIByName(String uiName);
 
+	//std::vector<VkImage>* images = nullptr;
+	const Vulkan::Device* device = nullptr;
+	Vulkan::Sampler* sampler = nullptr;
+	Vulkan::ImageView* imageView = nullptr;
+	VkDescriptorSet m_Dset;
+	//Vulkan::Image* image = nullptr;
 private:
 	UIManager();
 	~UIManager();

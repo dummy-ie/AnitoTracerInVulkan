@@ -111,10 +111,13 @@ UserInterface::UserInterface(
 		}
 	});
 
-	ImGui_ImplVulkan_DestroyFontUploadObjects();
 
 	//initialize additional libs
 	UIManager::initialize();
+	UIManager::getInstance()->device = &device;
+	UIManager::getInstance()->sampler = new Vulkan::Sampler(device, Vulkan::SamplerConfig());
+
+	ImGui_ImplVulkan_DestroyFontUploadObjects();
 }
 
 UserInterface::~UserInterface()

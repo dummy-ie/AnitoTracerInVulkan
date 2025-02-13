@@ -19,6 +19,8 @@
 #include <iostream>
 #include <numeric>
 
+#include "From-GDGRAP2/UIManager.h"
+
 
 namespace Vulkan::RayTracing {
 
@@ -235,6 +237,12 @@ void Application::Render(VkCommandBuffer commandBuffer, const uint32_t imageInde
 
 	ImageMemoryBarrier::Insert(commandBuffer, SwapChain().Images()[imageIndex], subresourceRange, VK_ACCESS_TRANSFER_WRITE_BIT,
 		0, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+
+	// Viewport
+	UIManager::getInstance()->m_Dset = descriptorSets[0];
+	//UIManager::getInstance()->images = &SwapChain().Images();
+	//UIManager::getInstance()->imageView = outputImageView_.get();
+	//UIManager::getInstance()->image = outputImage_.get();
 }
 
 void Application::CreateBottomLevelStructures(VkCommandBuffer commandBuffer)

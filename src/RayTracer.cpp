@@ -16,6 +16,8 @@
 #include "From-GDGRAP2/Debug.h"
 #include "From-GDGRAP2/GlobalConfig.h"
 #include "From-GDGRAP2/ModelManager.h"
+#include "From-GDGRAP2/UIManager.h"
+#include "ImGui/imgui_impl_vulkan.h"
 
 namespace
 {
@@ -105,7 +107,10 @@ void RayTracer::CreateSwapChain()
 {
 	Application::CreateSwapChain();
 
+
 	userInterface_.reset(new UserInterface(CommandPool(), SwapChain(), DepthBuffer(), userSettings_));
+
+
 	resetAccumulation_ = true;
 
 	CheckFramebufferSize();
