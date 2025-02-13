@@ -33,6 +33,14 @@ void UIManager::drawAllUI()
 	}
 }
 
+bool* UIManager::getEnabled(const std::string& name)
+{
+	if (!this->uiTable[name])
+		return nullptr;
+
+	return &this->uiTable[name]->enabled;
+}
+
 void UIManager::setEnabled(String uiName, bool flag)
 {
 	if(this->uiTable[uiName] != nullptr)

@@ -12,16 +12,21 @@ private:
 	void OnCreateCubeClicked();
 	void OnCreateTexturedCubeClicked();
 	void OnCreateSphereClicked();
+	void onCreateCapsuleClicked();
 	void OnCreatePlaneClicked();
+	void ShowLoadObjMenu();
 	void OnMaterialComponentClicked();
 
 	void OnLoadSphereWorld();
 	void OnLoadBoxWorld();
 	void OnLoadCornellBox();
 	void OnLoadAnitoTracerDemo();
+	void ShowColorPickerWindow();
 
 	friend class UIManager;
 
+	bool isLoadObjOpen = false;
+	bool isColorPickerOpen = false;
 	bool isOpen = false;
 
 	bool openSceneSelected = false;
