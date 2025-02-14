@@ -37,7 +37,7 @@ std::shared_ptr<GameObject> ModelManager::findObjectByName(String name)
 ModelManager::List ModelManager::getAllObjects() const
 {
 	ModelManager::List objectList;
-	for(int i = 0; i < this->gameObjectList.size(); i++)
+	for (int i = 0; i < this->gameObjectList.size(); i++)
 	{
 		objectList.push_back(this->gameObjectList[i]);
 	}
@@ -52,20 +52,20 @@ ModelManager::List ModelManager::getAllObjects() const
 
 /**
  * \brief Returns associated model representations of objects added.
- * \return 
+ * \return
  */
 ModelManager::ModelList ModelManager::getAllObjectModels() const
 {
 	ModelList models;
-	for(int i = 0; i < this->gameObjectList.size(); i++)
+	for (int i = 0; i < this->gameObjectList.size(); i++)
 	{
 		if (this->gameObjectList[i]->getModel())
 			models.push_back(*this->gameObjectList[i]->getModel());
 	}
 
-	for(int i = 0; i < this->objectGroupList.size(); i++)
+	for (int i = 0; i < this->objectGroupList.size(); i++)
 	{
-		for(int j = 0; j < this->objectGroupList[i]->getSize(); j++)
+		for (int j = 0; j < this->objectGroupList[i]->getSize(); j++)
 		{
 			models.push_back(*this->objectGroupList[i]->getModelAt(j));
 		}
@@ -124,6 +124,51 @@ void ModelManager::addObject(std::shared_ptr<ObjectGroup> objectGroup)
 
 void ModelManager::createObject(GameObject::PrimitiveType type)
 {
+	switch (type) {
+	case GameObject::CAMERA:
+		break;
+	case GameObject::CUBE:
+	{
+		Assets::Model cubeModel = Assets::Model::CreateBox(vec3(0, 0, -100), vec3(100, 100, 0), Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
+		std::shared_ptr<GameObject> cube = std::make_shared<GameObject>("Cube", GameObject::PrimitiveType::CUBE, std::make_shared<Assets::Model>(cubeModel));
+		addObject(cube);
+	}
+	break;
+	case GameObject::OBJECT_GROUP:
+		break;
+	case GameObject::QUAD:
+		break;
+	case GameObject::SPHERE:
+	{
+		Assets::Model sphereModel = Assets::Model::CreateSphere(vec3(0), 50, Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)), false);
+		std::shared_ptr<GameObject> sphere = std::make_shared<GameObject>("Sphere", GameObject::PrimitiveType::SPHERE, std::make_shared<Assets::Model>(sphereModel));
+		addObject(sphere);
+	}
+	break;
+	case GameObject::PLANE:
+	{
+		Assets::Model planeModel = Assets::Model::CreatePlane(vec3(0, 0, -100), vec3(100, 100, 0), Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
+		std::shared_ptr<GameObject> plane = std::make_shared<GameObject>("Plane", GameObject::PrimitiveType::PLANE, std::make_shared<Assets::Model>(planeModel));
+		addObject(plane);
+	}
+	break;
+	case GameObject::CYLINDER:
+	{
+		Assets::Model cylinderModel = Assets::Model::CreateCylinder(vec3(0), 50, 100, Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
+		std::shared_ptr<GameObject> cylinder = std::make_shared<GameObject>("Cylinder", GameObject::PrimitiveType::CYLINDER, std::make_shared<Assets::Model>(cylinderModel));
+		addObject(cylinder);
+	}
+	break;
+	case GameObject::CAPSULE:
+	{
+		Assets::Model capsuleModel = Assets::Model::CreateCapsule(vec3(0), 50, 100, Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
+		std::shared_ptr<GameObject> capsule = std::make_shared<GameObject>("Capsule", GameObject::PrimitiveType::CAPSULE, std::make_shared<Assets::Model>(capsuleModel));
+		addObject(capsule);
+	}
+		break;
+	case GameObject::NONE:
+		break;
+	}
 }
 
 void ModelManager::createObjectFromFile(String name, GameObject::PrimitiveType type, vec3 position, vec3 rotation,
@@ -171,7 +216,7 @@ void ModelManager::deleteObject(std::shared_ptr<GameObject> gameObject)
 void ModelManager::deleteObjectByName(String name)
 {
 	std::shared_ptr<GameObject> object = this->findObjectByName(name);
-	if(object != nullptr)
+	if (object != nullptr)
 	{
 		this->deleteObject(object);
 	}

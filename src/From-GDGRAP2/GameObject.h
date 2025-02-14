@@ -16,6 +16,9 @@ public:
 		CUBE,
 		OBJECT_GROUP,
 		QUAD,
+		PLANE,
+		CYLINDER,
+		CAPSULE,
 		SPHERE,
 		NONE,
 	};

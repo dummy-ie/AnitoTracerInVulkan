@@ -74,6 +74,7 @@ void MenuScreen::drawUI()
 			if (ImGui::MenuItem("Create Sphere")) { this->OnCreateSphereClicked(); }
 			if (ImGui::MenuItem("Create Cube")) { this->OnCreateCubeClicked(); }
 			if (ImGui::MenuItem("Create Capsule")) { onCreateCapsuleClicked(); }
+			if (ImGui::MenuItem("Create Cylinder")) { onCreateCylinderClicked(); }
 			//if (ImGui::MenuItem("Create Textured Cube")) { this->OnCreateTexturedCubeClicked(); } // add texture component
 			if (ImGui::MenuItem("Create Plane")) { this->OnCreatePlaneClicked(); }
 			if (ImGui::MenuItem("Load OBJ...", nullptr, isLoadObjOpen))
@@ -185,6 +186,7 @@ void MenuScreen::OnCreateCubeClicked()
 {
 	//initialize vertex for object
 	// GameObjectManager::getInstance()->createObject(AGameObject::PrimitiveType::CUBE);
+	ModelManager::getInstance()->createObject(GameObject::PrimitiveType::CUBE);
 }
 
 void MenuScreen::OnCreateTexturedCubeClicked()
@@ -194,11 +196,18 @@ void MenuScreen::OnCreateTexturedCubeClicked()
 
 void MenuScreen::OnCreateSphereClicked()
 {
-	std::cout << "Creating sphere placeholder. \n";
+	//std::cout << "Creating sphere placeholder. \n";
+	ModelManager::getInstance()->createObject(GameObject::PrimitiveType::SPHERE);
 }
 
 void MenuScreen::onCreateCapsuleClicked()
 {
+	ModelManager::getInstance()->createObject(GameObject::PrimitiveType::CAPSULE);
+}
+
+void MenuScreen::onCreateCylinderClicked()
+{
+	ModelManager::getInstance()->createObject(GameObject::PrimitiveType::CYLINDER);
 }
 
 void MenuScreen::ShowLoadObjMenu()
@@ -223,13 +232,13 @@ void MenuScreen::ShowLoadObjMenu()
 		if (ImGui::Button("Create", ImVec2(100, 25)))
 		{
 
-			// ModelManager::getInstance()->createObjectFromFile(
-			// 	name,
-			// 	GameObject::PrimitiveType::CUBE,
-			// 	glm::vec3(position[0], position[1], position[2]),
-			// 	glm::vec3(rotation[0], rotation[1], rotation[2]),
-			// 	glm::vec3(scale[0], scale[1], scale[2])
-			// );
+			ModelManager::getInstance()->createObjectFromFile(
+				name,
+				GameObject::PrimitiveType::CUBE,
+				glm::vec3(position[0], position[1], position[2]),
+				glm::vec3(rotation[0], rotation[1], rotation[2]),
+				glm::vec3(scale[0], scale[1], scale[2])
+			);
 		}
 	}
 

@@ -13,6 +13,7 @@ private:
 	void OnCreateTexturedCubeClicked();
 	void OnCreateSphereClicked();
 	void onCreateCapsuleClicked();
+	void onCreateCylinderClicked();
 	void OnCreatePlaneClicked();
 	void ShowLoadObjMenu();
 	void OnMaterialComponentClicked();
