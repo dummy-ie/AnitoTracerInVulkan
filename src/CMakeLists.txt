@@ -29,6 +29,15 @@ set(src_files_assets
 	Assets/Sphere.hpp
 )
 
+set(src_files_camerasystem
+	CameraSystem/Camera.cpp
+	CameraSystem/Camera.h
+	CameraSystem/CameraManager.cpp
+	CameraSystem/CameraManager.h
+	CameraSystem/SceneCamera.cpp
+	CameraSystem/SceneCamera.h
+)
+
 set(src_files_imgui
 	ImGui/imgui_freetype.cpp
 	ImGui/imgui_freetype.h
@@ -199,6 +208,7 @@ set(src_files
 )
 
 source_group("Assets" FILES ${src_files_assets})
+source_group("CameraSystem" FILES ${src_files_camerasystem})
 source_group("ImGui" FILES ${src_files_imgui})
 source_group("Utilities" FILES ${src_files_utilities})
 source_group("From-GDGRAP2" FILES ${src_files_from_gdgrap2})
@@ -208,6 +218,7 @@ source_group("Main" FILES ${src_files})
 
 add_executable(${exe_name} 
 	${src_files_assets} 
+	${src_files_camerasystem} 
 	${src_files_imgui} 
 	${src_files_utilities}
 	${src_files_from_gdgrap2}

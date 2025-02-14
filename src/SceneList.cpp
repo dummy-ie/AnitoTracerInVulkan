@@ -532,6 +532,10 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	areaLightObject->setPosition(1000.0f, 1000.0f, -500.0f);
 	ModelManager::getInstance()->addObject(areaLightObject);
 
+	// KATE FLAG >> Adding Camera Object in scene
+	std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>("Camera", GameObject::PrimitiveType::CAMERA);
+	ModelManager::getInstance()->addObject(cameraObj);
+
 	const auto i = mat4(1);
 	const auto white = Material::Lambertian(vec3(0.73f, 0.73f, 0.73f));
 	const auto mirror = Material::Metallic(vec3(0.21f, 0.43f, 0.71f), 0.0f);

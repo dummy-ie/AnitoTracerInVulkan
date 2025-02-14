@@ -59,8 +59,8 @@ ModelManager::ModelList ModelManager::getAllObjectModels() const
 	ModelList models;
 	for(int i = 0; i < this->gameObjectList.size(); i++)
 	{
-
-		models.push_back(*this->gameObjectList[i]->getModel());
+		if (this->gameObjectList[i]->getModel())
+			models.push_back(*this->gameObjectList[i]->getModel());
 	}
 
 	for(int i = 0; i < this->objectGroupList.size(); i++)

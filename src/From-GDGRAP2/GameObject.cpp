@@ -115,7 +115,8 @@ void GameObject::performModelTransform()
 
 	mat4 translateOp = glm::translate(mat4(1), this->transform - this->origin);
 	this->origin = this->transform;
-	this->modelRef->Transform(translateOp);
+	if (modelRef)
+		this->modelRef->Transform(translateOp);
 	EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
 }
 
@@ -128,9 +129,12 @@ void GameObject::performModelRotate()
 	mat4 rotateYOp = glm::rotate(mat4(1), glm::radians(rotOffset.y), vec3(0, 1, 0));
 	mat4 rotateZOp = glm::rotate(mat4(1), glm::radians(rotOffset.z), vec3(0, 0, 1));
 
-	this->modelRef->Transform(rotateXOp);
-	this->modelRef->Transform(rotateYOp);
-	this->modelRef->Transform(rotateZOp);
+	if (modelRef)
+	{
+		this->modelRef->Transform(rotateXOp);
+		this->modelRef->Transform(rotateYOp);
+		this->modelRef->Transform(rotateZOp);
+	}
 
 	this->originRot = this->rotAngles;
 	EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
@@ -141,6 +145,7 @@ void GameObject::performModelScale()
 	mat4 scaleOp = glm::scale(mat4(1), this->scale);
 	this->scale = VectorUtils::ones(); //TODO: Workaround. Reset to identity
 
-	this->modelRef->Transform(scaleOp);
+	if (modelRef)
+		this->modelRef->Transform(scaleOp);
 	EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
 }
