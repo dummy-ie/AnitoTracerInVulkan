@@ -45,7 +45,7 @@ void CameraManager::setMainCameraByIndex(int index)
 
 void CameraManager::setSceneCameraProjection(int type)
 {
-	//this->selectedSceneCamera->setProjectionType(type);
+	this->selectedSceneCamera->SetProjectionType((Camera::ProjectionMode)type);
 }
 
 void CameraManager::updateSceneCamera(float deltaTime)

@@ -2,13 +2,16 @@
 
 #include <string>
 
+#include "UserSettings.hpp"
 #include "From-GDGRAP2/GameObject.h"
 #include "Utilities/Glm.hpp"
 
 class Camera : public GameObject
 {
 public:
-	Camera(std::string name);
+	enum ProjectionMode { orthographic = 0, perspective };
+
+	Camera(std::string name, ProjectionMode proj = perspective);
 	~Camera();
 
 	void Reset(const glm::mat4& modelView);
@@ -20,6 +23,9 @@ public:
 	bool OnMouseButton(int button, int action, int mods);
 	bool UpdateCamera(double speed, double timeDelta);
 
+	glm::mat4 GetProjection(UserSettings settings, const VkExtent2D extent);
+	void SetProjectionType(ProjectionMode type);
+
 protected:
 
 	virtual void MoveForward(float d);
@@ -29,6 +35,7 @@ protected:
 	void UpdateVectors();
 
 	std::string name;
+	ProjectionMode projMode;
 
 	// Matrices and vectors.
 	glm::mat4 orientation_{};

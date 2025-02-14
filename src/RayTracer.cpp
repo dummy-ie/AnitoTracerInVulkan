@@ -19,7 +19,7 @@
 #include "From-GDGRAP2/UIManager.h"
 #include "ImGui/imgui_impl_vulkan.h"
 
-#include "CameraSystem/CameraManager.h"
+#include "Engine/CameraSystem/CameraManager.h"
 
 namespace
 {
@@ -57,7 +57,7 @@ Assets::UniformBufferObject RayTracer::GetUniformBufferObject(const VkExtent2D e
 	Assets::UniformBufferObject ubo = {};
 	//ubo.ModelView = modelViewController_.ModelView();
 	ubo.ModelView = CameraManager::getInstance()->getActiveCamera()->ModelView();
-	ubo.Projection = glm::perspective(glm::radians(userSettings_.FieldOfView), extent.width / static_cast<float>(extent.height), 0.1f, 10000.0f);
+	ubo.Projection = CameraManager::getInstance()->getActiveCamera()->GetProjection(userSettings_, extent);
 	ubo.Projection[1][1] *= -1; // Inverting Y for Vulkan, https://matthewwellings.com/blog/the-new-vulkan-coordinate-system/
 	ubo.ModelViewInverse = glm::inverse(ubo.ModelView);
 	ubo.ProjectionInverse = glm::inverse(ubo.Projection);
@@ -179,8 +179,6 @@ void RayTracer::Render(VkCommandBuffer commandBuffer, const uint32_t imageIndex)
 	time_ = Window().GetTime();
 	const auto timeDelta = time_ - prevTime;
 
-	CameraManager::getInstance()->updateSceneCamera((float)timeDelta);
-
 	// Update the camera position / angle.
 	resetAccumulation_ = CameraManager::getInstance()->getActiveCamera()->UpdateCamera(cameraInitialSate_.ControlSpeed, timeDelta);
 
@@ -233,6 +231,8 @@ void RayTracer::OnKey(int key, int scancode, int action, int mods)
 			{
 			case GLFW_KEY_F1: userSettings_.ShowSettings = !userSettings_.ShowSettings; break;
 			case GLFW_KEY_F2: userSettings_.ShowOverlay = !userSettings_.ShowOverlay; break;
+			case GLFW_KEY_1: CameraManager::getInstance()->setSceneCameraProjection(0); break;
+			case GLFW_KEY_2: CameraManager::getInstance()->setSceneCameraProjection(1); break;
 			case GLFW_KEY_R: userSettings_.IsRayTraced = !userSettings_.IsRayTraced; break;
 			case GLFW_KEY_H: userSettings_.ShowHeatmap = !userSettings_.ShowHeatmap; break;
 			case GLFW_KEY_P: isWireFrame_ = !isWireFrame_; break;

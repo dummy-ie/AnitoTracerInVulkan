@@ -16,6 +16,12 @@ layout(binding = 8) uniform sampler2D[] TextureSamplers;
 hitAttributeEXT vec2 HitAttributes;
 rayPayloadInEXT RayPayload Ray;
 
+// Point Light Constants
+const int lightType = 0;
+const vec3 lightPos = vec3(2600, 20.0, 0);
+const vec4 ambientColor = vec4(1.0, 1.0, 1.0, 0.02);
+const vec4 lightColor = vec4(1.0, 1.0, 1.0, 100000000.0f);
+
 vec2 Mix(vec2 a, vec2 b, vec2 c, vec3 barycentrics)
 {
 	return a * barycentrics.x + b * barycentrics.y + c * barycentrics.z;
@@ -42,5 +48,46 @@ void main()
 	const vec3 normal = normalize(Mix(v0.Normal, v1.Normal, v2.Normal, barycentrics));
 	const vec2 texCoord = Mix(v0.TexCoord, v1.TexCoord, v2.TexCoord, barycentrics);
 
-	Ray = Scatter(material, gl_WorldRayDirectionEXT, normal, texCoord, gl_HitTEXT, Ray.RandomSeed);
+
+	// Adding point light.
+
+	// Computing the coordinates of the hit position
+	const vec3 pos      = v0.Position * barycentrics.x + v1.Position * barycentrics.y + v2.Position * barycentrics.z;
+	const vec3 worldPos = vec3(gl_ObjectToWorldEXT * vec4(pos, 1.0));  // Transforming the position to world space
+	const vec3 nrm      = v0.Normal * barycentrics.x + v1.Normal * barycentrics.y + v2.Normal * barycentrics.z;
+	const vec3 worldNrm = normalize(vec3(nrm * gl_WorldToObjectEXT));  // Transforming the normal to world space
+
+	//mat3 normalMatrix = transpose(inverse(mat3(gl_ObjectToWorldEXT)));
+	//vec3 worldNrm = normalize(normalMatrix * nrm);
+
+	// Compute the diffuse light.
+	//vec3 lightDir = lightPos.xyz - worldPos;
+	//float attenuation = 1.0 / dot(lightDir, lightDir);
+
+	// Compute the light colors and intensity.
+	//vec3 lightCol = lightColor.xyz * lightColor.w * attenuation;
+	//vec3 ambientLight = ambientColor.xyz * ambientColor.w;
+	//vec3 diffuseLight = lightCol * max(dot(worldNrm, normalize(lightDir)), 0);
+	
+	//vec3 lighting = diffuseLight + ambientLight;
+
+	// Vector toward the light
+	vec3  L;
+	float lightIntensity = lightColor.w;
+	float lightDistance  = 100000.0;
+	// Point light
+	if(lightType == 0)
+	{
+		vec3 lDir      = lightPos - worldPos;
+		lightDistance  = length(lDir);
+		lightIntensity = lightIntensity / (lightDistance * lightDistance);
+		L              = lightColor.rgb * max(dot(worldNrm, normalize(lDir)), 0);
+	}
+	else  // Directional light
+	{
+		vec3 lDir      = lightPos - worldPos;
+		L = lightColor.rgb * max(dot(worldNrm, normalize(lDir)), 0);
+	}
+
+	Ray = Scatter(material, gl_WorldRayDirectionEXT, normal, texCoord, gl_HitTEXT, Ray.RandomSeed, L);
 }

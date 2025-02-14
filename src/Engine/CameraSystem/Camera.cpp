@@ -4,9 +4,10 @@
 
 #include "Vulkan/Vulkan.hpp"
 
-Camera::Camera(std::string name) : GameObject(name, PrimitiveType::CAMERA)
+Camera::Camera(std::string name, ProjectionMode proj) : GameObject(name, PrimitiveType::CAMERA)
 {
 	this->name = name;
+	this->projMode = proj;
 }
 
 Camera::~Camera() {}
@@ -123,6 +124,25 @@ bool Camera::UpdateCamera(const double speed, const double timeDelta)
 	cameraRotX_ = 0;
 
 	return updated;
+}
+
+glm::mat4 Camera::GetProjection(UserSettings settings, const VkExtent2D extent)
+{
+	switch (projMode)
+	{
+	case ProjectionMode::orthographic:
+		return glm::ortho(-1000.0f, 1000.0f, 1000.0f, -1000.0f, 0.1f, 1000.0f);
+		break;
+
+	case ProjectionMode::perspective:
+		return glm::perspective(glm::radians(settings.FieldOfView), extent.width / static_cast<float>(extent.height), 0.1f, 10000.0f);
+		break;
+	}
+}
+
+void Camera::SetProjectionType(ProjectionMode type)
+{
+	this->projMode = type;
 }
 
 void Camera::MoveForward(const float d)
