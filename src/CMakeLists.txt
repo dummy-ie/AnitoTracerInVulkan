@@ -9,7 +9,7 @@ set(src_files_assets
 	Assets/Procedural.hpp
 	Assets/Scene.cpp
 	Assets/Scene.hpp
-	Assets/Sphere.hpp
+	Assets/SphereProc.hpp
 	Assets/Texture.cpp
 	Assets/Texture.hpp
 	Assets/TextureImage.cpp
@@ -17,6 +17,16 @@ set(src_files_assets
 	Assets/UniformBuffer.cpp
 	Assets/UniformBuffer.hpp
 	Assets/Vertex.hpp
+	Assets/Box.cpp
+	Assets/Box.hpp
+	Assets/Capsule.cpp
+	Assets/Capsule.hpp
+	Assets/Cylinder.cpp
+	Assets/Cylinder.hpp
+	Assets/Plane.cpp
+	Assets/Plane.hpp
+	Assets/Sphere.cpp
+	Assets/Sphere.hpp
 )
 
 set(src_files_imgui
