@@ -17,6 +17,7 @@ public:
 
     typedef glm::vec3 vec3;
     typedef std::string String;
+    typedef glm::mat4 mat4;
 
     GameObject();
     GameObject(String name, PrimitiveType type);
@@ -28,18 +29,21 @@ public:
     bool isEnabled();
     void setEnabled(bool flag);
 
-    vec3 getTransform() const;
-    vec3 getScale() const;
-    vec3 getRotAngles() const;
+    vec3 getLocalPosition() const;
+    vec3 getWorldPosition() const;
 
-    void setPosition(float x, float y, float z);
-    void setPosition(vec3 newPos);
+    vec3 getLocalRotation() const;
+    vec3 getWorldRotation() const;
 
-    void setRotAngles(float x, float y, float z);
-    void setRotAngles(vec3 newRot);
+    vec3 getLocalScale() const;
+    vec3 getWorldScale() const;
 
-    void setScale(float x, float y, float z);
-    void setScale(vec3 newScale);
+    void setLocalPosition(vec3 newPos);
+    void setLocalPosition(float x, float y, float z);
+    void setLocalRotation(vec3 newRot);
+    void setLocalRotation(float x, float y, float z);
+    void setLocalScale(vec3 newScale);
+    void setLocalScale(float x, float y, float z);
 
     std::shared_ptr<Assets::Model> getModel();
 
@@ -54,20 +58,25 @@ public:
 protected:
     String name;
     PrimitiveType type;
-    bool enabled;
+    bool enabled = true;
 
-    typedef glm::mat4 mat4;
     vec3 origin = VectorUtils::zeros();
     vec3 originRot = VectorUtils::zeros();
+    vec3 originScale = VectorUtils::ones();
+    vec3 localPosition = VectorUtils::zeros();
+    vec3 localRotation = VectorUtils::zeros();
+    vec3 localScale = VectorUtils::ones();
 
-    vec3 transform = VectorUtils::zeros();
-    vec3 rotAngles = VectorUtils::zeros();
-    vec3 scale = VectorUtils::ones();
+    vec3 worldPosition = VectorUtils::zeros();
+    vec3 worldRotation = VectorUtils::zeros();
+    vec3 worldScale = VectorUtils::ones();
 
     std::shared_ptr<Assets::Model> modelRef;
 
     GameObject* parent = nullptr;
     std::vector<GameObject*> children;
+
+    void updateWorldTransform();
 
     virtual void performModelTransform();
     virtual void performModelRotate();
@@ -75,3 +84,5 @@ protected:
 
     friend class ModelManager;
 };
+
+

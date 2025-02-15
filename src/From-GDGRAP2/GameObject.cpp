@@ -45,55 +45,70 @@ void GameObject::setEnabled(bool flag)
 	this->enabled = flag;
 }
 
-GameObject::vec3 GameObject::getTransform() const
+GameObject::vec3 GameObject::getLocalPosition() const
 {
-	return this->transform;
+	return this->localPosition;
 }
 
-GameObject::vec3 GameObject::getScale() const
+GameObject::vec3 GameObject::getWorldPosition() const
 {
-	return this->scale;
+	return this->worldPosition;
 }
 
-GameObject::vec3 GameObject::getRotAngles() const
+GameObject::vec3 GameObject::getLocalRotation() const
 {
-	return this->rotAngles;
+	return this->localRotation;
 }
 
-void GameObject::setPosition(float x, float y, float z)
+GameObject::vec3 GameObject::getWorldRotation() const
 {
-	this->transform = vec3(x, y, z);
-	this->performModelTransform();
+	return this->worldRotation;
 }
 
-void GameObject::setPosition(vec3 newPos)
+GameObject::vec3 GameObject::getLocalScale() const
 {
-	this->transform = newPos;
-	this->performModelTransform();
+	return this->localScale;
 }
 
-void GameObject::setRotAngles(float x, float y, float z)
+GameObject::vec3 GameObject::getWorldScale() const
 {
-	this->rotAngles = vec3(x, y, z);
-	this->performModelRotate();
+	return this->worldScale;
 }
 
-void GameObject::setRotAngles(vec3 newRot)
+void GameObject::setLocalPosition(vec3 newPos)
 {
-	this->rotAngles = newRot;
-	this->performModelRotate();
+	this->localPosition = newPos;
+	this->updateWorldTransform();
 }
 
-void GameObject::setScale(float x, float y, float z)
+void GameObject::setLocalPosition(float x, float y, float z)
 {
-	this->scale = vec3(x, y, z);
-	this->performModelScale();
+	this->localPosition = vec3(x, y, z);
+	this->updateWorldTransform();
 }
 
-void GameObject::setScale(vec3 newScale)
+void GameObject::setLocalRotation(vec3 newRot)
 {
-	this->scale = newScale;
-	this->performModelScale();
+	this->localRotation = newRot;
+	this->updateWorldTransform();
+}
+
+void GameObject::setLocalRotation(float x, float y, float z)
+{
+	this->localRotation = vec3(x, y, z);
+	this->updateWorldTransform();
+}
+
+void GameObject::setLocalScale(vec3 newScale)
+{
+	this->localScale = newScale;
+	this->updateWorldTransform();
+}
+
+void GameObject::setLocalScale(float x, float y, float z)
+{
+	this->localScale = vec3(x, y, z);
+	this->updateWorldTransform();
 }
 
 std::shared_ptr<Assets::Model> GameObject::getModel()
@@ -103,17 +118,22 @@ std::shared_ptr<Assets::Model> GameObject::getModel()
 
 void GameObject::addChild(GameObject* child)
 {
-	if (!child || child == this || child->parent == this) 
+	if (!child || child == this || child->parent == this)
 		return;
 
-	if (child->parent) 
-	{
+	if (child->parent)
 		child->parent->removeChild(child);
-	}
 
 	child->parent = this;
 	children.push_back(child);
+
+	child->localPosition = glm::inverse(glm::translate(glm::mat4(1.0f), this->worldPosition)) * glm::vec4(child->worldPosition, 1.0f);
+	child->localRotation = child->worldRotation - this->worldRotation;
+	child->localScale = glm::inverse(glm::scale(glm::mat4(1.0f), this->worldScale)) * glm::vec4(child->worldScale, 1.0f);
+
+	child->updateWorldTransform();
 }
+
 
 void GameObject::removeChild(GameObject* child)
 {
@@ -139,16 +159,32 @@ GameObject* GameObject::getParent() const
 
 void GameObject::setParent(GameObject* newParent)
 {
-	if (newParent == this || (newParent && isDescendantOf(newParent))) 
+	if (newParent == this || (newParent && isDescendantOf(newParent)))
 		return;
 
 	if (parent)
 		parent->removeChild(this);
 
+	if (newParent)
+	{
+		this->localPosition = this->worldPosition - newParent->worldPosition;
+		this->localRotation = this->worldRotation - newParent->worldRotation;
+		this->localScale = glm::inverse(glm::scale(glm::mat4(1.0f), newParent->worldScale)) * glm::vec4(this->worldScale, 1.0f);
+
+	}
+	else
+	{
+		this->localPosition = this->worldPosition;
+		this->localRotation = this->worldRotation;
+		this->localScale = this->worldScale;
+	}
+
 	parent = newParent;
 
 	if (parent)
 		parent->addChild(this);
+
+	updateWorldTransform();
 }
 
 bool GameObject::isDescendantOf(const GameObject* potentialParent) const
@@ -165,30 +201,54 @@ bool GameObject::isDescendantOf(const GameObject* potentialParent) const
 	return false;
 }
 
+void GameObject::updateWorldTransform()
+{
+	if (this->parent)
+	{
+		this->worldPosition = this->parent->worldPosition + this->localPosition;
+		this->worldRotation = this->parent->worldRotation + this->localRotation;
+		this->worldScale = this->parent->worldScale * this->localScale;
+	}
+	else
+	{
+		this->worldPosition = this->localPosition;
+		this->worldRotation = this->localRotation;
+		this->worldScale = this->localScale;
+	}
+
+	// Update children recursively
+	for (GameObject* child : this->children)
+	{
+		if (child)
+		{
+			child->updateWorldTransform();
+		}
+	}
+
+	this->performModelTransform();
+	this->performModelRotate();
+	this->performModelScale();
+}
+
 /**
  * \brief Performs the model transform via model-view-projection matrix form
  */
 void GameObject::performModelTransform()
 {
-	// lucy0.Transform(
-	// 	rotate(
-	// 		scale(
-	// 			translate(i, vec3(0, -0.08f, 0)),
-	// 			vec3(scaleFactor)),
-	// 		radians(90.0f), vec3(0, 1, 0)));
 
-	mat4 translateOp = glm::translate(mat4(1), this->transform - this->origin);
-	this->origin = this->transform;
+	mat4 translateOp = glm::translate(mat4(1), this->worldPosition - this->origin);
+	this->origin = this->worldPosition;
 	if (modelRef)
 		this->modelRef->Transform(translateOp);
+
 	EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
 }
 
 void GameObject::performModelRotate()
 {
-	//vertex.Position = transform * vec4(vertex.Position, 1);
 
-	vec3 rotOffset = this->rotAngles - this->originRot;
+	vec3 rotOffset = this->worldRotation - this->originRot;
+
 	mat4 rotateXOp = glm::rotate(mat4(1), glm::radians(rotOffset.x), vec3(1, 0, 0));
 	mat4 rotateYOp = glm::rotate(mat4(1), glm::radians(rotOffset.y), vec3(0, 1, 0));
 	mat4 rotateZOp = glm::rotate(mat4(1), glm::radians(rotOffset.z), vec3(0, 0, 1));
@@ -200,16 +260,19 @@ void GameObject::performModelRotate()
 		this->modelRef->Transform(rotateZOp);
 	}
 
-	this->originRot = this->rotAngles;
+	this->originRot = this->worldRotation;
 	EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
 }
 
 void GameObject::performModelScale()
 {
-	mat4 scaleOp = glm::scale(mat4(1), this->scale);
-	this->scale = VectorUtils::ones(); //TODO: Workaround. Reset to identity
+	vec3 scaleOffset = this->worldScale / this->originScale;
 
+	mat4 scaleOp = glm::scale(mat4(1), scaleOffset);
 	if (modelRef)
 		this->modelRef->Transform(scaleOp);
+
+	this->originScale = this->worldScale;
+
 	EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
 }

@@ -67,4 +67,6 @@ private:
 	uint32_t periodTotalFrames_{};
 
 	bool isSceneDirty = false;
+
+	bool initializedUI = false;
 };

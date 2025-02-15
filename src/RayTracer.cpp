@@ -312,7 +312,7 @@ void RayTracer::onTriggeredEvent(String eventName, std::shared_ptr<Parameters> p
 	{
 		this->isSceneDirty = true;
 		GlobalConfig::getInstance()->encodeBool(ConfigKeys::DO_NOT_RESET_CAMERA, true);
-		// Debug::Log("Scene marked as dirty! \n");
+		Debug::Log("Scene marked as dirty! \n");
 	}
 }
 
