@@ -53,16 +53,14 @@ void main()
 	const vec3 normal = (point - center) / radius;
 	const vec2 texCoord = GetSphereTexCoord(normal);
 	
-	// Adding point light.
+	// Adding point light. 
 
 	// Computing the coordinates of the hit position
-	const vec3 pos      = v0.Position * barycentrics.x + v1.Position * barycentrics.y + v2.Position * barycentrics.z;
-	const vec3 worldPos = vec3(gl_ObjectToWorldEXT * vec4(pos, 1.0));  // Transforming the position to world space
-	const vec3 nrm      = v0.Normal * barycentrics.x + v1.Normal * barycentrics.y + v2.Normal * barycentrics.z;
-	//const vec3 worldNrm = normalize(vec3(nrm * gl_WorldToObjectEXT));  // Transforming the normal to world space
+	vec3 worldPos = vec3(gl_ObjectToWorldEXT * vec4(center, 1.0));  // Transforming the position to world space
+	// const vec3 worldNrm = normalize(vec3(normal * gl_WorldToObjectEXT));  // Transforming the normal to world space
 
 	mat3 normalMatrix = transpose(inverse(mat3(gl_ObjectToWorldEXT)));
-	const vec3 worldNrm = normalize(normalMatrix * nrm);
+	const vec3 worldNrm = normalize(normalMatrix * normal);
 
 	// Compute the diffuse light.
 	vec3 lightDir = lightPos.xyz - worldPos;
