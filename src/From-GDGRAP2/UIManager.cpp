@@ -5,6 +5,7 @@
 #include "Debug.h"
 #include "HierarchyScreen.h"
 #include "InspectorScreen.h"
+#include "MaterialEditorScreen.h"
 #include "PlaybackScreen.h"
 #include "ProfilerScreen.h"
 #include "ViewportScreen.h"
@@ -95,6 +96,11 @@ UIManager::UIManager()
 	std::shared_ptr<gdeng03::PlaybackScreen> playbackScreen = std::make_shared<gdeng03::PlaybackScreen>();
 	this->uiTable[uiNames.PLAYBACK_SCREEN] = playbackScreen;
 	this->uiList.push_back(playbackScreen);
+
+	// nawt working yet lol!
+	std::shared_ptr<gdeng03::MaterialEditorScreen> materialEditorScreen = std::make_shared<gdeng03::MaterialEditorScreen>();
+	this->uiTable[uiNames.MATERIAL_EDITOR_SCREEN] = materialEditorScreen;
+	this->uiList.push_back(materialEditorScreen);
 
 	// nawt working yet lol!
 	// std::shared_ptr<ViewportScreen> viewportScreen = std::make_shared<ViewportScreen>();

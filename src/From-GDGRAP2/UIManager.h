@@ -22,6 +22,7 @@ public:
 	const String CONSOLE_SCREEN = "CONSOLE_SCREEN";
 	const String MATERIAL_SCREEN = "MATERIAL_SCREEN";
 	const String VIEWPORT_SCREEN = "VIEWPORT_SCREEN";
+	const String MATERIAL_EDITOR_SCREEN = "MATERIAL_EDITOR_SCREEN";
 };
 
 class Viewport;
