@@ -18,7 +18,8 @@ void InspectorScreen::drawUI()
 	
 	ImGui::Begin("Inspector Window", 0, ImGuiWindowFlags_NoResize);
 	this->selectedObject = ModelManager::getInstance()->getSelectedObject();
-	if (this->selectedObject != nullptr) {
+	if (this->selectedObject != nullptr) 
+	{
 		String name =  this->selectedObject->getName();
 		ImGui::Text("Selected Object: %s", name.c_str());
 		this->updateTransformDisplays();
@@ -52,17 +53,17 @@ void InspectorScreen::drawUI()
 void InspectorScreen::updateTransformDisplays()
 {
 	typedef glm::vec3 vec3;
-	vec3 pos = this->selectedObject->getTransform();
+	vec3 pos = this->selectedObject->getLocalPosition();
 	this->positionDisplay[0] = pos.x;
 	this->positionDisplay[1] = pos.y;
 	this->positionDisplay[2] = pos.z;
 	
-	vec3 rot = this->selectedObject->getRotAngles();
+	vec3 rot = this->selectedObject->getLocalRotation();
 	this->rotationDisplay[0] = rot.x;
 	this->rotationDisplay[1] = rot.y;
 	this->rotationDisplay[2] = rot.z;
 
-	vec3 scale = this->selectedObject->getScale();
+	vec3 scale = this->selectedObject->getLocalScale();
 	this->scaleDisplay[0] = scale.x;
 	this->scaleDisplay[1] = scale.y;
 	this->scaleDisplay[2] = scale.z;
@@ -116,19 +117,20 @@ void InspectorScreen::drawMaterialsTab()
 
 void InspectorScreen::onTransformUpdate() const
 {
-	if (this->selectedObject != nullptr) {
+	if (this->selectedObject != nullptr) 
+	{
 		// ActionHistory::getInstance()->recordAction(this->selectedObject);
 	
-		this->selectedObject->setPosition(this->positionDisplay[0], this->positionDisplay[1], this->positionDisplay[2]);
-		this->selectedObject->setRotAngles(this->rotationDisplay[0], this->rotationDisplay[1], this->rotationDisplay[2]);
+		this->selectedObject->setLocalPosition(this->positionDisplay[0], this->positionDisplay[1], this->positionDisplay[2]);
+		this->selectedObject->setLocalRotation(this->rotationDisplay[0], this->rotationDisplay[1], this->rotationDisplay[2]);
 	
 		if(this->selectedObject->getType() == GameObject::PrimitiveType::SPHERE)
 		{
-			this->selectedObject->setScale(this->scaleDisplay[0], this->scaleDisplay[0], this->scaleDisplay[0]);
+			this->selectedObject->setLocalScale(this->scaleDisplay[0], this->scaleDisplay[0], this->scaleDisplay[0]);
 		}
 		else
 		{
-			this->selectedObject->setScale(this->scaleDisplay[0], this->scaleDisplay[1], this->scaleDisplay[2]);
+			this->selectedObject->setLocalScale(this->scaleDisplay[0], this->scaleDisplay[1], this->scaleDisplay[2]);
 		}
 		
 	}

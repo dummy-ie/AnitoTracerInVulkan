@@ -434,7 +434,7 @@ SceneAssets SceneList::GDGRAP2_BoxWorld(CameraInitialState& camera)
 	Material areaLight = Material::DiffuseLight(vec3(0.73, 0.73, 0.73) * 7.0f);
 	Model areaLightModel = Model::CreateBox(vec3(0, 0, 0), vec3(1000, 10, 1000), areaLight);
 	std::shared_ptr<GameObject> areaLightObject = std::make_shared<GameObject>("AreaLight", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(areaLightModel));
-	areaLightObject->setPosition(-250.0f, 600.0f, -500.0f);
+	areaLightObject->setLocalPosition(-250.0f, 600.0f, -500.0f);
 	ModelManager::getInstance()->addObject(areaLightObject);
 
 	const int boxesPerSide = 20;
@@ -502,8 +502,8 @@ SceneAssets SceneList::GDGRAP2_BoxWorld(CameraInitialState& camera)
 		sphereGroup->addModel(std::make_shared<Model>(sphereInstance));
 	}
 
-	sphereGroup->setRotAngles(0, -45, 0);
-	sphereGroup->setPosition(vec3(-200, 300, 450));
+	sphereGroup->setLocalRotation(0, -45, 0);
+	sphereGroup->setLocalPosition(vec3(-200, 300, 450));
 	ModelManager::getInstance()->addObject(sphereGroup);
 
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
@@ -603,12 +603,12 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	Model plane = Model::CreatePlane(vec3(0, 0, -1), vec3(1, 1, 0), white);
 	std::shared_ptr<GameObject> planeObj = std::make_shared<GameObject>("Plane", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(plane));
 	ModelManager::getInstance()->addObject(planeObj);
-	planeObj->setScale(vec3(5000));
+	planeObj->setLocalScale(vec3(5000));
 
-	teapotObj->setPosition(1000, 0, 0);
-	bunnyObj->setPosition(1750, -10, 0);
-	lucyObj->setPosition(2500, 0, 0);
-	planeObj->setPosition(-500, 0, 2500);
+	teapotObj->setLocalPosition(1000, 0, 0);
+	bunnyObj->setLocalPosition(1750, -10, 0);
+	lucyObj->setLocalPosition(2500, 0, 0);
+	planeObj->setLocalPosition(-500, 0, 2500);
 
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
 	std::vector<Texture> textures = AssembleTextureList();

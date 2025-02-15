@@ -190,9 +190,9 @@ void ModelManager::createObjectFromFile(String name, GameObject::PrimitiveType t
 
 	auto model = Assets::Model::LoadModel(meshFilePath);
 	std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>(name, type, std::make_shared<Assets::Model>(model));
-	gameObject->setPosition(position);
-	gameObject->setRotAngles(rotation);
-	gameObject->setScale(scale);
+	gameObject->setLocalPosition(position);
+	gameObject->setLocalRotation(rotation);
+	gameObject->setLocalScale(scale);
 	addObject(gameObject);
 }
 
