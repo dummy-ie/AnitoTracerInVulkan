@@ -11,7 +11,7 @@ public:
 	~HierarchyScreen();
 private:
 	virtual void drawUI() override;
-	void updateObjectList() const;
+	void updateObjectList(const char* filter) const;
 	void drawObjectNode(GameObject* obj) const;
 
 	mutable std::unordered_set<std::string> openNodes;  
