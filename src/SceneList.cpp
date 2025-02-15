@@ -526,11 +526,11 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 
 	bool isProcedural = false;
 
-	Material areaLight = Material::DiffuseLight(vec3(0.73, 0.73, 0.73) * 7.0f);
+	/*Material areaLight = Material::DiffuseLight(vec3(0.73, 0.73, 0.73) * 7.0f);
 	Model areaLightModel = Model::CreateBox(vec3(0, 0, 0), vec3(1000, 10, 1000), areaLight);
 	std::shared_ptr<GameObject> areaLightObject = std::make_shared<GameObject>("AreaLight", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(areaLightModel));
 	areaLightObject->setPosition(1000.0f, 1000.0f, -500.0f);
-	ModelManager::getInstance()->addObject(areaLightObject);
+	ModelManager::getInstance()->addObject(areaLightObject);*/
 
 	// KATE FLAG >> Adding Camera Object in scene
 	std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>("Camera", GameObject::PrimitiveType::CAMERA);
@@ -600,7 +600,7 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	std::shared_ptr<GameObject> bunnyObj = std::make_shared<GameObject>("Bunny", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(bunny));
 	ModelManager::getInstance()->addObject(bunnyObj);
 
-	Model plane = Model::CreatePlane(vec3(0, 0, -1), vec3(1, 1, 0), mirror);
+	Model plane = Model::CreatePlane(vec3(0, 0, -1), vec3(1, 1, 0), white);
 	std::shared_ptr<GameObject> planeObj = std::make_shared<GameObject>("Plane", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(plane));
 	ModelManager::getInstance()->addObject(planeObj);
 	planeObj->setScale(vec3(5000));

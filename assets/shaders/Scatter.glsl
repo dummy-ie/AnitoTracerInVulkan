@@ -17,7 +17,7 @@ RayPayload ScatterLambertian(const Material m, const vec3 direction, const vec3 
 	const bool isScattered = dot(direction, normal) < 0;
 	const vec4 texColor = m.DiffuseTextureId >= 0 ? texture(TextureSamplers[nonuniformEXT(m.DiffuseTextureId)], texCoord) : vec4(1);
 	
-	vec3 litColor = texColor.rgb * light;
+	vec3 litColor =m.Diffuse.rgb *  texColor.rgb * light;
 	const vec4 colorAndDistance = vec4(m.Diffuse.rgb * texColor.rgb + litColor, t);
 	const vec4 scatter = vec4(normal + RandomInUnitSphere(seed), isScattered ? 1 : 0);
 
@@ -31,7 +31,7 @@ RayPayload ScatterMetallic(const Material m, const vec3 direction, const vec3 no
 	const bool isScattered = dot(reflected, normal) > 0;
 
 	const vec4 texColor = m.DiffuseTextureId >= 0 ? texture(TextureSamplers[nonuniformEXT(m.DiffuseTextureId)], texCoord) : vec4(1);
-	vec3 litColor = texColor.rgb * light;
+	vec3 litColor = m.Diffuse.rgb * texColor.rgb * light;
 	const vec4 colorAndDistance = vec4(m.Diffuse.rgb * texColor.rgb + litColor, t);
 	const vec4 scatter = vec4(reflected + m.Fuzziness*RandomInUnitSphere(seed), isScattered ? 1 : 0);
 
