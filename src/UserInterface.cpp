@@ -88,6 +88,7 @@ UserInterface::UserInterface(
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 
+	// Loads Default UI Layout (from imgui_default_layout.ini)
 	ImGui::LoadIniSettingsFromDisk(ApplicationConfig::DEFAULT_UI_LAYOUT_PATH.c_str());
 
 	// Window scaling and style.

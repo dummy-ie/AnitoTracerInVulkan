@@ -25,12 +25,12 @@ GameObject::GameObject(String name, PrimitiveType type, std::shared_ptr<Assets::
 	this->modelRef = modelRef;
 }
 
-GameObject::String GameObject::getName()
+GameObject::String GameObject::getName() const
 {
 	return this->name;
 }
 
-GameObject::PrimitiveType GameObject::getType()
+GameObject::PrimitiveType GameObject::getType() const
 {
 	return this->type;
 }
@@ -99,6 +99,42 @@ void GameObject::setScale(vec3 newScale)
 std::shared_ptr<Assets::Model> GameObject::getModel()
 {
 	return this->modelRef;
+}
+
+void GameObject::addChild(GameObject* child)
+{
+	if (!child || child == this || child->parent == this) 
+		return;
+
+	if (child->parent) 
+	{
+		child->parent->removeChild(child);
+	}
+
+	child->parent = this;
+	children.push_back(child);
+}
+
+void GameObject::removeChild(GameObject* child)
+{
+	if (!child) return;
+
+	auto it = std::find(children.begin(), children.end(), child);
+	if (it != children.end())
+	{
+		children.erase(it);
+		child->parent = nullptr;
+	}
+}
+
+std::vector<GameObject*> GameObject::getChildren() const
+{
+	return this->children;
+}
+
+GameObject* GameObject::getParent() const
+{
+	return this->parent;
 }
 
 /**
