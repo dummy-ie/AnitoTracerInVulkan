@@ -16,6 +16,8 @@
 #include <iostream>
 #include <unordered_map>
 #include <vector>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
 
 #include "Capsule.hpp"
 #include "Cylinder.hpp"
@@ -55,35 +57,43 @@ Model Model::LoadModel(const std::string& filename)
 	const auto timer = std::chrono::high_resolution_clock::now();
 	const std::string materialPath = std::filesystem::path(filename).parent_path().string();
 	
-	tinyobj::ObjReader objReader;
-	
-	if (!objReader.ParseFromFile(filename))
-	{
-		Throw(std::runtime_error("failed to load model '" + filename + "':\n" + objReader.Error()));
-	}
+	//tinyobj::ObjReader objReader;
 
-	if (!objReader.Warning().empty())
+	Assimp::Importer objectImporter;
+	
+	const aiScene* model = objectImporter.ReadFile(filename, 0); //read file and return an aiScene containing model attributes
+
+
+	if (model == nullptr)
 	{
-		Utilities::Console::Write(Utilities::Severity::Warning, [&objReader]()
-		{
-			std::cout << "\nWARNING: " << objReader.Warning() << std::flush;
-		});
+		Throw(std::runtime_error("failed to load model '" + filename + "':\n" + objectImporter.GetErrorString()));
 	}
 
 	// Materials
 	std::vector<Material> materials;
 
-	for (const auto& material : objReader.GetMaterials())
+	if (model->HasMaterials()) 
 	{
-		Material m{};
+		for (int i = 0; i < model->mNumMaterials; i++) 
+		{
+			Material m{};
 
-		m.Diffuse = vec4(material.diffuse[0], material.diffuse[1], material.diffuse[2], 1.0);
-		m.DiffuseTextureId = -1;
+			aiColor4D diffuse;
+			aiGetMaterialColor(model->mMaterials[i], AI_MATKEY_COLOR_DIFFUSE, &diffuse);
 
-		materials.emplace_back(m);
-	}
+			//m.Diffuse.r = diffuse[0];
+			//m.Diffuse.g = diffuse[1];
+			//m.Diffuse.b = diffuse[2];
+			//m.Diffuse.a = 1.0f;
+			
+			m.Diffuse = vec4(diffuse[0], diffuse[1], diffuse[2], 1.0);
+		
+			m.DiffuseTextureId = -1;
 
-	if (materials.empty())
+			materials.emplace_back(m);
+		}
+	}	
+	else
 	{
 		Material m{};
 
@@ -93,49 +103,65 @@ Model Model::LoadModel(const std::string& filename)
 		materials.emplace_back(m);
 	}
 
-	// Geometry
-	const auto& objAttrib = objReader.GetAttrib();
+	//for (const auto& material : model->m)
+	//{
+	//	Material m{};
 
+	//	m.Diffuse = vec4(material.diffuse[0], material.diffuse[1], material.diffuse[2], 1.0);
+	//	m.DiffuseTextureId = -1;
+
+	//	materials.emplace_back(m);
+	//}
+
+	// Geometry
+
+	int totalvertices = 0;
+	for (int i = 0; i < model->mNumMeshes; i++) 
+	{
+		totalvertices += model->mMeshes[i]->mNumVertices;
+	}
 	std::vector<Vertex> vertices;
 	std::vector<uint32_t> indices;
-	std::unordered_map<Vertex, uint32_t> uniqueVertices(objAttrib.vertices.size());
+	std::unordered_map<Vertex, uint32_t> uniqueVertices(totalvertices);
 	size_t faceId = 0;
 
-	for (const auto& shape : objReader.GetShapes())
+	for (int m = 0; m < model->mNumMeshes; m++)
 	{
-		const auto& mesh = shape.mesh;
+		//const auto& mesh = shape.mesh;
 
-		for (const auto& index : mesh.indices)
+		for (int v = 0; v < model->mMeshes[m]->mNumVertices; v++)
 		{
 			Vertex vertex = {};
 
 			vertex.Position =
 			{
-				objAttrib.vertices[3 * index.vertex_index + 0],
-				objAttrib.vertices[3 * index.vertex_index + 1],
-				objAttrib.vertices[3 * index.vertex_index + 2],
+				model->mMeshes[m]->mVertices[v].x,
+				model->mMeshes[m]->mVertices[v].y,
+				model->mMeshes[m]->mVertices[v].z,
 			};
 
-			if (!objAttrib.normals.empty())
+			if (model->mMeshes[m]->HasNormals())
 			{
 				vertex.Normal =
 				{
-					objAttrib.normals[3 * index.normal_index + 0],
-					objAttrib.normals[3 * index.normal_index + 1],
-					objAttrib.normals[3 * index.normal_index + 2]
+					model->mMeshes[m]->mNormals[v].x,
+					model->mMeshes[m]->mNormals[v].y,
+					model->mMeshes[m]->mNormals[v].z,
 				};
 			}
 
-			if (!objAttrib.texcoords.empty())
+			if (model->mMeshes[m]->HasTextureCoords(v))
 			{
 				vertex.TexCoord =
 				{
-					objAttrib.texcoords[2 * index.texcoord_index + 0],
-					1 - objAttrib.texcoords[2 * index.texcoord_index + 1]
+					model->mMeshes[m]->mTextureCoords[v]->x,
+					1 - model->mMeshes[m]->mTextureCoords[v]->y
 				};
 			}
 
-			vertex.MaterialIndex = std::max(0, mesh.material_ids[faceId++ / 3]);
+			//vertex.MaterialIndex = std::max(0, mesh.material_ids[faceId++ / 3]);
+
+			vertex.MaterialIndex = model->mMeshes[m]->mMaterialIndex;
 
 			if (uniqueVertices.count(vertex) == 0)
 			{
@@ -147,10 +173,10 @@ Model Model::LoadModel(const std::string& filename)
 		}
 	}
 
-	// If the model did not specify normals, then create smooth normals that conserve the same number of vertices.
-	// Using flat normals would mean creating more vertices than we currently have, so for simplicity and better visuals we don't do it.
-	// See https://stackoverflow.com/questions/12139840/obj-file-averaging-normals.
-	if (objAttrib.normals.empty())
+	 //If the model did not specify normals, then create smooth normals that conserve the same number of vertices.
+	 //Using flat normals would mean creating more vertices than we currently have, so for simplicity and better visuals we don't do it.
+	 //See https://stackoverflow.com/questions/12139840/obj-file-averaging-normals.
+	if (!model->mMeshes[0]->HasNormals())
 	{
 		std::vector<vec3> normals(vertices.size());
 		
@@ -173,7 +199,7 @@ Model Model::LoadModel(const std::string& filename)
 
 	const auto elapsed = std::chrono::duration<float, std::chrono::seconds::period>(std::chrono::high_resolution_clock::now() - timer).count();
 
-	std::cout << "(" << objAttrib.vertices.size() << " vertices, " << uniqueVertices.size() << " unique vertices, " << materials.size() << " materials) ";
+	std::cout << "(" << totalvertices << " vertices, " << uniqueVertices.size() << " unique vertices, " << materials.size() << " materials) ";
 	std::cout << elapsed << "s" << std::endl;
 
 	return Model(std::move(vertices), std::move(indices), std::move(materials), nullptr);
