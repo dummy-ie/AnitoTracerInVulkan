@@ -75,5 +75,8 @@ endif()
 
 set(MAIN_PROJECT "RayTracer")
 add_subdirectory(assets)
+
+add_definitions(-DSOLUTION_DIR="${CMAKE_SOURCE_DIR}")
 add_subdirectory(src)
+
 set_property (DIRECTORY PROPERTY VS_STARTUP_PROJECT ${MAIN_PROJECT})
