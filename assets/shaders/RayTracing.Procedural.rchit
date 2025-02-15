@@ -47,5 +47,7 @@ void main()
 	const vec3 normal = (point - center) / radius;
 	const vec2 texCoord = GetSphereTexCoord(normal);
 
-	Ray = Scatter(material, gl_WorldRayDirectionEXT, normal, texCoord, gl_HitTEXT, Ray.RandomSeed);
+	vec3  L;
+
+	Ray = Scatter(material, gl_WorldRayDirectionEXT, normal, texCoord, gl_HitTEXT, Ray.RandomSeed, L);
 }
