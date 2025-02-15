@@ -48,6 +48,9 @@ public:
     std::vector<GameObject*> getChildren() const;
     GameObject* getParent() const;
 
+    void setParent(GameObject* newParent);
+    bool isDescendantOf(const GameObject* potentialParent) const;
+
 protected:
     String name;
     PrimitiveType type;
@@ -63,7 +66,6 @@ protected:
 
     std::shared_ptr<Assets::Model> modelRef;
 
-    // --- Parent-Child Data ---
     GameObject* parent = nullptr;
     std::vector<GameObject*> children;
 

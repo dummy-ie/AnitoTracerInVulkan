@@ -137,6 +137,34 @@ GameObject* GameObject::getParent() const
 	return this->parent;
 }
 
+void GameObject::setParent(GameObject* newParent)
+{
+	if (newParent == this || (newParent && isDescendantOf(newParent))) 
+		return;
+
+	if (parent)
+		parent->removeChild(this);
+
+	parent = newParent;
+
+	if (parent)
+		parent->addChild(this);
+}
+
+bool GameObject::isDescendantOf(const GameObject* potentialParent) const
+{
+	const GameObject* current = this;
+	while (current)
+	{
+		if (current == potentialParent)
+		{
+			return true;
+		}
+		current = current->parent;
+	}
+	return false;
+}
+
 /**
  * \brief Performs the model transform via model-view-projection matrix form
  */

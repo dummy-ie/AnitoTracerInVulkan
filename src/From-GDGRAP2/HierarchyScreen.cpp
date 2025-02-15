@@ -1,13 +1,12 @@
 #include "HierarchyScreen.h"
 
 #include <imgui_internal.h>
-
 #include "imgui.h"
 #include "From-GDGRAP2/ModelManager.h"
 #include "UIManager.h"
 #include "RTConfig.h"
 
-HierarchyScreen::HierarchyScreen(): AUIScreen("HierarchyScreen")
+HierarchyScreen::HierarchyScreen() : AUIScreen("HierarchyScreen")
 {
 }
 
@@ -17,18 +16,25 @@ HierarchyScreen::~HierarchyScreen()
 
 void HierarchyScreen::drawUI()
 {
-	ImGui::Begin("Scene Outline");
-	this->updateObjectList();
-	ImGui::End();
+    ImGui::Begin("Scene Outline");
+
+    // Search Bar
+    static char searchBuffer[128] = "";
+    ImGui::InputTextWithHint("##Search", "Search objects...", searchBuffer, IM_ARRAYSIZE(searchBuffer));
+
+    this->updateObjectList(searchBuffer);
+
+    ImGui::End();
 }
 
-void HierarchyScreen::updateObjectList() const
+void HierarchyScreen::updateObjectList(const char* filter) const
 {
-     const ModelManager::List objectList = ModelManager::getInstance()->getAllObjects();
+    const ModelManager::List objectList = ModelManager::getInstance()->getAllObjects();
 
-    for (const auto& obj : objectList) 
+    for (const auto& obj : objectList)
     {
-        if (!obj->getParent())  // Only draw root objects
+        // Only draw root objects and apply search filter
+        if (!obj->getParent() && (strlen(filter) == 0 || obj->getName().find(filter) != String::npos))
         {
             drawObjectNode(obj.get());
         }
@@ -51,41 +57,69 @@ void HierarchyScreen::drawObjectNode(GameObject* obj) const
 
     bool open = ImGui::TreeNodeEx(objectName.c_str(), flags);
 
-    // Selection logic
+    static bool hasValidDropTarget = false;
+
+    // Selection Logic
     if (ImGui::IsItemClicked())
     {
         ModelManager::getInstance()->setSelectedObject(objectName);
     }
 
-    // --- DRAG-AND-DROP IMPLEMENTATION ---
-
-    // Drag Source 
+    // Drag Source
     if (ImGui::BeginDragDropSource())
     {
-        ImGui::SetDragDropPayload("DND_GAMEOBJECT", &obj, sizeof(GameObject*));
+        ImGui::SetDragDropPayload("OBJECT_PARENTING", &obj, sizeof(GameObject*));
+
+        hasValidDropTarget = false;
         ImGui::Text("Dragging %s", objectName.c_str());
+
         ImGui::EndDragDropSource();
     }
 
-    // Drop Target 
+    // Drop Target
     if (ImGui::BeginDragDropTarget())
     {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_GAMEOBJECT"))
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("OBJECT_PARENTING"))
         {
             GameObject* draggedObj = *(GameObject**)payload->Data;
 
-            if (draggedObj != obj && draggedObj->getParent() != obj)
+            // Prevent dragging a parent into its own child 
+            if (draggedObj && draggedObj != obj && !obj->isDescendantOf(draggedObj))
             {
+                hasValidDropTarget = true;
+
+                // If dragged object had a parent, remove it from old parent
                 if (draggedObj->getParent())
                 {
                     draggedObj->getParent()->removeChild(draggedObj);
                 }
+
+                // Assign new parent
                 obj->addChild(draggedObj);
 
+                // Force the node open when an object is dropped here
                 openNodes.insert(objectName);
             }
         }
         ImGui::EndDragDropTarget();
+    }
+
+    // Auto-Expand When Hovered During Drag
+    if (ImGui::IsDragDropActive() && ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
+    {
+        openNodes.insert(objectName);
+        open = true;  // Ensure the node is visually open this frame
+    }
+
+    // Handle Unparenting (Dragged to Empty Space)
+    if (ImGui::IsWindowHovered() && ImGui::IsMouseReleased(0) && !ImGui::IsAnyItemHovered())
+    {
+        GameObject* selectedObject = ModelManager::getInstance()->getSelectedObject().get();
+
+        if (selectedObject)
+        {
+            selectedObject->setParent(nullptr);
+        }
     }
 
     if (open)
@@ -101,3 +135,4 @@ void HierarchyScreen::drawObjectNode(GameObject* obj) const
         openNodes.erase(objectName);
     }
 }
+
