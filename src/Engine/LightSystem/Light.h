@@ -32,9 +32,9 @@ public:
 	Light(String name, LightType type) : GameObject(name, LIGHT)
 	{
 		// Default Properties
-		props_.LightPos = glm::vec3(2600, 20.0, 0);
+		props_.LightPos = glm::vec3(1600, 20.0, 0);
 		props_.AmbientColor = glm::vec4(1.0, 1.0, 1.0, 0.02);
-		props_.LightColor = glm::vec4(1.0, 0.4, 0.5, 1000000.0f);
+		props_.LightColor = glm::vec4(0.0, 1.0, 0.0, 1000000.0f); // Purple
 		props_.LightType = convertLightTypeEnum(type);
 
 		GameObject::setLocalPosition(props_.LightPos);

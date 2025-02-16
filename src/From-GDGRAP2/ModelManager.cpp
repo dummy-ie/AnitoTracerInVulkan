@@ -20,6 +20,7 @@ void ModelManager::destroy()
 {
 	sharedInstance->gameObjectMap.clear();
 	sharedInstance->gameObjectList.clear();
+	sharedInstance->lightList.clear();
 	delete sharedInstance;
 }
 
@@ -79,9 +80,10 @@ ModelManager::LightPropsList ModelManager::getAllLightProperties() const
 	LightPropsList lights;
 	for (int i = 0; i < this->lightList.size(); i++)
 	{
-		if (this->lightList[i]->getModel())
+		if (this->lightList[i])
 			lights.push_back(this->lightList[i]->Properties());
 	}
+
 	return lights;
 }
 
@@ -118,8 +120,6 @@ void ModelManager::addObject(std::shared_ptr<GameObject> gameObject)
 		this->gameObjectMap[gameObject->getName()] = gameObject;
 	}
 	this->gameObjectList.push_back(gameObject);
-	if (gameObject->getType() == GameObject::LIGHT)
-
 	std::cout << "Added game object in manager: " + gameObject->getName() << std::endl;
 }
 
