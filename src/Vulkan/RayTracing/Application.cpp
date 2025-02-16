@@ -168,7 +168,7 @@ void Application::DeleteSwapChain()
 	Vulkan::Application::DeleteSwapChain();
 }
 
-void Application::Render(VkCommandBuffer commandBuffer, const uint32_t imageIndex)
+void Application::Render(ViewportScreen* viewportScreen, VkCommandBuffer commandBuffer, const uint32_t imageIndex)
 {
 	const auto extent = SwapChain().Extent();
 
@@ -239,7 +239,7 @@ void Application::Render(VkCommandBuffer commandBuffer, const uint32_t imageInde
 		0, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 
 	// Viewport
-	UIManager::getInstance()->m_Dset = descriptorSets[0];
+	//UIManager::getInstance()->m_Dset = descriptorSets[0];
 	//UIManager::getInstance()->images = &SwapChain().Images();
 	//UIManager::getInstance()->imageView = outputImageView_.get();
 	//UIManager::getInstance()->image = outputImage_.get();

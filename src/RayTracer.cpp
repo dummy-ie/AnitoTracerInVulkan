@@ -21,6 +21,8 @@
 
 #include "Engine/CameraSystem/CameraManager.h"
 
+#include "Vulkan/GraphicsPipeline.hpp"
+
 namespace
 {
 	const bool EnableValidationLayers =
@@ -112,9 +114,9 @@ void RayTracer::CreateSwapChain()
 {
 	Application::CreateSwapChain();
 
-
 	userInterface_.reset(new UserInterface(CommandPool(), SwapChain(), DepthBuffer(), userSettings_));
 
+	UIManager::getInstance()->createViewport(SwapChain(), DepthBuffer(), GraphicsPipeline().RenderPass());
 
 	resetAccumulation_ = true;
 
@@ -172,7 +174,7 @@ void RayTracer::DrawFrame()
 	Application::DrawFrame();
 }
 
-void RayTracer::Render(VkCommandBuffer commandBuffer, const uint32_t imageIndex)
+void RayTracer::Render(ViewportScreen* viewportScreen, VkCommandBuffer commandBuffer, const uint32_t imageIndex)
 {
 	// Record delta time between calls to Render.
 	const auto prevTime = time_;
@@ -187,9 +189,9 @@ void RayTracer::Render(VkCommandBuffer commandBuffer, const uint32_t imageIndex)
 
 	// Render the scene
 	userSettings_.IsRayTraced
-		? Vulkan::RayTracing::Application::Render(commandBuffer, imageIndex)
-		: Vulkan::Application::Render(commandBuffer, imageIndex);
-
+		? Vulkan::RayTracing::Application::Render(viewportScreen, commandBuffer, imageIndex)
+		: Vulkan::Application::Render(viewportScreen, commandBuffer, imageIndex);
+	
 	// Render the UI
 	Statistics stats = {};
 	stats.FramebufferSize = Window().FramebufferSize();

@@ -32,6 +32,15 @@ void UIManager::drawAllUI()
 	for (int i = 0; i < this->uiList.size(); i++) {
 		this->uiList[i]->drawUI();
 	}
+
+	for (int i = 0; i < this->viewportList.size(); i++) {
+		this->viewportList[i]->drawUI();
+	}
+}
+
+std::vector<std::shared_ptr<ViewportScreen>> UIManager::getViewportList()
+{
+	return this->viewportList;
 }
 
 bool* UIManager::getEnabled(const std::string& name)
@@ -60,6 +69,12 @@ std::shared_ptr<AUIScreen> UIManager::findUIByName(String uiName)
 	{
 		return nullptr;
 	}
+}
+
+void UIManager::createViewport(const Vulkan::SwapChain& swapChain, const Vulkan::DepthBuffer& depthBuffer, const Vulkan::RenderPass& renderPass)
+{
+	std::shared_ptr<ViewportScreen> viewportScreen = std::make_shared<ViewportScreen>(swapChain, depthBuffer, renderPass);
+	this->viewportList.push_back(viewportScreen);
 }
 
 UIManager::UIManager()

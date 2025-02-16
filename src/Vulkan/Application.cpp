@@ -24,6 +24,8 @@
 #include "From-GDGRAP2/EventBroadcaster.h"
 #include "From-GDGRAP2/GlobalConfig.h"
 #include "From-GDGRAP2/ModelManager.h"
+#include "From-GDGRAP2/ViewportScreen.h"
+#include "From-GDGRAP2/UIManager.h"
 
 namespace Vulkan {
 
@@ -198,45 +200,48 @@ void Application::DrawFrame()
 		Throw(std::runtime_error(std::string("failed to acquire next image (") + ToString(result) + ")"));
 	}
 
-	const auto commandBuffer = commandBuffers_->Begin(imageIndex);
-	Render(commandBuffer, imageIndex);
-	commandBuffers_->End(imageIndex);
+	for (int i = 0; i < UIManager::getInstance()->getViewportList().size(); i++) {
+		auto viewport = UIManager::getInstance()->getViewportList()[i];
+		const auto commandBuffer = commandBuffers_->Begin(imageIndex);
+		Render(viewport.get(), commandBuffer, imageIndex);
+		commandBuffers_->End(imageIndex);
 
-	UpdateUniformBuffer(imageIndex);
 
-	VkSubmitInfo submitInfo = {};
-	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		UpdateUniformBuffer(imageIndex);
 
-	VkCommandBuffer commandBuffers[]{ commandBuffer };
-	VkSemaphore waitSemaphores[] = { imageAvailableSemaphore };
-	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-	VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
+		VkSubmitInfo submitInfo = {};
+		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-	submitInfo.waitSemaphoreCount = 1;
-	submitInfo.pWaitSemaphores = waitSemaphores;
-	submitInfo.pWaitDstStageMask = waitStages;
-	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = commandBuffers;
-	submitInfo.signalSemaphoreCount = 1;
-	submitInfo.pSignalSemaphores = signalSemaphores;
+		VkCommandBuffer commandBuffers[]{ commandBuffer };
+		VkSemaphore waitSemaphores[] = { imageAvailableSemaphore };
+		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+		VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
 
-	inFlightFence.Reset();
+		submitInfo.waitSemaphoreCount = 1;
+		submitInfo.pWaitSemaphores = waitSemaphores;
+		submitInfo.pWaitDstStageMask = waitStages;
+		submitInfo.commandBufferCount = 1;
+		submitInfo.pCommandBuffers = commandBuffers;
+		submitInfo.signalSemaphoreCount = 1;
+		submitInfo.pSignalSemaphores = signalSemaphores;
 
-	Check(vkQueueSubmit(device_->GraphicsQueue(), 1, &submitInfo, inFlightFence.Handle()),
-		"submit draw command buffer");
+		inFlightFence.Reset();
 
-	VkSwapchainKHR swapChains[] = { swapChain_->Handle() };
-	VkPresentInfoKHR presentInfo = {};
-	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-	presentInfo.waitSemaphoreCount = 1;
-	presentInfo.pWaitSemaphores = signalSemaphores;
-	presentInfo.swapchainCount = 1;
-	presentInfo.pSwapchains = swapChains;
-	presentInfo.pImageIndices = &imageIndex;
-	presentInfo.pResults = nullptr; // Optional
+		Check(vkQueueSubmit(device_->GraphicsQueue(), 1, &submitInfo, inFlightFence.Handle()),
+			"submit draw command buffer");
 
-	result = vkQueuePresentKHR(device_->PresentQueue(), &presentInfo);
+		VkSwapchainKHR swapChains[] = { swapChain_->Handle() };
+		VkPresentInfoKHR presentInfo = {};
+		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+		presentInfo.waitSemaphoreCount = 1;
+		presentInfo.pWaitSemaphores = signalSemaphores;
+		presentInfo.swapchainCount = 1;
+		presentInfo.pSwapchains = swapChains;
+		presentInfo.pImageIndices = &imageIndex;
+		presentInfo.pResults = nullptr; // Optional
 
+		result = vkQueuePresentKHR(device_->PresentQueue(), &presentInfo);
+	}
 	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
 	{
 		RecreateSwapChain();
@@ -251,7 +256,7 @@ void Application::DrawFrame()
 	currentFrame_ = (currentFrame_ + 1) % inFlightFences_.size();
 }
 
-void Application::Render(VkCommandBuffer commandBuffer, const uint32_t imageIndex)
+void Application::Render(ViewportScreen* viewportScreen, VkCommandBuffer commandBuffer, const uint32_t imageIndex)
 {
 	std::array<VkClearValue, 2> clearValues = {};
 	clearValues[0].color = { {0.2f, 0.0f, 0.0f, 1.0f} };

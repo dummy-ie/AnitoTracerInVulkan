@@ -6,13 +6,45 @@
 #include "From-GDGRAP2/RTConfig.h"
 #include "ImGui/imgui_impl_vulkan.h"
 
-ViewportScreen::ViewportScreen() : AUIScreen("ViewportScreen")
+#include "Vulkan/SwapChain.hpp"
+#include "Vulkan/Image.hpp"
+#include "Vulkan/ImageView.hpp"
+#include "Vulkan/FrameBuffer.hpp"
+#include "Vulkan/DepthBuffer.hpp"
+#include "Vulkan/RenderPass.hpp"
+
+ViewportScreen::ViewportScreen(const Vulkan::SwapChain& swapChain,
+							   const Vulkan::DepthBuffer& depthBuffer,
+							   const Vulkan::RenderPass& renderPass)
+	: AUIScreen("ViewportScreen"), 
+	  swapChain_(swapChain),
+	  renderPass_(renderPass)
 {
+	const auto size   = SwapChain().Images().size();
+	const auto extent = SwapChain().Extent();
+	const auto format = SwapChain().Format();
+	const auto tiling = VK_IMAGE_TILING_OPTIMAL;
+
+	//renderPass_.reset(new Vulkan::RenderPass(SwapChain(), depthBuffer, VK_ATTACHMENT_LOAD_OP_LOAD, VK_ATTACHMENT_LOAD_OP_LOAD));
+	// Create Viewport
+	 {
+		images_.resize(size);
+		imagesMemory_.resize(size);
+		imageViews_.resize(size);
+		framebuffers_.resize(size);
+		for (int i = 0; i < size; i++)
+		{
+			images_[i].reset(new Vulkan::Image(SwapChain().Device(), extent, format, tiling, VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT));
+			imagesMemory_[i].reset(new Vulkan::DeviceMemory(images_[i]->AllocateMemory(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)));
+			imageViews_[i].reset(new Vulkan::ImageView(SwapChain().Device(), images_[i]->Handle(), format, VK_IMAGE_ASPECT_COLOR_BIT));
+			framebuffers_[i].reset(new Vulkan::FrameBuffer(*imageViews_[i], renderPass_));
+		}
+	}
 }
 
 void ViewportScreen::drawUI()
 {
-	VkDescriptorSet m_Dset = UIManager::getInstance()->m_Dset;
+	VkDescriptorSet m_Dset = ImGui_ImplVulkan_AddTexture(UIManager::getInstance()->sampler_->Handle(), imageViews_[0]->Handle(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 	//const RenderSystem* renderSystem = GraphicsEngine::get()->getRenderSystem();
 
 	//renderSystem->getImmediateDeviceContext()->clearRenderTargetColor(this->renderTexture, 0.3, 0.3, 0.3, 1);
@@ -25,7 +57,7 @@ void ViewportScreen::drawUI()
 
 	ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
-	ImGui::Image(m_Dset, ImVec2{ viewportPanelSize.x, viewportPanelSize.y });
+	ImGui::Image(m_Dset, ImVec2{viewportPanelSize.x, viewportPanelSize.y});
 
 	// renderSystem->getImmediateDeviceContext()->setViewportSize(viewportPanelSize.x, viewportPanelSize.y);
 	//
