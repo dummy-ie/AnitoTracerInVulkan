@@ -58,6 +58,19 @@ vec3 calculateDirectionalLight(LightProperties dl, vec3 worldPos, vec3 normal)
 	return lighting;
 }
 
+vec3 calculateSpotLight(LightProperties sl, vec3 worldPos, vec3 normal) 
+{                      
+	float cutoff = 10;
+    vec3 LightToPixel = normalize(worldPos - sl.LightPos);    
+	vec3 lightDir = sl.LightPos.xyz - worldPos;                         
+    float SpotFactor = dot(LightToPixel, lightDir);    
+
+	if (SpotFactor > cutoff) {                                                            
+        vec3 lighting = calculatePointLight(sl, worldPos, normal);                         
+        return lighting * (1.0 - (1.0 - SpotFactor) * 1.0/(1.0 - cutoff));                   
+    }
+}
+
 void NVidiaTutLightingComp(LightProperties pl, vec3 normal) // Unused 
 {
 	//const vec3 worldNrm = normalize(vec3(normal * gl_WorldToObjectEXT));  // Transforming the normal to world space
@@ -108,15 +121,17 @@ void main()
 		} else if (Lights[i].LightType == DirectionalLight) { // Directional Light
 			lighting += calculateDirectionalLight(Lights[i], worldPos, normal);
 		} else if (Lights[i].LightType == SpotLight) { // Spot Light
-			//lighting += calculateDirectionalLight(Lights[i], worldPos, normal);
+			//lighting += calculateSpotLight(Lights[i], worldPos, normal);
 		}
 	}
 	if (Lights.length() == 0) { // Pink light if buffer is empty
-		LightProperties pl = InitializeTestPLProperties(); // Adding point light.
-		lighting += calculatePointLight(pl, worldPos, normal);
+		LightProperties sl = InitializeTestPLProperties(); // Adding directional light.
+		lighting += calculateDirectionalLight(sl, worldPos, normal);
 	}
 	//LightProperties dl = InitializeTestDLProperties(); // Adding directional light.
 	//lighting += calculateDirectionalLight(dl, worldPos, normal);
+	//LightProperties pl = InitializeTestPLProperties(); // Adding point light.
+	//lighting += calculatePointLight(pl, worldPos, normal);
 
 	Ray = Scatter(material, gl_WorldRayDirectionEXT, normal, texCoord, gl_HitTEXT, Ray.RandomSeed, lighting);
 }

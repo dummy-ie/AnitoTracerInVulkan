@@ -332,3 +332,5 @@ ASALocalRun/
 
 # Extras
 build/*
+/src/tracy-0.11.1/profiler/build
+/src/tracy-0.11.1/profiler/profiler-build/_deps
