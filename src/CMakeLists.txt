@@ -30,12 +30,11 @@ set(src_files_assets
 )
 
 set(src_files_assimp
-	Assimp/include/assimp/.editorconfig
 	Assimp/include/assimp/aabb.h
 	Assimp/include/assimp/ai_assert.h
 	Assimp/include/assimp/anim.h
-	Assimp/include/assimp/AssetHandler.h
-	Assimp/include/assimp/Base64.h
+	Assimp/include/assimp/AssertHandler.h
+	Assimp/include/assimp/Base64.hpp
 	Assimp/include/assimp/BaseImporter.h
 	Assimp/include/assimp/Bitmap.h
 	Assimp/include/assimp/BlobIOSystem.h
@@ -47,7 +46,7 @@ set(src_files_assimp
 	Assimp/include/assimp/ColladaMetaData.h
 	Assimp/include/assimp/color4.h
 	Assimp/include/assimp/color4.inl
-	Assimp/include/assimp/commonMetaDate.h
+	Assimp/include/assimp/commonMetaData.h
 	Assimp/include/assimp/config.h
 	Assimp/include/assimp/config.h.in
 	Assimp/include/assimp/CreateAnimMesh.h
@@ -59,7 +58,7 @@ set(src_files_assimp
 	Assimp/include/assimp/Exporter.hpp
 	Assimp/include/assimp/fast_atof.h
 	Assimp/include/assimp/GenericProperty.h
-	Assimp/include/assimp/GltfMaterial.h"
+	Assimp/include/assimp/GltfMaterial.h
 	Assimp/include/assimp/Hash.h
 	Assimp/include/assimp/Importer.hpp
 	Assimp/include/assimp/importerdesc.h
@@ -120,13 +119,8 @@ set(src_files_assimp
 	Assimp/include/assimp/Vertex.h
 	Assimp/include/assimp/XmlParser.h
 	Assimp/include/assimp/XMLTools.h
-	Assimp/include/assimp/Compiler/poppack1.h
-	Assimp/include/assimp/Compiler/pstdint.h
-	Assimp/include/assimp/Compiler/pushpack1.h
-	Assimp/include/assimp/port/AndroidJNIIOSystem.h
-	Assimp/include/assimp/port/BundledAssetIOSystem.h
-
 )
+
 set(src_files_camerasystem
 	Engine/CameraSystem/Camera.cpp
 	Engine/CameraSystem/Camera.h
@@ -325,7 +319,7 @@ source_group("Vulkan.RayTracing" FILES ${src_files_vulkan_raytracing})
 source_group("Main" FILES ${src_files})
 
 add_executable(${exe_name} 
-	${src_files_assets} 
+	${src_files_assets}
 	${src_files_assimp}
 	${src_files_camerasystem} 
 	${src_files_lightsystem} 
@@ -345,6 +339,6 @@ endif()
 
 add_dependencies(${exe_name} Assets)
 set_target_properties(${exe_name} PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
-target_include_directories(${exe_name} PRIVATE . ${Boost_INCLUDE_DIRS} ${glfw3_INCLUDE_DIRS} ${glm_INCLUDE_DIRS} ${STB_INCLUDE_DIRS} ${Vulkan_INCLUDE_DIRS} ${Assimp_INCLUDE_DIRS})
-target_link_directories(${exe_name} PRIVATE ${Vulkan_LIBRARY})
-target_link_libraries(${exe_name} PRIVATE ${Boost_LIBRARIES} ${Assimp_LIBRARIES} freetype glfw glm::glm imgui::imgui tinyobjloader::tinyobjloader ${Vulkan_LIBRARIES} ${extra_libs})
+target_include_directories(${exe_name} PRIVATE . Assimp/include ${Boost_INCLUDE_DIRS} ${glfw3_INCLUDE_DIRS} ${glm_INCLUDE_DIRS} ${STB_INCLUDE_DIRS} ${Vulkan_INCLUDE_DIRS})
+target_link_directories(${exe_name} PRIVATE Assimp/lib/Debug ${Vulkan_LIBRARY})
+target_link_libraries(${exe_name} PRIVATE assimp-vc143-mtd ${Boost_LIBRARIES} freetype glfw glm::glm imgui::imgui tinyobjloader::tinyobjloader ${Vulkan_LIBRARIES} ${extra_libs})
