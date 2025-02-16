@@ -188,7 +188,7 @@ void UserInterface::DrawSettings()
 		std::vector<const char*> scenes;
 		for (const auto& scene : SceneList::AllScenes)
 		{
-			scenes.push_back(scene.first.c_str());
+			scenes.push_back(std::get<0>(scene).c_str());
 		}
 
 		const auto& window = descriptorPool_->Device().Surface().Instance().Window();

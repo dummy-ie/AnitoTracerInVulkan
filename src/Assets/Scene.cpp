@@ -3,6 +3,7 @@
 #include "SphereProc.hpp"
 #include "Texture.hpp"
 #include "TextureImage.hpp"
+#include "Engine/LightSystem/Light.h"
 #include "Vulkan/BufferUtil.hpp"
 #include "Vulkan/ImageView.hpp"
 #include "Vulkan/Sampler.hpp"
@@ -12,9 +13,10 @@
 
 namespace Assets {
 
-Scene::Scene(Vulkan::CommandPool& commandPool, std::vector<Model>&& models, std::vector<Texture>&& textures) :
+Scene::Scene(Vulkan::CommandPool& commandPool, std::vector<Model>&& models, std::vector<Texture>&& textures, std::vector<LightProperties>&& lights) :
 	models_(std::move(models)),
-	textures_(std::move(textures))
+	textures_(std::move(textures)),
+	lights_(std::move(lights))
 {
 	// Concatenate all the models
 	std::vector<Vertex> vertices;
@@ -23,6 +25,8 @@ Scene::Scene(Vulkan::CommandPool& commandPool, std::vector<Model>&& models, std:
 	std::vector<glm::vec4> procedurals;
 	std::vector<VkAabbPositionsKHR> aabbs;
 	std::vector<glm::uvec2> offsets;
+
+	std::vector<LightProperties> lightProps;
 
 	for (const auto& model : models_)
 	{
@@ -59,12 +63,18 @@ Scene::Scene(Vulkan::CommandPool& commandPool, std::vector<Model>&& models, std:
 		}
 	}
 
+	for (const auto& l : lights_)
+	{
+		lightProps.push_back(l);
+	}
+
 	constexpr auto flags = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT;
 
 	Vulkan::BufferUtil::CreateDeviceBuffer(commandPool, "Vertices", VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR | flags, vertices, vertexBuffer_, vertexBufferMemory_);
 	Vulkan::BufferUtil::CreateDeviceBuffer(commandPool, "Indices", VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR | flags, indices, indexBuffer_, indexBufferMemory_);
 	Vulkan::BufferUtil::CreateDeviceBuffer(commandPool, "Materials", flags, materials, materialBuffer_, materialBufferMemory_);
 	Vulkan::BufferUtil::CreateDeviceBuffer(commandPool, "Offsets", flags, offsets, offsetBuffer_, offsetBufferMemory_);
+	Vulkan::BufferUtil::CreateDeviceBuffer(commandPool, "Lights", flags, lightProps, lightsBuffer_, lightsBufferMemory_);
 
 	Vulkan::BufferUtil::CreateDeviceBuffer(commandPool, "AABBs", VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR | flags, aabbs, aabbBuffer_, aabbBufferMemory_);
 	Vulkan::BufferUtil::CreateDeviceBuffer(commandPool, "Procedurals", flags, procedurals, proceduralBuffer_, proceduralBufferMemory_);
@@ -100,6 +110,8 @@ Scene::~Scene()
 	indexBufferMemory_.reset(); // release memory after bound buffer has been destroyed
 	vertexBuffer_.reset();
 	vertexBufferMemory_.reset(); // release memory after bound buffer has been destroyed
+	lightsBuffer_.reset();
+	lightsBufferMemory_.reset();
 }
 
 }

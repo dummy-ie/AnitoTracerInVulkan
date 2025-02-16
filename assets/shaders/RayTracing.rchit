@@ -9,15 +9,13 @@ layout(binding = 5) readonly buffer IndexArray { uint Indices[]; };
 layout(binding = 6) readonly buffer MaterialArray { Material[] Materials; };
 layout(binding = 7) readonly buffer OffsetArray { uvec2[] Offsets; };
 layout(binding = 8) uniform sampler2D[] TextureSamplers;
+layout(binding = 9) readonly buffer LightsArray { LightProperties[] Lights; }; 
 
 #include "Scatter.glsl"
 #include "Vertex.glsl"
 
 hitAttributeEXT vec2 HitAttributes;
 rayPayloadInEXT RayPayload Ray;
-
-// Lighting Test
-const int lightType = 0;
 
 vec2 Mix(vec2 a, vec2 b, vec2 c, vec3 barycentrics)
 {
@@ -35,12 +33,12 @@ vec3 calculatePointLight(LightProperties pl, vec3 worldPos, vec3 normal)
 	const vec3 worldNrm = normalize(transpose(inverse(mat3(gl_ObjectToWorldEXT))) * normal);
 
 	// Compute the diffuse light.
-	vec3 lightDir = pl.lightPos.xyz - worldPos;
+	vec3 lightDir = pl.LightPos.xyz - worldPos;
 	float attenuation = 1.0 / dot(lightDir, lightDir);
 
 	// Compute the light colors and intensity.
-	vec3 lightCol = pl.lightColor.xyz * pl.lightColor.w * attenuation;
-	vec3 ambientLight = pl.ambientColor.xyz * pl.ambientColor.w;
+	vec3 lightCol = pl.LightColor.xyz * pl.LightColor.w * attenuation;
+	vec3 ambientLight = pl.AmbientColor.xyz * pl.AmbientColor.w;
 	vec3 diffuseLight = lightCol * max(dot(worldNrm, normalize(lightDir)), 0);
 	
 	vec3 lighting = diffuseLight + ambientLight;
@@ -54,8 +52,8 @@ vec3 calculateDirectionalLight(LightProperties dl, vec3 worldPos, vec3 normal)
 	const vec3 worldNrm = normalize(transpose(inverse(mat3(gl_ObjectToWorldEXT))) * normal);
 
 	// Compute the diffuse light.
-	vec3 lightDir = dl.lightPos.xyz - worldPos;
-	vec3 lighting = dl.lightColor.rgb * max(dot(worldNrm, normalize(lightDir)), 0);
+	vec3 lightDir = dl.LightPos.xyz - worldPos;
+	vec3 lighting = dl.LightColor.rgb * max(dot(worldNrm, normalize(lightDir)), 0);
 
 	return lighting;
 }
@@ -98,15 +96,26 @@ void main()
 	const vec3 barycentrics = vec3(1.0 - HitAttributes.x - HitAttributes.y, HitAttributes.x, HitAttributes.y);
 	const vec3 normal = normalize(Mix(v0.Normal, v1.Normal, v2.Normal, barycentrics));
 	const vec2 texCoord = Mix(v0.TexCoord, v1.TexCoord, v2.TexCoord, barycentrics);
+
 	// For lighting computations.
 	const vec3 pos = Mix(v0.Position, v1.Position, v2.Position, barycentrics);
 	const vec3 worldPos = vec3(gl_ObjectToWorldEXT * vec4(pos, 1.0));  // Transforming the position to world space
 	
-	LightProperties pl = InitializeTestPLProperties(); // Adding point light.
-	LightProperties dl = InitializeTestDLProperties(); // Adding point light.
 	vec3 lighting = vec3(0);
-	lighting += calculatePointLight(pl, worldPos, normal);
-	lighting += calculateDirectionalLight(dl, worldPos, normal);
+	for (int i = 0; i < Lights.length(); i++) {
+		if (Lights[i].LightType == PointLight) { // Point Light
+			lighting += calculatePointLight(Lights[i], worldPos, normal);
+		} else if (Lights[i].LightType == DirectionalLight) { // Directional Light
+			lighting += calculateDirectionalLight(Lights[i], worldPos, normal);
+		} else if (Lights[i].LightType == SpotLight) { // Spot Light
+			//lighting += calculateDirectionalLight(Lights[i], worldPos, normal);
+		}
+	}
+	//LightProperties pl = InitializeTestPLProperties(); // Adding point light.
+	//lighting += calculatePointLight(pl, worldPos, normal);
+	//LightProperties dl = InitializeTestDLProperties(); // Adding directional light.
+	//lighting += calculateDirectionalLight(dl, worldPos, normal);
 
 	Ray = Scatter(material, gl_WorldRayDirectionEXT, normal, texCoord, gl_HitTEXT, Ray.RandomSeed, lighting);
 }
+	

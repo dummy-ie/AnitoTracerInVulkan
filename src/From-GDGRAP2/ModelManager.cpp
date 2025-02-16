@@ -74,6 +74,17 @@ ModelManager::ModelList ModelManager::getAllObjectModels() const
 	return models;
 }
 
+ModelManager::LightPropsList ModelManager::getAllLightProperties() const
+{
+	LightPropsList lights;
+	for (int i = 0; i < this->lightList.size(); i++)
+	{
+		if (this->lightList[i]->getModel())
+			lights.push_back(this->lightList[i]->Properties());
+	}
+	return lights;
+}
+
 int ModelManager::activeObjects() const
 {
 	return this->gameObjectList.size();
@@ -82,6 +93,13 @@ int ModelManager::activeObjects() const
 std::shared_ptr<GameObject> ModelManager::getLastObject()
 {
 	return this->gameObjectList[this->activeObjects() - 1];
+}
+
+void ModelManager::addLightObject(std::shared_ptr<Light> lightObj)
+{
+	this->lightList.push_back(lightObj);
+
+	this->addObject(lightObj);
 }
 
 void ModelManager::addObject(std::shared_ptr<GameObject> gameObject)
@@ -100,6 +118,8 @@ void ModelManager::addObject(std::shared_ptr<GameObject> gameObject)
 		this->gameObjectMap[gameObject->getName()] = gameObject;
 	}
 	this->gameObjectList.push_back(gameObject);
+	if (gameObject->getType() == GameObject::LIGHT)
+
 	std::cout << "Added game object in manager: " + gameObject->getName() << std::endl;
 }
 

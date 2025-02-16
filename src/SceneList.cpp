@@ -69,7 +69,7 @@ namespace
 
 }
 
-const std::vector<std::pair<std::string, std::function<SceneAssets(SceneList::CameraInitialState&)>>> SceneList::AllScenes =
+const std::vector<std::tuple<std::string, std::function<SceneAssets(SceneList::CameraInitialState&)>>> SceneList::AllScenes =
 {
 	{"Cube And Spheres", CubeAndSpheres},
 	{"Ray Tracing In One Weekend", RayTracingInOneWeekend},
@@ -105,7 +105,14 @@ SceneAssets SceneList::CubeAndSpheres(CameraInitialState& camera)
 
 	textures.push_back(Texture::LoadTexture("../assets/textures/land_ocean_ice_cloud_2048.png", Vulkan::SamplerConfig()));
 
-	return std::forward_as_tuple(std::move(models), std::move(textures));
+
+	// Add light objects
+	std::shared_ptr<GameObject> pl1 = std::make_shared<GameObject>("Point Light 1", GameObject::PrimitiveType::LIGHT);
+	ModelManager::getInstance()->addObject(pl1);
+
+	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
+
+	return std::forward_as_tuple(std::move(models), std::vector<Texture>(), std::move(lights));
 }
 
 SceneAssets SceneList::RayTracingInOneWeekend(CameraInitialState& camera)
@@ -133,7 +140,14 @@ SceneAssets SceneList::RayTracingInOneWeekend(CameraInitialState& camera)
 	models.push_back(Model::CreateSphere(vec3(-4, 1, 0), 1.0f, Material::Lambertian(vec3(0.4f, 0.2f, 0.1f)), isProc));
 	models.push_back(Model::CreateSphere(vec3(4, 1, 0), 1.0f, Material::Metallic(vec3(0.7f, 0.6f, 0.5f), 0.0f), isProc));
 
-	return std::forward_as_tuple(std::move(models), std::vector<Texture>());
+
+	// Add light objects
+	std::shared_ptr<GameObject> pl1 = std::make_shared<GameObject>("Point Light 1", GameObject::PrimitiveType::LIGHT);
+	ModelManager::getInstance()->addObject(pl1);
+
+	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
+
+	return std::forward_as_tuple(std::move(models), std::vector<Texture>(), std::move(lights));
 }
 
 SceneAssets SceneList::PlanetsInOneWeekend(CameraInitialState& camera)
@@ -166,7 +180,14 @@ SceneAssets SceneList::PlanetsInOneWeekend(CameraInitialState& camera)
 	textures.push_back(Texture::LoadTexture("../assets/textures/2k_moon.jpg", Vulkan::SamplerConfig()));
 	textures.push_back(Texture::LoadTexture("../assets/textures/land_ocean_ice_cloud_2048.png", Vulkan::SamplerConfig()));
 
-	return std::forward_as_tuple(std::move(models), std::move(textures));
+
+	// Add light objects
+	std::shared_ptr<GameObject> pl1 = std::make_shared<GameObject>("Point Light 1", GameObject::PrimitiveType::LIGHT);
+	ModelManager::getInstance()->addObject(pl1);
+
+	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
+
+	return std::forward_as_tuple(std::move(models), std::vector<Texture>(), std::move(lights));
 }
 
 SceneAssets SceneList::LucyInOneWeekend(CameraInitialState& camera)
@@ -226,7 +247,13 @@ SceneAssets SceneList::LucyInOneWeekend(CameraInitialState& camera)
 	models.push_back(std::move(lucy1));
 	models.push_back(std::move(lucy2));
 
-	return std::forward_as_tuple(std::move(models), std::vector<Texture>());
+	// Add light objects
+	std::shared_ptr<GameObject> pl1 = std::make_shared<GameObject>("Point Light 1", GameObject::PrimitiveType::LIGHT);
+	ModelManager::getInstance()->addObject(pl1);
+
+	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
+
+	return std::forward_as_tuple(std::move(models), std::vector<Texture>(), std::move(lights));
 }
 
 SceneAssets SceneList::CornellBox(CameraInitialState& camera)
@@ -253,7 +280,13 @@ SceneAssets SceneList::CornellBox(CameraInitialState& camera)
 	models.push_back(box0);
 	models.push_back(box1);
 
-	return std::make_tuple(std::move(models), std::vector<Texture>());
+	// Add light objects
+	std::shared_ptr<GameObject> pl1 = std::make_shared<GameObject>("Point Light 1", GameObject::PrimitiveType::LIGHT);
+	ModelManager::getInstance()->addObject(pl1);
+
+	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
+
+	return std::forward_as_tuple(std::move(models), std::vector<Texture>(), std::move(lights));
 }
 
 SceneAssets SceneList::CornellBoxLucy(CameraInitialState& camera)
@@ -282,7 +315,13 @@ SceneAssets SceneList::CornellBoxLucy(CameraInitialState& camera)
 	models.push_back(sphere);
 	models.push_back(lucy0);
 
-	return std::forward_as_tuple(std::move(models), std::vector<Texture>());
+	// Add light objects
+	std::shared_ptr<GameObject> pl1 = std::make_shared<GameObject>("Point Light 1", GameObject::PrimitiveType::LIGHT);
+	ModelManager::getInstance()->addObject(pl1);
+
+	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
+
+	return std::forward_as_tuple(std::move(models), std::vector<Texture>(), std::move(lights));
 }
 
 /**
@@ -379,7 +418,13 @@ SceneAssets SceneList::GDGRAP2_SphereWorld(CameraInitialState& camera)
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
 
 	std::vector<Texture> textures = AssembleTextureList();
-	return std::forward_as_tuple(std::move(models), std::move(textures));
+	// Add light objects
+	std::shared_ptr<GameObject> pl1 = std::make_shared<GameObject>("Point Light 1", GameObject::PrimitiveType::LIGHT);
+	ModelManager::getInstance()->addObject(pl1);
+
+	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
+
+	return std::forward_as_tuple(std::move(models), std::move(textures), std::move(lights));
 }
 
 SceneAssets SceneList::GDGRAP2_CornellBox(CameraInitialState& camera)
@@ -418,7 +463,13 @@ SceneAssets SceneList::GDGRAP2_CornellBox(CameraInitialState& camera)
 
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
 	std::vector<Texture> textures = AssembleTextureList();
-	return std::forward_as_tuple(std::move(models), std::move(textures));
+	// Add light objects
+	std::shared_ptr<GameObject> pl1 = std::make_shared<GameObject>("Point Light 1", GameObject::PrimitiveType::LIGHT);
+	ModelManager::getInstance()->addObject(pl1);
+
+	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
+
+	return std::forward_as_tuple(std::move(models), std::move(textures), std::move(lights));
 }
 
 SceneAssets SceneList::GDGRAP2_BoxWorld(CameraInitialState& camera)
@@ -508,7 +559,14 @@ SceneAssets SceneList::GDGRAP2_BoxWorld(CameraInitialState& camera)
 
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
 	std::vector<Texture> textures = AssembleTextureList();
-	return std::forward_as_tuple(std::move(models), std::move(textures));
+
+	// Add light objects
+	std::shared_ptr<Light> pl1 = std::make_shared<Light>("Point Light 1", Light::LightType::PointLight);
+	ModelManager::getInstance()->addObject(pl1);
+
+	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
+
+	return std::forward_as_tuple(std::move(models), std::move(textures), std::move(lights));
 }
 
 SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
@@ -556,6 +614,7 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	Model cornellBoxModel = Model::CreateCornellBox(555);
 	std::shared_ptr<GameObject> cornellBoxObject = std::make_shared<GameObject>("CornellBox", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(cornellBoxModel));
 	ModelManager::getInstance()->addObject(cornellBoxObject);
+	cornellBoxObject->setLocalPosition(0, 1, 0);
 
 	//Model capsuleTest = Model::CreateCapsule(vec3(2000,500,300), 100, 500, white);
 	//std::shared_ptr<GameObject> capsuleObject = std::make_shared<GameObject>("Cylinder", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(capsuleTest));
@@ -613,7 +672,13 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
 	std::vector<Texture> textures = AssembleTextureList();
 
-	return std::forward_as_tuple(std::move(models), std::move(textures));
+	// Add light objects
+	std::shared_ptr<GameObject> pl1 = std::make_shared<GameObject>("Point Light 1", GameObject::PrimitiveType::LIGHT);
+	ModelManager::getInstance()->addObject(pl1);
+
+	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
+
+	return std::forward_as_tuple(std::move(models), std::move(textures), std::move(lights));
 }
 
 std::vector<Assets::Texture> SceneList::AssembleTextureList()

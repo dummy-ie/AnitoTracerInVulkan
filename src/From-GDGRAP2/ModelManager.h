@@ -6,6 +6,7 @@
 
 #include "ObjectGroup.h"
 #include "Assets/Texture.hpp"
+#include "Engine/LightSystem/Light.h"
 #include "From-GDGRAP2/GameObject.h"
 
 /**
@@ -17,11 +18,13 @@ public:
 	typedef glm::vec3 vec3;
 	typedef std::string String;
 	typedef std::vector<std::shared_ptr<GameObject>> List;
+	typedef std::vector<std::shared_ptr<Light>> LightList;
 	typedef std::unordered_map<String, std::shared_ptr<GameObject>> HashTable;
 
 	typedef std::vector<std::shared_ptr<ObjectGroup>> ObjectGroupList;
 
 	typedef std::vector<Assets::Model> ModelList;
+	typedef std::vector<Assets::LightProperties> LightPropsList;
 
 	static ModelManager* getInstance();
 	static void initialize();
@@ -32,6 +35,7 @@ public:
 	
 	int activeObjects() const;
 	std::shared_ptr<GameObject> getLastObject();
+	void addLightObject(std::shared_ptr<Light> lightObj);
 	void addObject(std::shared_ptr<GameObject> gameObject);
 	void addObject(std::shared_ptr<ObjectGroup> objectGroup);
 	void createObject(GameObject::PrimitiveType type);
@@ -45,6 +49,7 @@ public:
 	void clearAllObjects();
 
 	ModelList getAllObjectModels() const;
+	LightPropsList getAllLightProperties() const;
 
 private:
 	ModelManager() = default;
@@ -56,6 +61,7 @@ private:
 	HashTable gameObjectMap;
 	List gameObjectList;
 	ObjectGroupList objectGroupList;
+	LightList lightList;
 
 	std::shared_ptr<GameObject> selectedObject = nullptr;
 };

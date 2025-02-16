@@ -318,15 +318,20 @@ void RayTracer::onTriggeredEvent(String eventName, std::shared_ptr<Parameters> p
 
 void RayTracer::LoadScene(const uint32_t sceneIndex)
 {
-	auto [models, textures] = SceneList::AllScenes[sceneIndex].second(cameraInitialSate_);
+	auto [models, textures, lights] = std::get<1>(SceneList::AllScenes[sceneIndex])(cameraInitialSate_);
 
 	// If there are no texture, add a dummy one. It makes the pipeline setup a lot easier.
 	if (textures.empty())
 	{
 		textures.push_back(Assets::Texture::LoadTexture("../assets/textures/white.png", Vulkan::SamplerConfig()));
 	}
-	
-	scene_.reset(new Assets::Scene(CommandPool(), std::move(models), std::move(textures)));
+	// If there are no lights, add a dummy one. It makes the pipeline setup a lot easier.
+	if (lights.empty())
+	{
+		lights.push_back(Assets::LightProperties(glm::vec3(1000, 500, 0), glm::vec4(1.0,1.0,1.0,0.02), glm::vec4(1.0,1.0,1.0,1000.0f), Assets::LightProperties::Enum::PointLight));
+	}
+
+	scene_.reset(new Assets::Scene(CommandPool(), std::move(models), std::move(textures), std::move(lights)));
 	sceneIndex_ = sceneIndex;
 
 	userSettings_.FieldOfView = cameraInitialSate_.FieldOfView;
@@ -347,14 +352,20 @@ void RayTracer::ReloadModifiedScene()
 {
 	std::vector<Assets::Model> models = ModelManager::getInstance()->getAllObjectModels();
 	std::vector<Assets::Texture> textures = SceneList::AssembleTextureList();
+	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
 
 	// If there are no texture, add a dummy one. It makes the pipeline setup a lot easier.
 	if (textures.empty())
 	{
 		textures.push_back(Assets::Texture::LoadTexture("../assets/textures/white.png", Vulkan::SamplerConfig()));
 	}
+	// If there are no lights, add a dummy one. It makes the pipeline setup a lot easier.
+	if (lights.empty())
+	{
+		lights.push_back(Assets::LightProperties(glm::vec3(1000, 500, 0), glm::vec4(1.0, 1.0, 1.0, 0.02), glm::vec4(1.0, 1.0, 1.0, 1000.0f), Assets::LightProperties::Enum::PointLight));
+	}
 
-	scene_.reset(new Assets::Scene(CommandPool(), std::move(models), std::move(textures)));
+	scene_.reset(new Assets::Scene(CommandPool(), std::move(models), std::move(textures), std::move(lights)));
 
 	// userSettings_.FieldOfView = cameraInitialSate_.FieldOfView;
 	// userSettings_.Aperture = cameraInitialSate_.Aperture;
@@ -377,7 +388,7 @@ void RayTracer::CheckAndUpdateBenchmarkState(double prevTime)
 	if (periodTotalFrames_ == 0)
 	{
 		std::cout << std::endl;
-		std::cout << "Benchmark: Start scene #" << sceneIndex_ << " '" << SceneList::AllScenes[sceneIndex_].first << "'" << std::endl;
+		std::cout << "Benchmark: Start scene #" << sceneIndex_ << " '" << std::get<0>(SceneList::AllScenes[sceneIndex_]) << "'" << std::endl;
 		sceneInitialTime_ = time_;
 		periodInitialTime_ = time_;
 	}

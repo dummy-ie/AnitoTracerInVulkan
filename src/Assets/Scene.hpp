@@ -4,6 +4,8 @@
 #include <memory>
 #include <vector>
 
+#include "Engine/LightSystem/Light.h"
+
 namespace Vulkan
 {
 	class Buffer;
@@ -27,7 +29,7 @@ namespace Assets
 		Scene& operator = (const Scene&) = delete;
 		Scene& operator = (Scene&&) = delete;
 
-		Scene(Vulkan::CommandPool& commandPool, std::vector<Model>&& models, std::vector<Texture>&& textures);
+		Scene(Vulkan::CommandPool& commandPool, std::vector<Model>&& models, std::vector<Texture>&& textures, std::vector<LightProperties>&& lights);
 		~Scene();
 
 		const std::vector<Model>& Models() const { return models_; }
@@ -41,11 +43,13 @@ namespace Assets
 		const Vulkan::Buffer& ProceduralBuffer() const { return *proceduralBuffer_; }
 		const std::vector<VkImageView> TextureImageViews() const { return textureImageViewHandles_; }
 		const std::vector<VkSampler> TextureSamplers() const { return textureSamplerHandles_; }
+		const Vulkan::Buffer& LightBuffer() const { return *lightsBuffer_; }
 
 	private:
 
 		const std::vector<Model> models_;
 		const std::vector<Texture> textures_;
+		const std::vector<LightProperties> lights_;
 
 		std::unique_ptr<Vulkan::Buffer> vertexBuffer_;
 		std::unique_ptr<Vulkan::DeviceMemory> vertexBufferMemory_;
@@ -64,6 +68,9 @@ namespace Assets
 
 		std::unique_ptr<Vulkan::Buffer> proceduralBuffer_;
 		std::unique_ptr<Vulkan::DeviceMemory> proceduralBufferMemory_;
+
+		std::unique_ptr<Vulkan::Buffer> lightsBuffer_;
+		std::unique_ptr<Vulkan::DeviceMemory> lightsBufferMemory_;
 
 		std::vector<std::unique_ptr<TextureImage>> textureImages_;
 		std::vector<VkImageView> textureImageViewHandles_;

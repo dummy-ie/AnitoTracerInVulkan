@@ -5,13 +5,15 @@
 #include <tuple>
 #include <vector>
 
+#include "Engine/LightSystem/Light.h"
+
 namespace Assets
 {
 	class Model;
 	class Texture;
 }
 
-typedef std::tuple<std::vector<Assets::Model>, std::vector<Assets::Texture>> SceneAssets;
+typedef std::tuple<std::vector<Assets::Model>, std::vector<Assets::Texture>, std::vector<Assets::LightProperties>> SceneAssets;
 
 class SceneList final
 {
@@ -41,5 +43,6 @@ public:
 	static SceneAssets AnitoTracer_DemoScene(CameraInitialState& camera);
 	static std::vector<Assets::Texture> AssembleTextureList();
 
-	static const std::vector<std::pair<std::string, std::function<SceneAssets (CameraInitialState&)>>> AllScenes;
+	static const std::vector<std::tuple<std::string, std::function<SceneAssets (CameraInitialState&)>>> AllScenes;
+	
 };

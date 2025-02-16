@@ -62,7 +62,7 @@ namespace Vulkan
 	{
 		const auto& device = commandPool.Device();
 		const auto& debugUtils = device.DebugUtils();
-		const auto contentSize = sizeof(content[0]) * content.size();
+		const auto contentSize = sizeof(content[0]) * content.size(); 
 		const VkMemoryAllocateFlags allocateFlags = usage & VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT
 			? VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT
 			: 0;
