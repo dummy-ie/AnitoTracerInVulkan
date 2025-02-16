@@ -308,7 +308,7 @@ set(src_files
 )
 
 source_group("Assets" FILES ${src_files_assets})
-source_group("Assmip" FILES ${src_files_assimp})
+source_group("Assimp" FILES ${src_files_assimp})
 source_group("CameraSystem" FILES ${src_files_camerasystem})
 source_group("LightSystem" FILES ${src_files_lightsystem})
 source_group("ImGui" FILES ${src_files_imgui})
