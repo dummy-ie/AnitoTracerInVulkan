@@ -212,6 +212,8 @@ void MenuScreen::onCreateCylinderClicked()
 
 void MenuScreen::ShowLoadObjMenu()
 {
+	ImGui::SetNextWindowSize(ImVec2(500, 200));
+
 	if (ImGui::Begin("Create GameObject from OBJ", &isLoadObjOpen))
 	{
 		static std::string name;
