@@ -4,6 +4,7 @@
 #include "Assets/Scene.hpp"
 #include "Assets/UniformBuffer.hpp"
 #include "Utilities/Exception.hpp"
+#include "Utilities/FileUtils.h"
 #include "Vulkan/Buffer.hpp"
 #include "Vulkan/Device.hpp"
 #include "Vulkan/DescriptorBinding.hpp"
@@ -153,11 +154,11 @@ RayTracingPipeline::RayTracingPipeline(
 	pipelineLayout_.reset(new class PipelineLayout(device, descriptorSetManager_->DescriptorSetLayout()));
 
 	// Load shaders.
-	const ShaderModule rayGenShader(device, "../assets/shaders/RayTracing.rgen.spv");
-	const ShaderModule missShader(device, "../assets/shaders/RayTracing.rmiss.spv");
-	const ShaderModule closestHitShader(device, "../assets/shaders/RayTracing.rchit.spv");
-	const ShaderModule proceduralClosestHitShader(device, "../assets/shaders/RayTracing.Procedural.rchit.spv");
-	const ShaderModule proceduralIntersectionShader(device, "../assets/shaders/RayTracing.Procedural.rint.spv");
+	const ShaderModule rayGenShader(device, FileUtils::getAssetsFolderPath().generic_string() + "/shaders/RayTracing.rgen.spv");
+	const ShaderModule missShader(device, FileUtils::getAssetsFolderPath().generic_string() + "/shaders/RayTracing.rmiss.spv");
+	const ShaderModule closestHitShader(device, FileUtils::getAssetsFolderPath().generic_string() + "/shaders/RayTracing.rchit.spv");
+	const ShaderModule proceduralClosestHitShader(device, FileUtils::getAssetsFolderPath().generic_string() + "/shaders/RayTracing.Procedural.rchit.spv");
+	const ShaderModule proceduralIntersectionShader(device, FileUtils::getAssetsFolderPath().generic_string() + "/shaders/RayTracing.Procedural.rint.spv");
 
 	std::vector<VkPipelineShaderStageCreateInfo> shaderStages =
 	{

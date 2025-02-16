@@ -20,6 +20,7 @@
 #include <array>
 #include "From-GDGRAP2/UIManager.h"
 #include "From-GDGRAP2/RTConfig.h"
+#include "Utilities/FileUtils.h"
 
 
 namespace
@@ -99,7 +100,7 @@ UserInterface::UserInterface(
 
 	// Upload ImGui fonts (use ImGuiFreeType for better font rendering, see https://github.com/ocornut/imgui/tree/master/misc/freetype).
 	io.Fonts->FontBuilderIO = ImGuiFreeType::GetBuilderForFreeType();
-	if (!io.Fonts->AddFontFromFileTTF("../assets/fonts/Cousine-Regular.ttf", 13 * scaleFactor))
+	if (!io.Fonts->AddFontFromFileTTF(FileUtils::getAssetsFolderPath().generic_string().append("/fonts/Cousine-Regular.ttf").data(), 13 * scaleFactor))
 	{
 		Throw(std::runtime_error("failed to load ImGui font"));
 	}

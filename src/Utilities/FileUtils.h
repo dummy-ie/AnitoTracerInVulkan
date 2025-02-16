@@ -2,15 +2,17 @@
 
 #include <fstream>
 #include <windows.h>
-#include <commdlg.h>
 #include <iostream>
+#include <filesystem>
 
 
 class FileUtils
 {
-	public:
+public:
+	static std::filesystem::path getAssetsFolderPath();
+	static std::filesystem::path getExecutablePath();
 
-	static bool getFilePath(std::string& meshFilePath, std::string& fileName);
+	static bool getFilePath(std::string& filePath, std::string& fileName);
 	//void getFilePath(std::string* filePath);
 };
 

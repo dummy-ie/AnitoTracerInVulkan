@@ -11,6 +11,7 @@
 #include "Assets/Scene.hpp"
 #include "Assets/UniformBuffer.hpp"
 #include "Assets/Vertex.hpp"
+#include "Utilities/FileUtils.h"
 
 namespace Vulkan {
 
@@ -163,8 +164,8 @@ GraphicsPipeline::GraphicsPipeline(
 	renderPass_.reset(new class RenderPass(swapChain, depthBuffer, VK_ATTACHMENT_LOAD_OP_CLEAR, VK_ATTACHMENT_LOAD_OP_CLEAR));
 
 	// Load shaders.
-	const ShaderModule vertShader(device, "../assets/shaders/Graphics.vert.spv");
-	const ShaderModule fragShader(device, "../assets/shaders/Graphics.frag.spv");
+	const ShaderModule vertShader(device, FileUtils::getAssetsFolderPath().generic_string() + "/shaders/Graphics.vert.spv");
+	const ShaderModule fragShader(device, FileUtils::getAssetsFolderPath().generic_string() + "/shaders/Graphics.frag.spv");
 
 	VkPipelineShaderStageCreateInfo shaderStages[] =
 	{

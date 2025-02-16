@@ -22,7 +22,7 @@ Texture Texture::LoadTexture(const std::string& filename, const Vulkan::SamplerC
 
 	const auto elapsed = std::chrono::duration<float, std::chrono::seconds::period>(std::chrono::high_resolution_clock::now() - timer).count();
 	std::cout << "(" << width << " x " << height << " x " << channels << ") ";
-	std::cout << elapsed << "s" << std::endl;
+	std::cout << elapsed << "s" << '\n';
 
 	return Texture(width, height, channels, pixels);
 }

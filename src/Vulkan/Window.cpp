@@ -3,6 +3,8 @@
 #include "Utilities/StbImage.hpp"
 #include <iostream>
 
+#include "Utilities/FileUtils.h"
+
 namespace Vulkan {
 
 namespace
@@ -76,8 +78,9 @@ Window::Window(const WindowConfig& config) :
 	}
 
 	GLFWimage icon;
-	// icon.pixels = stbi_load("../assets/textures/gamelab_logo.png", &icon.width, &icon.height, nullptr, 4);
-	icon.pixels = stbi_load("../assets/textures/gamelab_logo.png", &icon.width, &icon.height, nullptr, 4); //assuming the icon was included during CMake-Build of assets folder
+	// icon.pixels = stbi_load(FileUtils::getAssetsFolderPath().generic_string() + "/textures/gamelab_logo.png", &icon.width, &icon.height, nullptr, 4);
+	std::cout << "Loading icon: " << FileUtils::getAssetsFolderPath().generic_string().append("/textures/gamelab_logo.png") << '\n';
+	icon.pixels = stbi_load(FileUtils::getAssetsFolderPath().generic_string().append("/textures/gamelab_logo.png").data(), &icon.width, &icon.height, nullptr, 4); //assuming the icon was included during CMake-Build of assets folder
 	// icon.pixels = stbi_load("X:/GithubProjects/RayTracingInVulkan/assets/textures/gamelab_logo.png", &icon.width, &icon.height, nullptr, 4); //hardcore path for icon as last resort
 	if (icon.pixels == nullptr)
 	{

@@ -20,6 +20,7 @@
 #include "ImGui/imgui_impl_vulkan.h"
 
 #include "Engine/CameraSystem/CameraManager.h"
+#include "Utilities/FileUtils.h"
 
 namespace
 {
@@ -323,7 +324,7 @@ void RayTracer::LoadScene(const uint32_t sceneIndex)
 	// If there are no texture, add a dummy one. It makes the pipeline setup a lot easier.
 	if (textures.empty())
 	{
-		textures.push_back(Assets::Texture::LoadTexture("../assets/textures/white.png", Vulkan::SamplerConfig()));
+		textures.push_back(Assets::Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/white.png", Vulkan::SamplerConfig()));
 	}
 	// If there are no lights, add a dummy one. It makes the pipeline setup a lot easier.
 	if (lights.empty())
@@ -357,7 +358,7 @@ void RayTracer::ReloadModifiedScene()
 	// If there are no texture, add a dummy one. It makes the pipeline setup a lot easier.
 	if (textures.empty())
 	{
-		textures.push_back(Assets::Texture::LoadTexture("../assets/textures/white.png", Vulkan::SamplerConfig()));
+		textures.push_back(Assets::Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/white.png", Vulkan::SamplerConfig()));
 	}
 	// If there are no lights, add a dummy one. It makes the pipeline setup a lot easier.
 	if (lights.empty())

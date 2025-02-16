@@ -13,6 +13,7 @@
 #include "From-GDGRAP2/ModelManager.h"
 #include "From-GDGRAP2/VectorUtils.h"
 #include "Utilities/Exception.hpp"
+#include "Utilities/FileUtils.h"
 
 using namespace glm;
 using Assets::Material;
@@ -98,12 +99,12 @@ SceneAssets SceneList::CubeAndSpheres(CameraInitialState& camera)
 	std::vector<Model> models;
 	std::vector<Texture> textures;
 
-	models.push_back(Model::LoadModel("../assets/models/cube_multi.obj"));
+	models.push_back(Model::LoadModel(FileUtils::getAssetsFolderPath().generic_string() + "/models/cube_multi.obj"));
 	models.push_back(Model::CreateSphere(vec3(1, 0, 0), 0.5, Material::Metallic(vec3(0.7f, 0.5f, 0.8f), 0.2f), true));
 	models.push_back(Model::CreateSphere(vec3(-1, 0, 0), 0.5, Material::Dielectric(1.5f), true));
 	models.push_back(Model::CreateSphere(vec3(0, 1, 0), 0.5, Material::Lambertian(vec3(1.0f), 0), true));
 
-	textures.push_back(Texture::LoadTexture("../assets/textures/land_ocean_ice_cloud_2048.png", Vulkan::SamplerConfig()));
+	textures.push_back(Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/land_ocean_ice_cloud_2048.png", Vulkan::SamplerConfig()));
 
 
 	// Add light objects
@@ -176,9 +177,9 @@ SceneAssets SceneList::PlanetsInOneWeekend(CameraInitialState& camera)
 	models.push_back(Model::CreateSphere(vec3(-4, 1, 0), 1.0f, Material::Lambertian(vec3(1.0f), 0), isProc));
 	models.push_back(Model::CreateSphere(vec3(4, 1, 0), 1.0f, Material::Metallic(vec3(1.0f), 0.0f, 1), isProc));
 
-	textures.push_back(Texture::LoadTexture("../assets/textures/2k_mars.jpg", Vulkan::SamplerConfig()));
-	textures.push_back(Texture::LoadTexture("../assets/textures/2k_moon.jpg", Vulkan::SamplerConfig()));
-	textures.push_back(Texture::LoadTexture("../assets/textures/land_ocean_ice_cloud_2048.png", Vulkan::SamplerConfig()));
+	textures.push_back(Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/2k_mars.jpg", Vulkan::SamplerConfig()));
+	textures.push_back(Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/2k_moon.jpg", Vulkan::SamplerConfig()));
+	textures.push_back(Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/land_ocean_ice_cloud_2048.png", Vulkan::SamplerConfig()));
 
 
 	// Add light objects
@@ -211,7 +212,7 @@ SceneAssets SceneList::LucyInOneWeekend(CameraInitialState& camera)
 
 	AddRayTracingInOneWeekendCommonScene(models, isProc, random);
 
-	auto lucy0 = Model::LoadModel("../assets/models/lucy.obj");
+	auto lucy0 = Model::LoadModel(FileUtils::getAssetsFolderPath().generic_string() + "/models/lucy.obj");
 	auto lucy1 = lucy0;
 	auto lucy2 = lucy0;
 
@@ -301,7 +302,7 @@ SceneAssets SceneList::CornellBoxLucy(CameraInitialState& camera)
 
 	const auto i = mat4(1);
 	const auto sphere = Model::CreateSphere(vec3(555 - 130, 165.0f, -165.0f / 2 - 65), 80.0f, Material::Dielectric(1.5f), true);
-	auto lucy0 = Model::LoadModel("../assets/models/lucy.obj");
+	auto lucy0 = Model::LoadModel(FileUtils::getAssetsFolderPath().generic_string() + "/models/lucy.obj");
 
 	lucy0.Transform(
 		rotate(
@@ -601,16 +602,16 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 
 	Model box0 = Model::CreateBox(vec3(0, 0, -165), vec3(165, 165, 0), white);
 	Model box1 = Model::CreateBox(vec3(0, 0, -165), vec3(165, 330, 0), white);
-	
+
 	box0.Transform(rotate(translate(i, vec3(555 - 130 - 165, 0, -65)), radians(-18.0f), vec3(0, 1, 0)));
 	box1.Transform(rotate(translate(i, vec3(555 - 265 - 165, 0, -295)), radians(15.0f), vec3(0, 1, 0)));
-	
+
 	std::shared_ptr<GameObject> box0Obj = std::make_shared<GameObject>("Box", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(box0));
 	ModelManager::getInstance()->addObject(box0Obj);
-	
+
 	std::shared_ptr<GameObject> box1Obj = std::make_shared<GameObject>("Box", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(box1));
 	ModelManager::getInstance()->addObject(box1Obj);
-	
+
 	Model cornellBoxModel = Model::CreateCornellBox(555);
 	std::shared_ptr<GameObject> cornellBoxObject = std::make_shared<GameObject>("CornellBox", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(cornellBoxModel));
 	ModelManager::getInstance()->addObject(cornellBoxObject);
@@ -624,8 +625,8 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	//std::shared_ptr<GameObject> cylinderObject = std::make_shared<GameObject>("Cylinder", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(cylinderTest));
 	//ModelManager::getInstance()->addObject(cylinderObject);
 
-	auto lucy0 = Model::LoadModel("../assets/models/lucy.obj");
-	
+	auto lucy0 = Model::LoadModel(FileUtils::getAssetsFolderPath().generic_string() + "/models/lucy.obj");
+
 	lucy0.Transform(
 		rotate(
 			scale(
@@ -636,7 +637,7 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	std::shared_ptr<GameObject> lucyObj = std::make_shared<GameObject>("Lucy", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(lucy0));
 	ModelManager::getInstance()->addObject(lucyObj);
 
-	Model teapot = Model::LoadModel("../assets/models/teapot.obj");
+	Model teapot = Model::LoadModel(FileUtils::getAssetsFolderPath().generic_string() + "/models/teapot.obj");
 	teapot.SetMaterial(white);
 	teapot.Transform(
 		rotate(
@@ -648,7 +649,7 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	std::shared_ptr<GameObject> teapotObj = std::make_shared<GameObject>("Teapot", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(teapot));
 	ModelManager::getInstance()->addObject(teapotObj);
 
-	Model bunny = Model::LoadModel("../assets/models/bunny.obj");
+	Model bunny = Model::LoadModel(FileUtils::getAssetsFolderPath().generic_string() + "/models/bunny.obj");
 	bunny.SetMaterial(white);
 	bunny.Transform(
 		rotate(
@@ -684,11 +685,11 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 std::vector<Assets::Texture> SceneList::AssembleTextureList()
 {
 	std::vector<Texture> textures;
-	textures.push_back(Texture::LoadTexture("../assets/textures/2k_mars.jpg", Vulkan::SamplerConfig()));
-	textures.push_back(Texture::LoadTexture("../assets/textures/2k_moon.jpg", Vulkan::SamplerConfig()));
-	textures.push_back(Texture::LoadTexture("../assets/textures/land_ocean_ice_cloud_2048.png", Vulkan::SamplerConfig()));
-	textures.push_back(Texture::LoadTexture("../assets/textures/checker.jpg", Vulkan::SamplerConfig()));
-	textures.push_back(Texture::LoadTexture("../assets/textures/earthmap.jpg", Vulkan::SamplerConfig()));
+	textures.push_back(Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/2k_mars.jpg", Vulkan::SamplerConfig()));
+	textures.push_back(Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/2k_moon.jpg", Vulkan::SamplerConfig()));
+	textures.push_back(Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/land_ocean_ice_cloud_2048.png", Vulkan::SamplerConfig()));
+	textures.push_back(Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/checker.jpg", Vulkan::SamplerConfig()));
+	textures.push_back(Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/earthmap.jpg", Vulkan::SamplerConfig()));
 
 	return textures;
 }

@@ -1,15 +1,40 @@
 #include "FileUtils.h"
 
 #include <algorithm>
+#include <commdlg.h>
 
-#if __cplusplus <= 201402L
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#include <experimental/filesystem>
-#endif
+// #if __cplusplus <= 201402L
+// #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+// #include <experimental/filesystem>
+// #endif
 
 //#include "LogUtils.h"
 
-bool FileUtils::getFilePath(std::string& meshFilePath, std::string& fileName)
+std::filesystem::path FileUtils::getAssetsFolderPath()
+{
+    std::filesystem::path p = getExecutablePath().parent_path().parent_path().append("assets");
+    //std::cout << "Assets folder: " << p << '\n';
+    return p;
+}
+
+std::filesystem::path FileUtils::getExecutablePath()
+{
+    //return std::filesystem::current_path();
+        {
+    #ifdef _WIN32
+            wchar_t path[MAX_PATH] = { 0 };
+            GetModuleFileName(nullptr, path, MAX_PATH);
+            return path;
+    #else
+            char result[PATH_MAX];
+            ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+            return std::string(result, (count > 0) ? count : 0);
+    #endif
+        }
+}
+
+// Prompts the user to open an obj file. Supply a reference to a filePath and fileName string for the result.
+bool FileUtils::getFilePath(std::string& filePath, std::string& fileName)
 {
     //gdeng03::LogUtils::log("OpenFile");
     wchar_t path[MAX_PATH] = L"";
@@ -26,8 +51,8 @@ bool FileUtils::getFilePath(std::string& meshFilePath, std::string& fileName)
         std::wstring ws(path);
         std::string str(ws.begin(), ws.end());
         std::ranges::replace(str, '\\', '/');
-        fileName = std::experimental::filesystem::path(str).stem().generic_string();
-        meshFilePath = str;
+        fileName = std::filesystem::path(str).stem().generic_string();
+        filePath = str;
         return true;
     }
 
