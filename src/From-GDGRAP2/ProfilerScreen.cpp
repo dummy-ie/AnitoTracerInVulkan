@@ -19,6 +19,10 @@ ProfilerScreen::~ProfilerScreen()
 
 void ProfilerScreen::drawUI()
 {
+	ImGui::Begin("Profiler");
+	ImGui::Text("Frame rate: %.1f FPS", ImGui::GetIO().Framerate);
+	ImGui::End();
+
 	////cpuGraph.LoadFrameData();
 	//fpsFramesCount++;
 	//auto currFrameTime = std::chrono::system_clock::now();
