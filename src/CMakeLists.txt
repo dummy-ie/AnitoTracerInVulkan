@@ -340,5 +340,12 @@ endif()
 add_dependencies(${exe_name} Assets)
 set_target_properties(${exe_name} PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
 target_include_directories(${exe_name} PRIVATE . Assimp/include ${Boost_INCLUDE_DIRS} ${glfw3_INCLUDE_DIRS} ${glm_INCLUDE_DIRS} ${STB_INCLUDE_DIRS} ${Vulkan_INCLUDE_DIRS})
-target_link_directories(${exe_name} PRIVATE Assimp/lib/Debug ${Vulkan_LIBRARY})
-target_link_libraries(${exe_name} PRIVATE assimp-vc143-mtd ${Boost_LIBRARIES} freetype glfw glm::glm imgui::imgui tinyobjloader::tinyobjloader ${Vulkan_LIBRARIES} ${extra_libs})
+target_link_directories(${exe_name} PRIVATE Assimp/lib ${Vulkan_LIBRARY})
+target_link_libraries(${exe_name} PRIVATE assimp-vc143-mt ${Boost_LIBRARIES} freetype glfw glm::glm imgui::imgui tinyobjloader::tinyobjloader ${Vulkan_LIBRARIES} ${extra_libs})
+
+if(${WIN32})
+add_custom_command(TARGET ${exe_name} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${PROJECT_SOURCE_DIR}/src/Assimp/dll/assimp-vc143-mt.dll"
+        $<TARGET_FILE_DIR:${exe_name}>)
+endif()
