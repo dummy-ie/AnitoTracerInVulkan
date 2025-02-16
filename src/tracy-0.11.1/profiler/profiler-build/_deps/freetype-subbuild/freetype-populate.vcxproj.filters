@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\C++ Projects\AnitoTracerInVulkan\src\tracy-0.11.1\profiler\build\_deps\freetype-subbuild\CMakeFiles\e5c3445bfb8de6c024eee395a3fdfc10\freetype-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\C++ Projects\AnitoTracerInVulkan\src\tracy-0.11.1\profiler\build\_deps\freetype-subbuild\CMakeFiles\e5c3445bfb8de6c024eee395a3fdfc10\freetype-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\C++ Projects\AnitoTracerInVulkan\src\tracy-0.11.1\profiler\build\_deps\freetype-subbuild\CMakeFiles\e5c3445bfb8de6c024eee395a3fdfc10\freetype-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\C++ Projects\AnitoTracerInVulkan\src\tracy-0.11.1\profiler\build\_deps\freetype-subbuild\CMakeFiles\e5c3445bfb8de6c024eee395a3fdfc10\freetype-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\C++ Projects\AnitoTracerInVulkan\src\tracy-0.11.1\profiler\build\_deps\freetype-subbuild\CMakeFiles\e5c3445bfb8de6c024eee395a3fdfc10\freetype-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\C++ Projects\AnitoTracerInVulkan\src\tracy-0.11.1\profiler\build\_deps\freetype-subbuild\CMakeFiles\e5c3445bfb8de6c024eee395a3fdfc10\freetype-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\C++ Projects\AnitoTracerInVulkan\src\tracy-0.11.1\profiler\build\_deps\freetype-subbuild\CMakeFiles\e5c3445bfb8de6c024eee395a3fdfc10\freetype-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\C++ Projects\AnitoTracerInVulkan\src\tracy-0.11.1\profiler\build\_deps\freetype-subbuild\CMakeFiles\e5c3445bfb8de6c024eee395a3fdfc10\freetype-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\C++ Projects\AnitoTracerInVulkan\src\tracy-0.11.1\profiler\build\_deps\freetype-subbuild\CMakeFiles\ac8becf74d00611c69c09af9f0482034\freetype-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\C++ Projects\AnitoTracerInVulkan\src\tracy-0.11.1\profiler\build\_deps\freetype-subbuild\CMakeFiles\05276e28325e5019573a7c24920a00be\freetype-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\C++ Projects\AnitoTracerInVulkan\src\tracy-0.11.1\profiler\build\_deps\freetype-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\C++ Projects\AnitoTracerInVulkan\src\tracy-0.11.1\profiler\build\_deps\freetype-subbuild\CMakeFiles\freetype-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{9301AFC5-533F-3B52-9D69-5777193E0021}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

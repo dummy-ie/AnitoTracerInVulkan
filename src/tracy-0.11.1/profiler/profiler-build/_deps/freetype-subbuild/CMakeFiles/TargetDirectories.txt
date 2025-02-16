@@ -1,0 +1,3 @@
+D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/freetype-populate.dir
+D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/ALL_BUILD.dir
+D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/ZERO_CHECK.dir

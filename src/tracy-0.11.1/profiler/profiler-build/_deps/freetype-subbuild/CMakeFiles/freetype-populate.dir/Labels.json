@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/freetype-populate"
+		},
+		{
+			"file" : "D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/05276e28325e5019573a7c24920a00be/freetype-populate.rule"
+		},
+		{
+			"file" : "D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/ac8becf74d00611c69c09af9f0482034/freetype-populate-complete.rule"
+		},
+		{
+			"file" : "D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/e5c3445bfb8de6c024eee395a3fdfc10/freetype-populate-build.rule"
+		},
+		{
+			"file" : "D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/e5c3445bfb8de6c024eee395a3fdfc10/freetype-populate-configure.rule"
+		},
+		{
+			"file" : "D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/e5c3445bfb8de6c024eee395a3fdfc10/freetype-populate-download.rule"
+		},
+		{
+			"file" : "D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/e5c3445bfb8de6c024eee395a3fdfc10/freetype-populate-install.rule"
+		},
+		{
+			"file" : "D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/e5c3445bfb8de6c024eee395a3fdfc10/freetype-populate-mkdir.rule"
+		},
+		{
+			"file" : "D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/e5c3445bfb8de6c024eee395a3fdfc10/freetype-populate-patch.rule"
+		},
+		{
+			"file" : "D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/e5c3445bfb8de6c024eee395a3fdfc10/freetype-populate-test.rule"
+		},
+		{
+			"file" : "D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/e5c3445bfb8de6c024eee395a3fdfc10/freetype-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"freetype-populate"
+		],
+		"name" : "freetype-populate"
+	}
+}

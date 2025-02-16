@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\C++ Projects\AnitoTracerInVulkan\src\tracy-0.11.1\profiler\build\_deps\capstone-subbuild\CMakeFiles\2ffc6f4cc1136a5991169e3f883b6e5f\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{B244AA34-ED99-3C7C-99B1-2A2D104E63C6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

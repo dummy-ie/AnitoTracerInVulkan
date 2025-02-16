@@ -1,0 +1,14 @@
+# Target labels
+ freetype-populate
+# Source files and their labels
+D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/freetype-populate
+D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/05276e28325e5019573a7c24920a00be/freetype-populate.rule
+D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/ac8becf74d00611c69c09af9f0482034/freetype-populate-complete.rule
+D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/e5c3445bfb8de6c024eee395a3fdfc10/freetype-populate-build.rule
+D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/e5c3445bfb8de6c024eee395a3fdfc10/freetype-populate-configure.rule
+D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/e5c3445bfb8de6c024eee395a3fdfc10/freetype-populate-download.rule
+D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/e5c3445bfb8de6c024eee395a3fdfc10/freetype-populate-install.rule
+D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/e5c3445bfb8de6c024eee395a3fdfc10/freetype-populate-mkdir.rule
+D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/e5c3445bfb8de6c024eee395a3fdfc10/freetype-populate-patch.rule
+D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/e5c3445bfb8de6c024eee395a3fdfc10/freetype-populate-test.rule
+D:/C++ Projects/AnitoTracerInVulkan/src/tracy-0.11.1/profiler/build/_deps/freetype-subbuild/CMakeFiles/e5c3445bfb8de6c024eee395a3fdfc10/freetype-populate-update.rule
