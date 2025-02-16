@@ -41,17 +41,15 @@ RayTracingPipeline::RayTracingPipeline(
 		// Camera information & co
 		{3, 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_RAYGEN_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR},
 
-		// Vertex buffer, Index buffer, Material buffer, Offset buffer
+		// Vertex buffer, Index buffer, Material buffer, Lights buffer, Offset buffer
 		{4, 1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR},
 		{5, 1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR},
 		{6, 1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR},
 		{7, 1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR},
+		{8, 1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR},
 
 		// Textures and image samplers
-		{8, static_cast<uint32_t>(scene.TextureSamplers().size()), VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR},
-
-		// Lights Buffer.
-		{9, 1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR},
+		{9, static_cast<uint32_t>(scene.TextureSamplers().size()), VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR},
 
 		// The Procedural buffer.
 		{10, 1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_INTERSECTION_BIT_KHR}
@@ -101,6 +99,11 @@ RayTracingPipeline::RayTracingPipeline(
 		materialBufferInfo.buffer = scene.MaterialBuffer().Handle();
 		materialBufferInfo.range = VK_WHOLE_SIZE;
 
+		// Lights buffer
+		VkDescriptorBufferInfo lightBufferInfo = {};
+		lightBufferInfo.buffer = scene.LightBuffer().Handle();
+		lightBufferInfo.range = VK_WHOLE_SIZE;
+
 		// Offsets buffer
 		VkDescriptorBufferInfo offsetsBufferInfo = {};
 		offsetsBufferInfo.buffer = scene.OffsetsBuffer().Handle();
@@ -117,11 +120,6 @@ RayTracingPipeline::RayTracingPipeline(
 			imageInfo.sampler = scene.TextureSamplers()[t];
 		}
 
-		// Lights buffer
-		VkDescriptorBufferInfo lightBufferInfo = {};
-		lightBufferInfo.buffer = scene.LightBuffer().Handle();
-		lightBufferInfo.range = VK_WHOLE_SIZE;
-
 		std::vector<VkWriteDescriptorSet> descriptorWrites =
 		{
 			descriptorSets.Bind(i, 0, structureInfo),
@@ -131,10 +129,9 @@ RayTracingPipeline::RayTracingPipeline(
 			descriptorSets.Bind(i, 4, vertexBufferInfo),
 			descriptorSets.Bind(i, 5, indexBufferInfo),
 			descriptorSets.Bind(i, 6, materialBufferInfo),
-			descriptorSets.Bind(i, 7, offsetsBufferInfo),
-			descriptorSets.Bind(i, 8, *imageInfos.data(), static_cast<uint32_t>(imageInfos.size())),
-			descriptorSets.Bind(i, 9, lightBufferInfo),
-
+			descriptorSets.Bind(i, 7, lightBufferInfo),
+			descriptorSets.Bind(i, 8, offsetsBufferInfo),
+			descriptorSets.Bind(i, 9, *imageInfos.data(), static_cast<uint32_t>(imageInfos.size())),
 		};
 
 		// Procedural buffer (optional)

@@ -205,6 +205,152 @@ Model Model::LoadModel(const std::string& filename)
 	return Model(std::move(vertices), std::move(indices), std::move(materials), nullptr);
 }
 
+std::vector<Model> Model::LoadModelGroup(const std::string& filename)
+{
+	std::cout << "- loading '" << filename << "'... " << std::flush;
+
+	const auto timer = std::chrono::high_resolution_clock::now();
+	const std::string materialPath = std::filesystem::path(filename).parent_path().string();
+
+	//tinyobj::ObjReader objReader;
+
+	Assimp::Importer objectImporter;
+	std::vector<Model> models;
+
+	const aiScene* model = objectImporter.ReadFile(filename, 0); //read file and return an aiScene containing model attributes
+
+
+	if (model == nullptr)
+	{
+		Throw(std::runtime_error("failed to load model '" + filename + "':\n" + objectImporter.GetErrorString()));
+	}
+
+	// Materials
+	std::vector<Material> materials;
+
+	if (model->HasMaterials())
+	{
+		for (int i = 0; i < model->mNumMaterials; i++)
+		{
+			Material m{};
+
+			aiColor4D diffuse;
+			aiGetMaterialColor(model->mMaterials[i], AI_MATKEY_COLOR_DIFFUSE, &diffuse);
+
+			//m.Diffuse.r = diffuse[0];
+			//m.Diffuse.g = diffuse[1];
+			//m.Diffuse.b = diffuse[2];
+			//m.Diffuse.a = 1.0f;
+
+			m.Diffuse = vec4(diffuse[0], diffuse[1], diffuse[2], 1.0);
+
+			m.DiffuseTextureId = -1;
+
+			materials.emplace_back(m);
+		}
+	}
+	else
+	{
+		Material m{};
+
+		m.Diffuse = vec4(0.7f, 0.7f, 0.7f, 1.0);
+		m.DiffuseTextureId = -1;
+
+		materials.emplace_back(m);
+	}
+
+	// Geometry
+
+	int totalvertices = 0;
+	for (int i = 0; i < model->mNumMeshes; i++)
+	{
+		totalvertices += model->mMeshes[i]->mNumVertices;
+	}
+	std::vector<Vertex> vertices;
+	std::vector<uint32_t> indices;
+	std::unordered_map<Vertex, uint32_t> uniqueVertices(totalvertices);
+	size_t faceId = 0;
+
+	for (int m = 0; m < model->mNumMeshes; m++)
+	{
+		//const auto& mesh = shape.mesh;
+
+		for (int v = 0; v < model->mMeshes[m]->mNumVertices; v++)
+		{
+			Vertex vertex = {};
+
+			vertex.Position =
+			{
+				model->mMeshes[m]->mVertices[v].x,
+				model->mMeshes[m]->mVertices[v].y,
+				model->mMeshes[m]->mVertices[v].z,
+			};
+
+			if (model->mMeshes[m]->HasNormals())
+			{
+				vertex.Normal =
+				{
+					model->mMeshes[m]->mNormals[v].x,
+					model->mMeshes[m]->mNormals[v].y,
+					model->mMeshes[m]->mNormals[v].z,
+				};
+			}
+
+			if (model->mMeshes[m]->HasTextureCoords(v))
+			{
+				vertex.TexCoord =
+				{
+					model->mMeshes[m]->mTextureCoords[v]->x,
+					1 - model->mMeshes[m]->mTextureCoords[v]->y
+				};
+			}
+
+			//vertex.MaterialIndex = std::max(0, mesh.material_ids[faceId++ / 3]);
+
+			vertex.MaterialIndex = model->mMeshes[m]->mMaterialIndex;
+
+			if (uniqueVertices.count(vertex) == 0)
+			{
+				uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+				vertices.push_back(vertex);
+			}
+
+			indices.push_back(uniqueVertices[vertex]);
+		}
+
+		if (!model->mMeshes[m]->HasNormals())
+		{
+			std::vector<vec3> normals(vertices.size());
+
+			for (size_t i = 0; i < indices.size(); i += 3)
+			{
+				const auto normal = normalize(cross(
+					vec3(vertices[indices[i + 1]].Position) - vec3(vertices[indices[i]].Position),
+					vec3(vertices[indices[i + 2]].Position) - vec3(vertices[indices[i]].Position)));
+
+				vertices[indices[i + 0]].Normal += normal;
+				vertices[indices[i + 1]].Normal += normal;
+				vertices[indices[i + 2]].Normal += normal;
+			}
+
+			for (auto& vertex : vertices)
+			{
+				vertex.Normal = normalize(vertex.Normal);
+			}
+		}
+
+		Model model = Model(std::move(vertices), std::move(indices), std::move(materials), nullptr);
+		models.push_back(model);
+	}
+
+	const auto elapsed = std::chrono::duration<float, std::chrono::seconds::period>(std::chrono::high_resolution_clock::now() - timer).count();
+
+	std::cout << "(" << totalvertices << " vertices, " << uniqueVertices.size() << " unique vertices, " << materials.size() << " materials) ";
+	std::cout << elapsed << "s" << std::endl;
+
+	return models;
+}
+
 Model Model::CreateCornellBox(const float scale)
 {
 	std::vector<Vertex> vertices;

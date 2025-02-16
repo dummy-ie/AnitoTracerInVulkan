@@ -20,6 +20,7 @@ void ModelManager::destroy()
 {
 	sharedInstance->gameObjectMap.clear();
 	sharedInstance->gameObjectList.clear();
+	sharedInstance->lightList.clear();
 	delete sharedInstance;
 }
 
@@ -79,9 +80,10 @@ ModelManager::LightPropsList ModelManager::getAllLightProperties() const
 	LightPropsList lights;
 	for (int i = 0; i < this->lightList.size(); i++)
 	{
-		if (this->lightList[i]->getModel())
+		if (this->lightList[i])
 			lights.push_back(this->lightList[i]->Properties());
 	}
+
 	return lights;
 }
 
@@ -118,8 +120,6 @@ void ModelManager::addObject(std::shared_ptr<GameObject> gameObject)
 		this->gameObjectMap[gameObject->getName()] = gameObject;
 	}
 	this->gameObjectList.push_back(gameObject);
-	if (gameObject->getType() == GameObject::LIGHT)
-
 	std::cout << "Added game object in manager: " + gameObject->getName() << std::endl;
 }
 
@@ -214,6 +214,37 @@ void ModelManager::createObjectFromFile(String name, GameObject::PrimitiveType t
 	gameObject->setLocalRotation(rotation);
 	gameObject->setLocalScale(scale);
 	addObject(gameObject);
+}
+
+void ModelManager::createObjectGroupFromFile(String name, GameObject::PrimitiveType type, vec3 position, vec3 rotation, vec3 scale)
+{
+	std::string meshFilePath;
+	std::string fileName;
+
+	if (!FileUtils::getFilePath(meshFilePath, fileName))
+	{
+		Debug::Log("Cancelled loading OBJ from path: " + meshFilePath);
+
+		return;
+	}
+
+	if (!meshFilePath.empty()) {
+		Debug::Log("Loading OBJ from path: " + meshFilePath);
+	}
+
+	// load all models of the group into a list
+	std::vector<Assets::Model> models = Assets::Model::LoadModelGroup(meshFilePath);
+	
+	//create a game object for each model
+	for (int i = 0; i < models.size(); i++) 
+	{
+		std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>(name + "_1", type, std::make_shared<Assets::Model>(models[i]));
+		gameObject->setLocalPosition(position);
+		gameObject->setLocalRotation(rotation);
+		gameObject->setLocalScale(scale);
+		addObject(gameObject);
+	}
+
 }
 
 void ModelManager::deleteObject(std::shared_ptr<GameObject> gameObject)

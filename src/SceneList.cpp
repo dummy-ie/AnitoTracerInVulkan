@@ -3,6 +3,7 @@
 #include "Assets/Model.hpp"
 #include "Assets/Texture.hpp"
 #include <functional>
+#include <iostream>
 #include <random>
 
 #include "Assets/SphereProc.hpp"
@@ -670,13 +671,12 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	lucyObj->setLocalPosition(2500, 0, 0);
 	planeObj->setLocalPosition(-500, 0, 2500);
 
+	// Add light objects
+	std::shared_ptr<Light> pl1 = std::make_shared<Light>("Point Light 1", Light::LightType::PointLight);
+	ModelManager::getInstance()->addLightObject(pl1);
+
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
 	std::vector<Texture> textures = AssembleTextureList();
-
-	// Add light objects
-	std::shared_ptr<GameObject> pl1 = std::make_shared<GameObject>("Point Light 1", GameObject::PrimitiveType::LIGHT);
-	ModelManager::getInstance()->addObject(pl1);
-
 	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
 
 	return std::forward_as_tuple(std::move(models), std::move(textures), std::move(lights));
