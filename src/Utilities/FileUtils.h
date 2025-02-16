@@ -12,7 +12,7 @@ public:
 	static std::filesystem::path getAssetsFolderPath();
 	static std::filesystem::path getExecutablePath();
 
-	static bool getFilePath(std::string& filePath, std::string& fileName);
-	//void getFilePath(std::string* filePath);
+	static bool getModelFilePath(std::string& filePath, std::string& fileName);
+	//void getModelFilePath(std::string* filePath);
 };
 

@@ -77,7 +77,7 @@ void MenuScreen::drawUI()
 			if (ImGui::MenuItem("Create Cylinder")) { onCreateCylinderClicked(); }
 			//if (ImGui::MenuItem("Create Textured Cube")) { this->OnCreateTexturedCubeClicked(); } // add texture component
 			if (ImGui::MenuItem("Create Plane")) { this->OnCreatePlaneClicked(); }
-			if (ImGui::MenuItem("Load OBJ...", nullptr, isLoadObjOpen))
+			if (ImGui::MenuItem("Create Game Object From File...", nullptr, isLoadObjOpen))
 			{
 				isLoadObjOpen = !isLoadObjOpen;
 			}
@@ -214,14 +214,15 @@ void MenuScreen::ShowLoadObjMenu()
 {
 	ImGui::SetNextWindowSize(ImVec2(500, 200));
 
-	if (ImGui::Begin("Create GameObject from OBJ", &isLoadObjOpen))
+	if (ImGui::Begin("Create GameObject from File", &isLoadObjOpen))
 	{
-		static std::string name;
+		static std::string name = "GameObject";
 		//GameObject::PrimitiveType type;
 		static float position[3] = {0, 0, 0};
 		static float rotation[3] = {0, 0, 0};
 		static float scale[3] = {1, 1, 1};
 
+		ImGui::Text("Spawn with the following attributes: ");
 		ImGui::InputTextWithHint("GameObject Name", "Name...", &name);
 		//ImGui::SameLine();
 		ImGui::InputFloat3("Position", position);
@@ -231,9 +232,8 @@ void MenuScreen::ShowLoadObjMenu()
 		ImGui::InputFloat3("Scale", scale);
 		ImGui::Separator();
 
-		if (ImGui::Button("Create", ImVec2(100, 25)))
+		if (ImGui::Button("Select File...", ImVec2(150, 25)))
 		{
-
 			ModelManager::getInstance()->createObjectFromFile(
 				name,
 				GameObject::PrimitiveType::CUBE,

@@ -197,7 +197,7 @@ void ModelManager::createObjectFromFile(String name, GameObject::PrimitiveType t
 	std::string meshFilePath;
 	std::string fileName;
 
-	if (!FileUtils::getFilePath(meshFilePath, fileName))
+	if (!FileUtils::getModelFilePath(meshFilePath, fileName))
 	{
 		Debug::Log("Cancelled loading OBJ from path: " + meshFilePath);
 
@@ -221,7 +221,7 @@ void ModelManager::createObjectGroupFromFile(String name, GameObject::PrimitiveT
 	std::string meshFilePath;
 	std::string fileName;
 
-	if (!FileUtils::getFilePath(meshFilePath, fileName))
+	if (!FileUtils::getModelFilePath(meshFilePath, fileName))
 	{
 		Debug::Log("Cancelled loading OBJ from path: " + meshFilePath);
 
