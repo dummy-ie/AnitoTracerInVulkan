@@ -130,14 +130,6 @@ set(src_files_camerasystem
 	Engine/CameraSystem/SceneCamera.h
 )
 
-set(src_files_legitprofiler
-	LegitProfiler/CpuProfiler.h
-	LegitProfiler/GpuProfiler.h
-	LegitProfiler/Handles.h
-	LegitProfiler/ProfilerTask.h
-	LegitProfiler/TimestampQuery.h
-)
-
 set(src_files_tracy
 	tracy-0.11.1/public/TracyClient.cpp
 )
@@ -322,7 +314,6 @@ set(src_files
 source_group("Assets" FILES ${src_files_assets})
 source_group("Assimp" FILES ${src_files_assimp})
 source_group("CameraSystem" FILES ${src_files_camerasystem})
-source_group("LegitProfiler" FILES ${src_files_legitprofiler})
 source_group("Tracy" FILES ${src_files_tracy})
 source_group("LightSystem" FILES ${src_files_lightsystem})
 source_group("ImGui" FILES ${src_files_imgui})
@@ -336,7 +327,6 @@ add_executable(${exe_name}
 	${src_files_assets}
 	${src_files_assimp}
 	${src_files_camerasystem} 
-	${src_files_legitprofiler} 
 	${src_files_lightsystem} 
 	${src_files_tracy} 
 	${src_files_imgui} 
