@@ -122,11 +122,11 @@ void main()
 			lighting += calculateDirectionalLight(Lights[i], worldPos, normal);
 		} else if (Lights[i].LightType == SpotLight) { // Spot Light
 			//lighting += calculateSpotLight(Lights[i], worldPos, normal);
-		}
+		} 
 	}
 	if (Lights.length() == 0) { // Pink light if buffer is empty
-		LightProperties sl = InitializeTestPLProperties(); // Adding directional light.
-		lighting += calculateDirectionalLight(sl, worldPos, normal);
+		LightProperties sl = InitializeTestPLProperties(); // Adding spot light.
+		lighting += calculatePointLight(sl, worldPos, normal);
 	}
 	//LightProperties dl = InitializeTestDLProperties(); // Adding directional light.
 	//lighting += calculateDirectionalLight(dl, worldPos, normal);

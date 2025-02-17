@@ -27,6 +27,7 @@ private:
 	friend class UIManager;
 
 	bool isLoadObjOpen = false;
+	bool isLoadSceneOpen = false;
 	bool isColorPickerOpen = false;
 	bool isOpen = false;
 

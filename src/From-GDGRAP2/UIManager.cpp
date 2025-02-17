@@ -93,9 +93,9 @@ UIManager::UIManager()
 	this->uiTable[uiNames.PROFILER_SCREEN] = profilerScreen;
 	this->uiList.push_back(profilerScreen);
 
-	std::shared_ptr<gdeng03::PlaybackScreen> playbackScreen = std::make_shared<gdeng03::PlaybackScreen>();
-	this->uiTable[uiNames.PLAYBACK_SCREEN] = playbackScreen;
-	this->uiList.push_back(playbackScreen);
+	//std::shared_ptr<gdeng03::PlaybackScreen> playbackScreen = std::make_shared<gdeng03::PlaybackScreen>();
+	//this->uiTable[uiNames.PLAYBACK_SCREEN] = playbackScreen;
+	//this->uiList.push_back(playbackScreen);
 
 	// nawt working yet lol!
 	std::shared_ptr<gdeng03::MaterialEditorScreen> materialEditorScreen = std::make_shared<gdeng03::MaterialEditorScreen>();

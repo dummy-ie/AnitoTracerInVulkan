@@ -274,6 +274,37 @@ std::vector<Model> Model::LoadModelGroup(const std::string& filename)
 	for (int m = 0; m < model->mNumMeshes; m++)
 	{
 		//const auto& mesh = shape.mesh;
+		materials.clear();
+		if (model->HasMaterials())
+		{
+			for (int i = 0; i < model->mNumMaterials; i++)
+			{
+				Material m{};
+
+				aiColor4D diffuse;
+				aiGetMaterialColor(model->mMaterials[i], AI_MATKEY_COLOR_DIFFUSE, &diffuse);
+
+				//m.Diffuse.r = diffuse[0];
+				//m.Diffuse.g = diffuse[1];
+				//m.Diffuse.b = diffuse[2];
+				//m.Diffuse.a = 1.0f;
+
+				m.Diffuse = vec4(diffuse[0], diffuse[1], diffuse[2], 1.0);
+
+				m.DiffuseTextureId = -1;
+
+				materials.emplace_back(m);
+			}
+		}
+		else
+		{
+			Material m{};
+
+			m.Diffuse = vec4(0.7f, 0.7f, 0.7f, 1.0);
+			m.DiffuseTextureId = -1;
+
+			materials.emplace_back(m);
+		}
 
 		for (int v = 0; v < model->mMeshes[m]->mNumVertices; v++)
 		{

@@ -586,20 +586,19 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 
 	bool isProcedural = false;
 
-	/*Material areaLight = Material::DiffuseLight(vec3(0.73, 0.73, 0.73) * 7.0f);
+	Material areaLight = Material::DiffuseLight(vec3(0.73, 0.73, 0.73) * 7.0f);
 	Model areaLightModel = Model::CreateBox(vec3(0, 0, 0), vec3(1000, 10, 1000), areaLight);
 	std::shared_ptr<GameObject> areaLightObject = std::make_shared<GameObject>("AreaLight", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(areaLightModel));
-	areaLightObject->setPosition(1000.0f, 1000.0f, -500.0f);
-	ModelManager::getInstance()->addObject(areaLightObject);*/
+	areaLightObject->setLocalPosition(1000.0f, 1000.0f, -500.0f);
+	ModelManager::getInstance()->addObject(areaLightObject);
 
-	// KATE FLAG >> Adding Camera Object in scene
 	std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>("Camera", GameObject::PrimitiveType::CAMERA);
 	ModelManager::getInstance()->addObject(cameraObj);
 
 	const auto i = mat4(1);
 	const auto white = Material::Lambertian(vec3(0.73f, 0.73f, 0.73f));
 	const auto mirror = Material::Metallic(vec3(0.21f, 0.43f, 0.71f), 0.0f);
-	//const auto mirror = Material::Dielectric(1.6f, 0.0f);
+	//const auto mirror = Material::Dielectric(1.6f, 0.0f); 
 
 	Model box0 = Model::CreateBox(vec3(0, 0, -165), vec3(165, 165, 0), white);
 	Model box1 = Model::CreateBox(vec3(0, 0, -165), vec3(165, 330, 0), white);
