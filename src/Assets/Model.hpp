@@ -37,6 +37,14 @@ namespace Assets
 		const std::vector<uint32_t>& Indices() const { return indices_; }
 		const std::vector<Material>& Materials() const { return materials_; }
 
+		Material* getMaterial(const unsigned index)
+		{
+			if (materials_.empty() || index >= materials_.size())
+				return nullptr;
+				
+			return &materials_.at(index);
+		}
+
 		const class Procedural* Procedural() const { return procedural_.get(); }
 
 		uint32_t NumberOfVertices() const { return static_cast<uint32_t>(vertices_.size()); }

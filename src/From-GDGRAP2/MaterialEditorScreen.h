@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "AUIScreen.h"
+#include "GameObject.h"
 #include "Assets/Material.hpp"
 
 namespace gdeng03
@@ -24,7 +25,6 @@ namespace gdeng03
 
 		bool canSelectMaterial() const;
 		void updateMaterial(Material* mat);
-		void setSelectedMaterial(Material* mat);
 		void unselectMaterial();
 
 	private:
@@ -33,6 +33,7 @@ namespace gdeng03
 		void updateSelectedMaterial();
 		void showMaterialEditorWindow();
 
+		void setSelectedMaterial(Material* mat);
 		// static std::vector<unsigned char> getPixelData(const TexturePtr& texture);
 		// static bool isNormalImage(const TexturePtr& texture);
 		//
@@ -41,16 +42,31 @@ namespace gdeng03
 
 	private:
 		Material* selectedMaterial = nullptr;
+		GameObject* selectedObject = nullptr;
 
 		bool isColorPickerOpen = false;
 		//bool isMaterialEditorOpen = false;
 
-		ImVec4 color = ImVec4(1, 1, 1, 1);
-		float metallic = 0;
-		float smoothness = 0;
-		float flatness = 0;
-		ImVec2 tiling = { 1,1 };
-		ImVec2 offset = { 0,0 };
+		 ImVec4 diffuse = ImVec4(1, 1, 1, 1);
+		//
+		// // Base material
+		// //glm::vec4 Diffuse;
+		// int32_t diffuseTextureId;
+		//
+		// // Metal fuzziness
+		// float fuzziness;
+		//
+		// // Dielectric refraction index
+		// float refractionIndex;
+		//
+		// // Which material are we dealing with
+		// Material::Enum materialModel;
+
+		// float metallic = 0;
+		// float smoothness = 0;
+		// float flatness = 0;
+		// ImVec2 tiling = { 1,1 };
+		// ImVec2 offset = { 0,0 };
 
 		// TexturePtr albedoTexture;
 		// TexturePtr metallicTexture;

@@ -439,8 +439,6 @@ Model Model::CreatePlane(const glm::vec3& p0, const glm::vec3& p1, const Materia
 		std::move(indices),
 		std::vector<Material>{material},
 		nullptr);
-
-	return {};
 }
 
 Model Model::CreateSphere(const vec3& center, float radius, const Material& material, const bool isProcedural)

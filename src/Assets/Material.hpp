@@ -55,6 +55,8 @@ namespace Assets
 
 		// Which material are we dealing with
 		Enum MaterialModel;
+
+		//const char* Name = "Material";
 	};
 
 }
