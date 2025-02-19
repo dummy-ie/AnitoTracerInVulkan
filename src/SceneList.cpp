@@ -82,7 +82,8 @@ const std::vector<std::tuple<std::string, std::function<SceneAssets(SceneList::C
 	{"GDGRAP2 - Sphere World", GDGRAP2_SphereWorld},
 	{"GRGRAP2 - Cornell Box", GDGRAP2_CornellBox},
 	{"GDGRAP2 - Box World", GDGRAP2_BoxWorld},
-	{"AnitoTracer - Demo Scene", AnitoTracer_DemoScene}
+	{"AnitoTracer - Demo Scene", AnitoTracer_DemoScene},
+	{"Sponza", Sponza}
 };
 
 SceneAssets SceneList::CubeAndSpheres(CameraInitialState& camera)
@@ -673,6 +674,65 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	// Add light objects
 	std::shared_ptr<Light> pl1 = std::make_shared<Light>("Point Light 1", Light::LightType::PointLight);
 	ModelManager::getInstance()->addLightObject(pl1);
+
+	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
+	std::vector<Texture> textures = AssembleTextureList();
+	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
+
+	return std::forward_as_tuple(std::move(models), std::move(textures), std::move(lights));
+}
+
+SceneAssets SceneList::Sponza(CameraInitialState& camera)
+{
+	camera.ModelView = lookAt(vec3(278, 278, 800), vec3(278, 278, 0), vec3(0, 1, 0));
+	camera.FieldOfView = 40;
+	camera.Aperture = 0.0f;
+	camera.FocusDistance = 10.0f;
+	camera.ControlSpeed = 500.0f;
+	camera.GammaCorrection = true;
+	camera.HasSky = true;
+
+	std::mt19937 engine(1);
+	std::function<float()> random = std::bind(std::uniform_real_distribution<float>(), engine);
+
+	bool isProcedural = false;
+
+	Material areaLight = Material::DiffuseLight(vec3(0.80, 0, 0) * 7.0f);
+	Model areaLightModel = Model::CreateBox(vec3(0, 0, 0), vec3(2000, 10, 2000), areaLight);
+	Material areaLight2 = Material::DiffuseLight(vec3(0, 0, 0.80) * 7.0f);
+	Model areaLightModel2 = Model::CreateBox(vec3(0, 0, 0), vec3(2000, 10, 2000), areaLight2);
+
+	std::shared_ptr<GameObject> areaLightObject = std::make_shared<GameObject>("AreaLight", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(areaLightModel));
+	areaLightObject->setLocalPosition(0, 1000, 0);
+	ModelManager::getInstance()->addObject(areaLightObject);
+	std::shared_ptr<GameObject> areaLightObject2 = std::make_shared<GameObject>("AreaLight", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(areaLightModel2));
+	areaLightObject2->setLocalPosition(-1500, 1000, -1500);
+	ModelManager::getInstance()->addObject(areaLightObject2);
+
+	std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>("Camera", GameObject::PrimitiveType::CAMERA);
+	ModelManager::getInstance()->addObject(cameraObj);
+	cameraObj->setLocalPosition(0, 10.0f, 0);
+
+	const auto i = mat4(1);
+	const auto white = Material::Lambertian(vec3(0.73f, 0.73f, 0.73f));
+	const auto mirror = Material::Metallic(vec3(0.21f, 0.43f, 0.71f), 0.0f);
+
+	auto sponza = Model::LoadModel(FileUtils::getAssetsFolderPath().generic_string() + "/models/sponza.obj");
+	//sponza.SetMaterial(white);
+	sponza.Transform(
+		rotate(
+			scale(
+				translate(i, vec3(0, 0, 0)),
+				vec3(0.6f)),
+			radians(75.0f), vec3(0, 1, 0)));
+
+	std::shared_ptr<GameObject> sponzaObj = std::make_shared<GameObject>("Sponza", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(sponza));
+	ModelManager::getInstance()->addObject(sponzaObj);
+	sponzaObj->setLocalPosition(350, 0, 300);
+
+	// Add light objects
+	//std::shared_ptr<Light> pl1 = std::make_shared<Light>("Point Light 1", Light::LightType::PointLight);
+	//ModelManager::getInstance()->addLightObject(pl1);
 
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
 	std::vector<Texture> textures = AssembleTextureList();

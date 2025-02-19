@@ -18,6 +18,7 @@
 #include <vector>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
+#include <Assimp/postprocess.h>
 
 #include "Capsule.hpp"
 #include "Cylinder.hpp"
@@ -50,18 +51,19 @@ namespace std
 
 namespace Assets {
 
-Model Model::LoadModel(const std::string& filename)
-{
-	std::cout << "- loading '" << filename << "'... " << std::flush;
+	Model Model::LoadModel(const std::string& filename)
+	{
+		std::cout << "- loading '" << filename << "'... " << std::flush;
 
-	const auto timer = std::chrono::high_resolution_clock::now();
-	const std::string materialPath = std::filesystem::path(filename).parent_path().string();
-	
-	//tinyobj::ObjReader objReader;
+		const auto timer = std::chrono::high_resolution_clock::now();
+		const std::string materialPath = std::filesystem::path(filename).parent_path().string();
 
-	Assimp::Importer objectImporter;
-	
-	const aiScene* model = objectImporter.ReadFile(filename, 0); //read file and return an aiScene containing model attributes
+		//tinyobj::ObjReader objReader;
+
+		Assimp::Importer objectImporter;
+
+		const aiScene* model = objectImporter.ReadFile(filename, 0);
+		//read file and return an aiScene containing model attributes
 
 
 	if (model == nullptr)
@@ -149,6 +151,15 @@ Model Model::LoadModel(const std::string& filename)
 					model->mMeshes[m]->mNormals[v].z,
 				};
 			}
+			else 
+			{
+				vertex.Normal =	
+				{
+					model->mMeshes[m]->mVertices[v].Normalize().x,
+					model->mMeshes[m]->mVertices[v].Normalize().y,
+					model->mMeshes[m]->mVertices[v].Normalize().z,
+				};
+			}
 
 			if (model->mMeshes[m]->HasTextureCoords(v))
 			{
@@ -217,7 +228,11 @@ std::vector<Model> Model::LoadModelGroup(const std::string& filename)
 	Assimp::Importer objectImporter;
 	std::vector<Model> models;
 
-	const aiScene* model = objectImporter.ReadFile(filename, 0); //read file and return an aiScene containing model attributes
+	const aiScene* model = objectImporter.ReadFile(filename,
+		aiProcess_CalcTangentSpace |
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_SortByPType); //read file and return an aiScene containing model attributes
 
 
 	if (model == nullptr)
