@@ -17,6 +17,7 @@
 #include "From-GDGRAP2/GlobalConfig.h"
 #include "From-GDGRAP2/ModelManager.h"
 #include "UI/UIManager.h"
+#include "From-GDGRAP2/MaterialLibrary.h"
 #include "ImGui/imgui_impl_vulkan.h"
 
 #include "Engine/CameraSystem/CameraManager.h"
@@ -42,6 +43,7 @@ RayTracer::RayTracer(const UserSettings& userSettings, const Vulkan::WindowConfi
 	EventBroadcaster::getInstance()->addObserver(EventNames::ON_MARK_SCENE_DIRTY, this);
 
 	CameraManager::initialize();
+	MaterialLibrary::initialize();
 }
 
 RayTracer::~RayTracer()
@@ -278,6 +280,10 @@ void RayTracer::OnMouseButton(const int button, const int action, const int mods
 	{
 		return;
 	}
+
+
+
+
 
 	// Camera motions
 	resetAccumulation_ |= CameraManager::getInstance()->getActiveCamera()->OnMouseButton(button, action, mods);

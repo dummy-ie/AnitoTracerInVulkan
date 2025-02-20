@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "Utilities/Glm.hpp"
 
 namespace Assets
@@ -7,29 +9,29 @@ namespace Assets
 
 	struct alignas(16) Material final
 	{
-		static Material Lambertian(const glm::vec3& diffuse, const int32_t textureId = -1)
+		static std::shared_ptr<Material> Lambertian(const glm::vec3& diffuse, const int32_t textureId = -1)
 		{
-			return Material{ glm::vec4(diffuse, 1), textureId, 0.0f, 0.0f, Enum::Lambertian };
+			return std::make_shared<Material>(glm::vec4(diffuse, 1), textureId, 0.0f, 0.0f, Enum::Lambertian);
 		}
 
-		static Material Metallic(const glm::vec3& diffuse, const float fuzziness, const int32_t textureId = -1)
+		static std::shared_ptr<Material> Metallic(const glm::vec3& diffuse, const float fuzziness, const int32_t textureId = -1)
 		{
-			return Material{ glm::vec4(diffuse, 1), textureId, fuzziness, 0.0f, Enum::Metallic };
+			return std::make_shared<Material>(glm::vec4(diffuse, 1), textureId, fuzziness, 0.0f, Enum::Metallic);
 		}
 
-		static Material Dielectric(const float refractionIndex, const int32_t textureId = -1)
+		static std::shared_ptr<Material> Dielectric(const float refractionIndex, const int32_t textureId = -1)
 		{
-			return Material{ glm::vec4(0.7f, 0.7f, 1.0f, 1), textureId,  0.0f, refractionIndex, Enum::Dielectric };
+			return std::make_shared<Material>(glm::vec4(0.7f, 0.7f, 1.0f, 1), textureId,  0.0f, refractionIndex, Enum::Dielectric);
 		}
 
-		static Material Isotropic(const glm::vec3& diffuse, const int32_t textureId = -1)
+		static std::shared_ptr<Material> Isotropic(const glm::vec3& diffuse, const int32_t textureId = -1)
 		{
-			return Material{ glm::vec4(diffuse, 1), textureId, 0.0f, 0.0f, Enum::Isotropic };
+			return std::make_shared<Material>(glm::vec4(diffuse, 1), textureId, 0.0f, 0.0f, Enum::Isotropic);
 		}
 
-		static Material DiffuseLight(const glm::vec3& diffuse, const int32_t textureId = -1)
+		static std::shared_ptr<Material> DiffuseLight(const glm::vec3& diffuse, const int32_t textureId = -1)
 		{
-			return Material{ glm::vec4(diffuse, 1), textureId, 0.0f, 0.0f, Enum::DiffuseLight };
+			return std::make_shared<Material>(glm::vec4(diffuse, 1), textureId, 0.0f, 0.0f, Enum::DiffuseLight);
 		}
 
 		enum class Enum : uint32_t

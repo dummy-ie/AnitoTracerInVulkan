@@ -1,7 +1,10 @@
 #include "Camera.h"
 
+#include <iostream>
 #include <glm/fwd.hpp>
 
+#include "From-GDGRAP2/ModelManager.h"
+#include "OBB/Ray.hpp"
 #include "Vulkan/Vulkan.hpp"
 
 Camera::Camera(std::string name, ProjectionMode proj) : GameObject(name, PrimitiveType::CAMERA)
@@ -83,10 +86,61 @@ bool Camera::OnCursorPosition(const double xpos, const double ypos)
 
 bool Camera::OnMouseButton(const int button, const int action, const int mods)
 {
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		float ndcX = (2.0f * static_cast<float>(mousePosX_)) / windowWidth_ - 1.0f;
+		float ndcY = 1.0f - (2.0f * static_cast<float>(mousePosY_)) / windowHeight_;
+		glm::vec2 mouseNDC(ndcX, ndcY);
+
+		glm::mat4 view = orientation_;
+		glm::mat4 proj = projection_;
+		glm::mat4 invVP = glm::inverse(proj * view);
+
+		glm::vec4 rayStartNDC(mouseNDC, -1.0f, 1.0f);
+		glm::vec4 rayEndNDC(mouseNDC, 1.0f, 1.0f);
+
+		glm::vec4 rayStartWorld = invVP * rayStartNDC;
+		glm::vec4 rayEndWorld = invVP * rayEndNDC;
+		rayStartWorld /= rayStartWorld.w;
+		rayEndWorld /= rayEndWorld.w;
+
+		glm::vec3 rayOrigin = glm::vec3(rayStartWorld);
+		glm::vec3 rayDirection = glm::normalize(glm::vec3(rayEndWorld - rayStartWorld));
+
+		// Construct the picking ray.
+		Ray pickingRay(rayOrigin, rayDirection);
+
+		// Iterate over objects from ModelManager.
+		auto objects = ModelManager::getInstance()->getAllObjects();
+		for (auto& obj : objects)
+		{
+			if (!obj->isEnabled())
+				continue;
+
+			auto obb = obj->getOBB();
+			if (obb)
+			{
+				
+				float tHit = 0.0f;
+				if (pickingRay.intersects(*obb, tHit))
+				{
+					glm::vec3 hitPoint = rayOrigin + rayDirection * tHit;
+					std::cout << "Picked object: " << obj->getName() << "\n";
+					std::cout << "Intersection at (" << hitPoint.x << ", "
+						<< hitPoint.y << ", " << hitPoint.z << ")\n";
+
+					ModelManager::getInstance()->setSelectedObject(obj);
+					break;
+				}
+			}
+		}	
+	}
+
 	if (button == GLFW_MOUSE_BUTTON_LEFT)
 	{
 		mouseLeftPressed_ = action == GLFW_PRESS;
 	}
+		
 
 	if (button == GLFW_MOUSE_BUTTON_RIGHT)
 	{
@@ -131,13 +185,18 @@ glm::mat4 Camera::GetProjection(UserSettings settings, const VkExtent2D extent)
 	switch (projMode)
 	{
 	case ProjectionMode::orthographic:
-		return glm::ortho(-1000.0f, 1000.0f, 1000.0f, -1000.0f, 0.1f, 1000.0f);
+		projection_ = glm::ortho(-1000.0f, 1000.0f, 1000.0f, -1000.0f, 0.1f, 1000.0f);
 		break;
 
 	case ProjectionMode::perspective:
-		return glm::perspective(glm::radians(settings.FieldOfView), extent.width / static_cast<float>(extent.height), 0.1f, 10000.0f);
+		projection_ = glm::perspective(glm::radians(settings.FieldOfView), extent.width / static_cast<float>(extent.height), 0.1f, 10000.0f);
 		break;
 	}
+
+	windowWidth_ = extent.width;
+	windowHeight_ = extent.height;
+
+	return projection_;
 }
 
 void Camera::SetProjectionType(ProjectionMode type)

@@ -5,6 +5,7 @@
 
 #include "Assets/Model.hpp"
 #include "From-GDGRAP2/VectorUtils.h"
+#include "OBB/BoundingBox.hpp"
 
 class GameObject
 {
@@ -58,6 +59,11 @@ public:
     uint32_t getID() const;
     void setID(uint32_t newID);
 
+    void setOBB(const BoundingBox& obb);
+    std::shared_ptr<BoundingBox> getOBB() const;
+
+    void updateWorldTransform();
+
 protected:
     String name;
     PrimitiveType type;
@@ -80,9 +86,8 @@ protected:
 
     GameObject* parent = nullptr;
     std::vector<GameObject*> children;
-    
 
-    void updateWorldTransform();
+    std::shared_ptr<BoundingBox> obb;
 
     virtual void performModelTransform();
     virtual void performModelRotate();

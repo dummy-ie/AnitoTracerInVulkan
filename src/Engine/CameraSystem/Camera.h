@@ -39,6 +39,7 @@ protected:
 
 	// Matrices and vectors.
 	glm::mat4 orientation_{};
+	glm::mat4 projection_{};
 
 	glm::vec4 position_{};
 	glm::vec4 right_{ 1, 0, 0, 0 };
@@ -63,4 +64,7 @@ protected:
 
 	bool mouseLeftPressed_{};
 	bool mouseRightPressed_{};
+
+	float windowWidth_{};
+	float windowHeight_{};
 };

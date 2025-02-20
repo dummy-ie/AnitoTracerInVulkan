@@ -3,9 +3,9 @@
 #include "imgui_stdlib.h"
 #include <iostream>
 
-#include "Debug.h"
-#include "EventBroadcaster.h"
-#include "ModelManager.h"
+#include "From-GDGRAP2/Debug.h"
+#include "From-GDGRAP2/EventBroadcaster.h"
+#include "From-GDGRAP2/ModelManager.h"
 #include "UIManager.h"
 #include "Utilities/FileUtils.h"
 
