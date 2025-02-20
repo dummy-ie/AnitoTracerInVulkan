@@ -2,10 +2,10 @@
 
 #include <algorithm>
 
-#include "Debug.h"
-#include "EventBroadcaster.h"
-#include "EventNames.h"
-#include "ModelManager.h"
+#include "From-GDGRAP2/Debug.h"
+#include "From-GDGRAP2/EventBroadcaster.h"
+#include "From-GDGRAP2/EventNames.h"
+#include "From-GDGRAP2/ModelManager.h"
 #include "UIManager.h"
 
 using namespace gdeng03;

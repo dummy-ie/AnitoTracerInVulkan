@@ -1,6 +1,6 @@
 #pragma once
 #include "AUIScreen.h"
-#include "GameObject.h"
+#include "From-GDGRAP2/GameObject.h"
 
 class Texture;
 class InspectorScreen :    public AUIScreen

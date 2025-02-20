@@ -1,8 +1,10 @@
 #include "UIManager.h"
+
+#include "AssetExplorerScreen.h"
 #include "ConsoleScreen.h"
-#include "RTConfig.h"
+#include "From-GDGRAP2/RTConfig.h"
 #include "MenuScreen.h"
-#include "Debug.h"
+#include "From-GDGRAP2/Debug.h"
 #include "HierarchyScreen.h"
 #include "InspectorScreen.h"
 #include "MaterialEditorScreen.h"
@@ -101,6 +103,10 @@ UIManager::UIManager()
 	std::shared_ptr<gdeng03::MaterialEditorScreen> materialEditorScreen = std::make_shared<gdeng03::MaterialEditorScreen>();
 	this->uiTable[uiNames.MATERIAL_EDITOR_SCREEN] = materialEditorScreen;
 	this->uiList.push_back(materialEditorScreen);
+
+	std::shared_ptr<AssetExplorerScreen> assetExplorerScreen = std::make_shared<AssetExplorerScreen>();
+	this->uiTable[uiNames.ASSET_EXPLORER_SCREEN] = assetExplorerScreen;
+	this->uiList.push_back(assetExplorerScreen);
 
 	// nawt working yet lol!
 	// std::shared_ptr<ViewportScreen> viewportScreen = std::make_shared<ViewportScreen>();

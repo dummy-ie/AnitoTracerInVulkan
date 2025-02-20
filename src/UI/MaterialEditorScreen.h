@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "AUIScreen.h"
-#include "GameObject.h"
+#include "From-GDGRAP2/GameObject.h"
 #include "Assets/Material.hpp"
 
 namespace gdeng03
