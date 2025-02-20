@@ -619,13 +619,13 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	ModelManager::getInstance()->addObject(cornellBoxObject);
 	cornellBoxObject->setLocalPosition(0, 1, 0);
 
-	//Model capsuleTest = Model::CreateCapsule(vec3(2000,500,300), 100, 500, white);
-	//std::shared_ptr<GameObject> capsuleObject = std::make_shared<GameObject>("Cylinder", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(capsuleTest));
-	//ModelManager::getInstance()->addObject(capsuleObject);
+	Model capsuleTest = Model::CreateCapsule(vec3(2000,500,300), 100, 500, *white.get());
+	std::shared_ptr<GameObject> capsuleObject = std::make_shared<GameObject>("Cylinder", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(capsuleTest));
+	ModelManager::getInstance()->addObject(capsuleObject);
 
-	//Model cylinderTest = Model::CreateCylinder(vec3(2000, 200, 0), 100, 200, white);
-	//std::shared_ptr<GameObject> cylinderObject = std::make_shared<GameObject>("Cylinder", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(cylinderTest));
-	//ModelManager::getInstance()->addObject(cylinderObject);
+	Model cylinderTest = Model::CreateCylinder(vec3(2000, 200, 0), 100, 200, *white.get());
+	std::shared_ptr<GameObject> cylinderObject = std::make_shared<GameObject>("Cylinder", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(cylinderTest));
+	ModelManager::getInstance()->addObject(cylinderObject);
 
 	auto lucy0 = Model::LoadModel(FileUtils::getAssetsFolderPath().generic_string() + "/models/lucy.obj");
 

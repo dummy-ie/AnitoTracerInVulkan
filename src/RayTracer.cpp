@@ -281,6 +281,10 @@ void RayTracer::OnMouseButton(const int button, const int action, const int mods
 		return;
 	}
 
+
+
+
+
 	// Camera motions
 	resetAccumulation_ |= CameraManager::getInstance()->getActiveCamera()->OnMouseButton(button, action, mods);
 }

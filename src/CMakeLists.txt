@@ -29,6 +29,13 @@ set(src_files_assets
 	Assets/Sphere.hpp
 )
 
+set(src_files_obb
+	OBB/BoundingBox.cpp
+	OBB/BoundingBox.hpp
+	OBB/Ray.cpp
+	OBB/Ray.hpp
+)
+
 set(src_files_assimp
 	Assimp/include/assimp/aabb.h
 	Assimp/include/assimp/ai_assert.h
@@ -321,6 +328,7 @@ set(src_files
 )
 
 source_group("Assets" FILES ${src_files_assets})
+source_group("OBB" FILES ${src_files_obb})
 source_group("Assimp" FILES ${src_files_assimp})
 source_group("CameraSystem" FILES ${src_files_camerasystem})
 source_group("Tracy" FILES ${src_files_tracy})
@@ -335,6 +343,7 @@ source_group("Main" FILES ${src_files})
 
 add_executable(${exe_name} 
 	${src_files_assets}
+	${src_files_obb}
 	${src_files_assimp}
 	${src_files_camerasystem} 
 	${src_files_lightsystem} 

@@ -1,6 +1,7 @@
 #include "GameObject.h"
 
 #include <iostream>
+#include <glm/gtx/euler_angles.hpp>
 
 #include "EventBroadcaster.h"
 
@@ -211,6 +212,16 @@ void GameObject::setID(uint32_t newID)
 	this->id = newID;
 }
 
+void GameObject::setOBB(const BoundingBox& obb)
+{
+	this->obb = std::make_shared<BoundingBox>(obb);
+}
+
+std::shared_ptr<BoundingBox> GameObject::getOBB() const
+{
+	return this->obb;
+}
+
 void GameObject::updateWorldTransform()
 {
 	if (this->parent)
@@ -238,6 +249,41 @@ void GameObject::updateWorldTransform()
 	this->performModelTransform();
 	this->performModelRotate();
 	this->performModelScale();
+
+	if (this->modelRef && !this->modelRef->Vertices().empty())
+	{
+		glm::mat4 worldTransform = glm::translate(glm::mat4(1.0f), this->worldPosition);
+
+		worldTransform *= glm::eulerAngleYXZ(glm::radians(this->worldRotation.y),
+			glm::radians(this->worldRotation.x),
+			glm::radians(this->worldRotation.z));
+
+		worldTransform = glm::scale(worldTransform, this->worldScale);
+
+		std::vector<glm::vec3> worldPositions;
+
+		worldPositions.reserve(this->modelRef->Vertices().size());
+
+		for (const auto& vertex : this->modelRef->Vertices())
+		{
+			glm::vec3 posWorld = glm::vec3(worldTransform * glm::vec4(vertex.Position, 1.0f));
+			worldPositions.push_back(posWorld);
+		}
+
+		glm::mat4 rotMat = glm::eulerAngleYXZ(glm::radians(this->worldRotation.y),
+			glm::radians(this->worldRotation.x),
+			glm::radians(this->worldRotation.z));
+
+		glm::vec3 axisX = glm::normalize(glm::vec3(rotMat[0]));
+		glm::vec3 axisY = glm::normalize(glm::vec3(rotMat[1]));
+		glm::vec3 axisZ = glm::normalize(glm::vec3(rotMat[2]));
+
+		std::array<glm::vec3, 3> axes = { axisX, axisY, axisZ };
+
+		BoundingBox newOBB(worldPositions, axes);
+
+		setOBB(newOBB);
+	}
 }
 
 /**
