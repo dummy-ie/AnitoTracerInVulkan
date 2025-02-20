@@ -4,7 +4,7 @@
 #include "imgui.h"
 #include "From-GDGRAP2/ModelManager.h"
 #include "UIManager.h"
-#include "RTConfig.h"
+#include "From-GDGRAP2/RTConfig.h"
 
 HierarchyScreen::HierarchyScreen() : AUIScreen("HierarchyScreen")
 {

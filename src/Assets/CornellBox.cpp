@@ -19,10 +19,10 @@ void CornellBox::Create(
 	std::vector<uint32_t>& indices,
 	std::vector<Material>& materials)
 {
-	materials.push_back(Material::Lambertian(vec3(0.65f, 0.05f, 0.05f))); // red
-	materials.push_back(Material::Lambertian(vec3(0.12f, 0.45f, 0.15f))); // green
-	materials.push_back(Material::Lambertian(vec3(0.73f, 0.73f, 0.73f))); // white
-	materials.push_back(Material::DiffuseLight(vec3(15.0f))); // light
+	materials.push_back(*Material::Lambertian(vec3(0.65f, 0.05f, 0.05f))); // red
+	materials.push_back(*Material::Lambertian(vec3(0.12f, 0.45f, 0.15f))); // green
+	materials.push_back(*Material::Lambertian(vec3(0.73f, 0.73f, 0.73f))); // white
+	materials.push_back(*Material::DiffuseLight(vec3(15.0f))); // light
 
 	const float s = scale;
 

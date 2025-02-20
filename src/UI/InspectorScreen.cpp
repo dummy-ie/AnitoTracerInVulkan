@@ -1,8 +1,8 @@
 #include "InspectorScreen.h"
 #include "imgui.h"
-#include "ModelManager.h"
+#include "From-GDGRAP2/ModelManager.h"
 #include "UIManager.h"
-#include "GameObject.h"
+#include "From-GDGRAP2/GameObject.h"
 
 InspectorScreen::InspectorScreen() : AUIScreen("InspectorScreen")
 {

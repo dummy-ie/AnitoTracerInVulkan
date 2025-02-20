@@ -1,0 +1,40 @@
+#include "MaterialLibrary.h"
+
+#include "Assets/Material.hpp"
+
+MaterialLibrary* MaterialLibrary::sharedInstance = NULL;
+void MaterialLibrary::addMaterial(std::wstring materialName, Assets::Material* material)
+{
+	this->materialMap[materialName] = material;
+}
+
+void MaterialLibrary::deleteMaterial(std::wstring materialName)
+{
+	this->materialMap.erase(materialName);
+}
+
+Assets::Material* MaterialLibrary::getMaterial(std::wstring materialName)
+{
+	return this->materialMap[materialName];
+}
+
+MaterialLibrary::MaterialLibrary() {
+	this->addMaterial(L"White", Assets::Material::Lambertian(glm::vec3(0.73f, 0.73f, 0.73f)));
+	this->addMaterial(L"BaseMaterial", Assets::Material::Lambertian(glm::vec3(0.f, 0.f, 0.f )));
+}
+
+MaterialLibrary::~MaterialLibrary()
+{
+	this->materialMap.clear();
+}
+
+MaterialLibrary* MaterialLibrary::getInstance() {
+	return sharedInstance;
+}
+
+void MaterialLibrary::initialize() {
+	sharedInstance = new MaterialLibrary();
+}
+void MaterialLibrary::destroy() {
+	delete sharedInstance;
+}

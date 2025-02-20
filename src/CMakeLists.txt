@@ -297,6 +297,8 @@ set(src_files_from_gdgrap2
 	From-GDGRAP2/GameObject.h
 	From-GDGRAP2/ModelManager.cpp
 	From-GDGRAP2/ModelManager.h
+	From-GDGRAP2/MaterialLibrary.cpp
+	From-GDGRAP2/MaterialLibrary.h
 	From-GDGRAP2/EventNames.h
 	From-GDGRAP2/RTConfig.h
 )
