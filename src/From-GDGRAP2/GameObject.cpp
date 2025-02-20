@@ -201,6 +201,16 @@ bool GameObject::isDescendantOf(const GameObject* potentialParent) const
 	return false;
 }
 
+uint32_t GameObject::getID() const
+{
+	return this->id;
+}
+
+void GameObject::setID(uint32_t newID)
+{
+	this->id = newID;
+}
+
 void GameObject::updateWorldTransform()
 {
 	if (this->parent)

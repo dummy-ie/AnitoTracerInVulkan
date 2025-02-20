@@ -51,6 +51,12 @@ void HierarchyScreen::drawObjectNode(GameObject* obj) const
     ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
     if (!hasChildren) flags |= ImGuiTreeNodeFlags_Leaf;
 
+    GameObject* selectedObject = ModelManager::getInstance()->getSelectedObject().get();
+    if (selectedObject == obj)
+    {
+        flags |= ImGuiTreeNodeFlags_Selected;
+    }
+
     // Keep parent node open if previously opened
     bool isNodeOpen = openNodes.count(objectName) > 0;
     if (isNodeOpen) flags |= ImGuiTreeNodeFlags_DefaultOpen;

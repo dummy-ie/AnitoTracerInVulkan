@@ -18,8 +18,12 @@
 #include "ImGui/imgui_impl_vulkan.h"
 
 #include <array>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "Engine/CameraSystem/CameraManager.h"
 #include "From-GDGRAP2/UIManager.h"
 #include "From-GDGRAP2/RTConfig.h"
+#include "ImGui/ImGuizmo.h"
 #include "Utilities/FileUtils.h"
 
 
@@ -39,7 +43,7 @@ UserInterface::UserInterface(
 	const Vulkan::SwapChain& swapChain, 
 	const Vulkan::DepthBuffer& depthBuffer,
 	UserSettings& userSettings) :
-	userSettings_(userSettings)
+	userSettings_(userSettings), swapChain(swapChain)
 {
 	const auto& device = swapChain.Device();
 	const auto& window = device.Surface().Instance().Window();
@@ -114,11 +118,6 @@ UserInterface::UserInterface(
 	});
 
 
-	//initialize additional libs
-	UIManager::initialize();
-	UIManager::getInstance()->device = &device;
-	UIManager::getInstance()->sampler = new Vulkan::Sampler(device, Vulkan::SamplerConfig());
-
 	ImGui_ImplVulkan_DestroyFontUploadObjects();
 }
 
@@ -138,7 +137,29 @@ void UserInterface::Render(VkCommandBuffer commandBuffer, const Vulkan::FrameBuf
 	// DrawSettings();
 	// DrawOverlay(statistics);
 	//ImGui::ShowStyleEditor();
+	// Draw the rest of your UI first.
 	UIManager::getInstance()->drawAllUI();
+
+	// Start ImGuizmo frame.
+	//ImGuizmo::BeginFrame();
+
+	//// Set the viewport to the full window.
+	//float viewportX = 0;
+	//float viewportY = 0;
+	//float viewportWidth = swapChain.Extent().width;
+	//float viewportHeight = swapChain.Extent().height;
+	//ImGuizmo::SetRect(viewportX, viewportY, viewportWidth, viewportHeight);
+
+	//// Set up the transformation matrices.
+	//glm::mat4 objectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
+	//glm::mat4 viewMatrix = CameraManager::getInstance()->getActiveCamera()->ModelView();
+	//glm::mat4 projMatrix = glm::perspective(glm::radians(userSettings_.FieldOfView), viewportWidth / viewportHeight, 0.1f, 10000.0f);
+
+	//// Render the gizmo (which will appear at the center if the camera is centered on the origin).
+	//ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projMatrix),
+	//	ImGuizmo::TRANSLATE, ImGuizmo::LOCAL,
+	//	glm::value_ptr(objectMatrix));
+
 	ImGui::Render();
 
 	VkRenderPassBeginInfo renderPassInfo = {};
