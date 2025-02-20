@@ -21,7 +21,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Engine/CameraSystem/CameraManager.h"
-#include "From-GDGRAP2/UIManager.h"
+#include "UI/UIManager.h"
 #include "From-GDGRAP2/RTConfig.h"
 #include "ImGui/ImGuizmo.h"
 #include "Utilities/FileUtils.h"
