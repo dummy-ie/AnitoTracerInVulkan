@@ -65,5 +65,7 @@ private:
 	LightList lightList;
 
 	std::shared_ptr<GameObject> selectedObject = nullptr;
+
+	static uint32_t nextID;
 };
 

@@ -113,9 +113,16 @@ void RayTracer::CreateSwapChain()
 {
 	Application::CreateSwapChain();
 
-
 	userInterface_.reset(new UserInterface(CommandPool(), SwapChain(), DepthBuffer(), userSettings_));
 
+	if (!initializedUI)
+	{
+		UIManager::initialize();
+		UIManager::getInstance()->device = &Device();
+		UIManager::getInstance()->sampler = new Vulkan::Sampler(Device(), Vulkan::SamplerConfig());
+
+		initializedUI = true;
+	}
 
 	resetAccumulation_ = true;
 

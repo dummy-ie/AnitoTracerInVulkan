@@ -50,4 +50,6 @@ private:
 	std::unique_ptr<Vulkan::DescriptorPool> descriptorPool_;
 	std::unique_ptr<Vulkan::RenderPass> renderPass_;
 	UserSettings& userSettings_;
+
+	const Vulkan::SwapChain& swapChain;
 };

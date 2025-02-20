@@ -55,10 +55,15 @@ public:
     void setParent(GameObject* newParent);
     bool isDescendantOf(const GameObject* potentialParent) const;
 
+    uint32_t getID() const;
+    void setID(uint32_t newID);
+
 protected:
     String name;
     PrimitiveType type;
     bool enabled = true;
+
+    uint32_t id = 0;
 
     vec3 origin = VectorUtils::zeros();
     vec3 originRot = VectorUtils::zeros();
@@ -75,6 +80,7 @@ protected:
 
     GameObject* parent = nullptr;
     std::vector<GameObject*> children;
+    
 
     void updateWorldTransform();
 

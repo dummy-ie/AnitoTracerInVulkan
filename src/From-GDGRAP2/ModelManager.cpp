@@ -5,6 +5,8 @@
 #include "Debug.h"
 #include "Utilities/FileUtils.h"
 
+uint32_t ModelManager::nextID = 0;
+
 ModelManager* ModelManager::sharedInstance = nullptr;
 ModelManager* ModelManager::getInstance()
 {
@@ -106,6 +108,7 @@ void ModelManager::addLightObject(std::shared_ptr<Light> lightObj)
 
 void ModelManager::addObject(std::shared_ptr<GameObject> gameObject)
 {
+	gameObject->setID(nextID++);
 	if (this->gameObjectMap[gameObject->getName()] != nullptr) {
 		int count = 1;
 		String revisedString = gameObject->getName() + " " + "(" + std::to_string(count) + ")";

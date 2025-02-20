@@ -149,6 +149,8 @@ set(src_files_imgui
 	ImGui/imgui_impl_vulkan.h
 	ImGui/imgui_stdlib.cpp
 	ImGui/imgui_stdlib.h
+	ImGui/ImGuizmo.cpp
+	ImGui/ImGuizmo.h
 )
 
 set(src_files_utilities
