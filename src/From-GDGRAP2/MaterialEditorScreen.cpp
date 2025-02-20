@@ -185,14 +185,19 @@ void MaterialEditorScreen::showMaterialEditorWindow()
 	if (selectedMaterial->MaterialModel == Material::Enum::Metallic)
 	{
 		ImGui::SameLine();
-		ImGui::SliderFloat("Fuzziness", &selectedMaterial->Fuzziness, 0, 0);
+		if (ImGui::SliderFloat("Fuzziness", &selectedMaterial->Fuzziness, 0, 0))
+			EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
+
 		ImGui::NewLine();
 	}
 
 	if (selectedMaterial->MaterialModel == Material::Enum::Dielectric)
 	{
 		ImGui::SameLine();
-		ImGui::SliderFloat("Refraction Index", &selectedMaterial->RefractionIndex, 0, 0);
+		if (ImGui::SliderFloat("Refraction Index", &selectedMaterial->RefractionIndex, 0, 0))
+			EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
+
+		ImGui::NewLine();
 	}
 
 	ImGui::PopItemWidth();
