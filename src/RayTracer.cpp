@@ -16,7 +16,7 @@
 #include "From-GDGRAP2/Debug.h"
 #include "From-GDGRAP2/GlobalConfig.h"
 #include "From-GDGRAP2/ModelManager.h"
-#include "From-GDGRAP2/UIManager.h"
+#include "UI/UIManager.h"
 #include "ImGui/imgui_impl_vulkan.h"
 
 #include "Engine/CameraSystem/CameraManager.h"

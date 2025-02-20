@@ -18,7 +18,7 @@
 #include "ImGui/imgui_impl_vulkan.h"
 
 #include <array>
-#include "From-GDGRAP2/UIManager.h"
+#include "UI/UIManager.h"
 #include "From-GDGRAP2/RTConfig.h"
 #include "Utilities/FileUtils.h"
 

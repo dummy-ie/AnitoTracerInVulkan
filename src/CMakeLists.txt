@@ -251,31 +251,36 @@ set(src_files_vulkan_raytracing
 	Vulkan/RayTracing/TopLevelAccelerationStructure.hpp
 )
 
+set(src_files_ui
+	UI/AUIScreen.cpp
+	UI/AUIScreen.h
+	UI/ConsoleScreen.cpp
+	UI/ConsoleScreen.h
+	UI/HierarchyScreen.cpp
+	UI/HierarchyScreen.h
+	UI/InspectorScreen.cpp
+	UI/InspectorScreen.h
+	UI/MenuScreen.cpp
+	UI/MenuScreen.h
+	UI/ProfilerScreen.cpp
+	UI/ProfilerScreen.h
+	UI/PlaybackScreen.cpp
+	UI/PlaybackScreen.h
+	UI/MaterialEditorScreen.cpp
+	UI/MaterialEditorScreen.h
+	UI/UIManager.cpp
+	UI/UIManager.h
+)
+
 set(src_files_from_gdgrap2
-	From-GDGRAP2/AUIScreen.cpp
-	From-GDGRAP2/AUIScreen.h
-	From-GDGRAP2/ConsoleScreen.cpp
-	From-GDGRAP2/ConsoleScreen.h
 	From-GDGRAP2/Debug.cpp
 	From-GDGRAP2/Debug.h
-	From-GDGRAP2/HierarchyScreen.cpp
-	From-GDGRAP2/HierarchyScreen.h
 	From-GDGRAP2/IETSemaphore.cpp
 	From-GDGRAP2/IETSemaphore.h
 	From-GDGRAP2/IETThread.cpp
 	From-GDGRAP2/IETThread.h
-	From-GDGRAP2/InspectorScreen.cpp
-	From-GDGRAP2/InspectorScreen.h
-	From-GDGRAP2/MenuScreen.cpp
-	From-GDGRAP2/MenuScreen.h
-	From-GDGRAP2/ProfilerScreen.cpp
-	From-GDGRAP2/ProfilerScreen.h
-	From-GDGRAP2/PlaybackScreen.cpp
-	From-GDGRAP2/PlaybackScreen.h
 	From-GDGRAP2/RTRules.cpp
 	From-GDGRAP2/RTRules.h
-	From-GDGRAP2/UIManager.cpp
-	From-GDGRAP2/UIManager.h
 	From-GDGRAP2/EventBroadcaster.cpp
 	From-GDGRAP2/EventBroadcaster.h
 	From-GDGRAP2/MathUtils.cpp
@@ -290,8 +295,6 @@ set(src_files_from_gdgrap2
 	From-GDGRAP2/GameObject.h
 	From-GDGRAP2/ModelManager.cpp
 	From-GDGRAP2/ModelManager.h
-	From-GDGRAP2/MaterialEditorScreen.cpp
-	From-GDGRAP2/MaterialEditorScreen.h
 	From-GDGRAP2/EventNames.h
 	From-GDGRAP2/RTConfig.h
 )
@@ -318,6 +321,7 @@ source_group("Tracy" FILES ${src_files_tracy})
 source_group("LightSystem" FILES ${src_files_lightsystem})
 source_group("ImGui" FILES ${src_files_imgui})
 source_group("Utilities" FILES ${src_files_utilities})
+source_group("UI" FILES ${src_files_ui})
 source_group("From-GDGRAP2" FILES ${src_files_from_gdgrap2})
 source_group("Vulkan" FILES ${src_files_vulkan})
 source_group("Vulkan.RayTracing" FILES ${src_files_vulkan_raytracing})
@@ -331,6 +335,7 @@ add_executable(${exe_name}
 	${src_files_tracy} 
 	${src_files_imgui} 
 	${src_files_utilities}
+	${src_files_ui}
 	${src_files_from_gdgrap2}
 	${src_files_vulkan} 
 	${src_files_vulkan_raytracing} 
@@ -345,7 +350,14 @@ endif()
 
 add_dependencies(${exe_name} Assets)
 set_target_properties(${exe_name} PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
-target_include_directories(${exe_name} PRIVATE . Assimp/include ${Boost_INCLUDE_DIRS} ${glfw3_INCLUDE_DIRS} ${glm_INCLUDE_DIRS} ${STB_INCLUDE_DIRS} ${Vulkan_INCLUDE_DIRS})
+target_include_directories(
+	${exe_name} 
+	PRIVATE . Assimp/include 
+	${Boost_INCLUDE_DIRS} 
+	${glfw3_INCLUDE_DIRS} 
+	${glm_INCLUDE_DIRS} 
+	${STB_INCLUDE_DIRS} 
+	${Vulkan_INCLUDE_DIRS})
 target_link_directories(${exe_name} PRIVATE Assimp/lib ${Vulkan_LIBRARY})
 target_link_libraries(${exe_name} PRIVATE assimp-vc143-mt ${Boost_LIBRARIES} freetype glfw glm::glm imgui::imgui tinyobjloader::tinyobjloader ${Vulkan_LIBRARIES} ${extra_libs})
 

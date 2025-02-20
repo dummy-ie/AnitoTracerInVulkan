@@ -19,7 +19,7 @@
 #include <iostream>
 #include <numeric>
 
-#include "From-GDGRAP2/UIManager.h"
+#include "UI/UIManager.h"
 
 
 namespace Vulkan::RayTracing {
