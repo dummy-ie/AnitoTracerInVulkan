@@ -3,7 +3,7 @@
 #include "Assets/Material.hpp"
 
 MaterialLibrary* MaterialLibrary::sharedInstance = NULL;
-void MaterialLibrary::addMaterial(std::wstring materialName, Assets::Material* material)
+void MaterialLibrary::addMaterial(std::wstring materialName, std::shared_ptr<Assets::Material> material)
 {
 	this->materialMap[materialName] = material;
 }
@@ -13,7 +13,7 @@ void MaterialLibrary::deleteMaterial(std::wstring materialName)
 	this->materialMap.erase(materialName);
 }
 
-Assets::Material* MaterialLibrary::getMaterial(std::wstring materialName)
+std::shared_ptr<Assets::Material> MaterialLibrary::getMaterial(std::wstring materialName)
 {
 	return this->materialMap[materialName];
 }

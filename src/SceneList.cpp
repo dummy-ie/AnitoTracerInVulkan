@@ -379,7 +379,7 @@ SceneAssets SceneList::GDGRAP2_SphereWorld(CameraInitialState& camera)
 				vec3 center(a + 0.9f * MathUtils::randomFloat(), 0.2 + (2 * MathUtils::randomFloat()), b + 0.9 * MathUtils::randomFloat());
 				if ((center - vec3(4.0, 0.2f, 0.0f)).length() > 0.9f)
 				{
-					Material* materialInstance;
+					std::shared_ptr<Material> materialInstance;
 
 					if (matVal < 0.8)
 					{
@@ -411,7 +411,7 @@ SceneAssets SceneList::GDGRAP2_SphereWorld(CameraInitialState& camera)
 				vec3 center(a + 0.9f * MathUtils::randomFloat(), 0.2 + (5 * MathUtils::randomFloat()), b + 0.9 * MathUtils::randomFloat());
 
 				//add additional reflective spheres
-				Material* materialInstance = Material::Dielectric(1.5f);
+				std::shared_ptr<Material> materialInstance = Material::Dielectric(1.5f);
 				Model modelInstance = Model::CreateSphere(center, MathUtils::randomFloat(0.1f, 0.2f), *materialInstance, isProcedural);
 				std::shared_ptr<GameObject> objectInstance = std::make_shared<GameObject>("SmallSphere", GameObject::PrimitiveType::SPHERE, std::make_shared<Model>(modelInstance));
 				ModelManager::getInstance()->addObject(objectInstance);
@@ -486,7 +486,7 @@ SceneAssets SceneList::GDGRAP2_BoxWorld(CameraInitialState& camera)
 	camera.GammaCorrection = true;
 	camera.HasSky = false;
 
-	Material* areaLight = Material::DiffuseLight(vec3(0.73, 0.73, 0.73) * 7.0f);
+	std::shared_ptr<Material> areaLight = Material::DiffuseLight(vec3(0.73, 0.73, 0.73) * 7.0f);
 	Model areaLightModel = Model::CreateBox(vec3(0, 0, 0), vec3(1000, 10, 1000), *areaLight);
 	std::shared_ptr<GameObject> areaLightObject = std::make_shared<GameObject>("AreaLight", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(areaLightModel));
 	areaLightObject->setLocalPosition(-250.0f, 600.0f, -500.0f);
@@ -505,7 +505,7 @@ SceneAssets SceneList::GDGRAP2_BoxWorld(CameraInitialState& camera)
 			float y1 = MathUtils::randomFloat(1, 201);
 			float z1 = z0 + w;
 
-			Material* groundMat = Material::Metallic(VectorUtils::randomFloatVec3(), MathUtils::randomFloat(0.0, 0.25f));
+			std::shared_ptr<Material> groundMat = Material::Metallic(VectorUtils::randomFloatVec3(), MathUtils::randomFloat(0.0, 0.25f));
 			Model box = Model::CreateBox(vec3(x0, y0, z0), vec3(x1, y1, z1), *groundMat);
 			std::shared_ptr<GameObject> boxGround = std::make_shared<GameObject>("GroundBox", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(box));
 
@@ -514,8 +514,8 @@ SceneAssets SceneList::GDGRAP2_BoxWorld(CameraInitialState& camera)
 			if (j % 8 == 0)
 			{
 				vec3 randomPt = vec3(x0 + MathUtils::randomFloat(-x0, x0), y0 + MathUtils::randomFloat(250.0f, 350.0f), z0);
-				Material* groundReflectMat = Material::Dielectric(1.5f);
-				Material* groundMetalMat = Material::Metallic(VectorUtils::randomFloatVec3(), MathUtils::randomFloat(0.0f, 0.4f));
+				std::shared_ptr<Material> groundReflectMat = Material::Dielectric(1.5f);
+				std::shared_ptr<Material> groundMetalMat = Material::Metallic(VectorUtils::randomFloatVec3(), MathUtils::randomFloat(0.0f, 0.4f));
 
 				if (i % 2 == 0)
 				{
@@ -534,17 +534,17 @@ SceneAssets SceneList::GDGRAP2_BoxWorld(CameraInitialState& camera)
 		}
 	}
 
-	Material* diffuseCheckerMat = Material::Lambertian(vec3(1), 3);
+	std::shared_ptr<Material> diffuseCheckerMat = Material::Lambertian(vec3(1), 3);
 	Model textureSphere = Model::CreateSphere(vec3(-280, 280, 300), 160, *diffuseCheckerMat, false);
 	std::shared_ptr<GameObject> sphere = std::make_shared<GameObject>("CheckerSphere", GameObject::PrimitiveType::SPHERE, std::make_shared<Model>(textureSphere));
 	ModelManager::getInstance()->addObject(sphere);
 
-	Material* earthMat = Material::Lambertian(vec3(1), 4);
+	std::shared_ptr<Material> earthMat = Material::Lambertian(vec3(1), 4);
 	Model earthModel = Model::CreateSphere(vec3(400, 400, 400), 200, *earthMat, false);
 	std::shared_ptr<GameObject> earthObj = std::make_shared<GameObject>("EarthSphere", GameObject::PrimitiveType::SPHERE, std::make_shared<Model>(earthModel));
 	ModelManager::getInstance()->addObject(earthObj);
 
-	Material* metalMat = Material::Metallic(VectorUtils::randomFloatVec3(), 0.15f);
+	std::shared_ptr<Material> metalMat = Material::Metallic(VectorUtils::randomFloatVec3(), 0.15f);
 	Model metalModel = Model::CreateSphere(vec3(0, 450, 145), 50, *metalMat, false);
 	std::shared_ptr<GameObject> metalObj = std::make_shared<GameObject>("MetalSphere", GameObject::PrimitiveType::SPHERE, std::make_shared<Model>(metalModel));
 	ModelManager::getInstance()->addObject(metalObj);
@@ -552,7 +552,7 @@ SceneAssets SceneList::GDGRAP2_BoxWorld(CameraInitialState& camera)
 	std::shared_ptr<ObjectGroup> sphereGroup = std::make_shared<ObjectGroup>("SphereGroup");
 	for (int i = 0; i < 1000; i++)
 	{
-		Material* metalMat = Material::Metallic(vec3(0.73, 0.73, 0.73), MathUtils::randomFloat(0.0f, 0.5f));
+		std::shared_ptr<Material> metalMat = Material::Metallic(vec3(0.73, 0.73, 0.73), MathUtils::randomFloat(0.0f, 0.5f));
 		Model sphereInstance = Model::CreateSphere(VectorUtils::randomFloatVec3(0, 165), 10.0f, *metalMat, false);
 		sphereGroup->addModel(std::make_shared<Model>(sphereInstance));
 	}
@@ -588,7 +588,7 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 
 	bool isProcedural = false;
 
-	Material* areaLight = Material::DiffuseLight(vec3(0.73, 0.73, 0.73) * 7.0f);
+	std::shared_ptr<Material> areaLight = Material::DiffuseLight(vec3(0.73, 0.73, 0.73) * 7.0f);
 	Model areaLightModel = Model::CreateBox(vec3(0, 0, 0), vec3(1000, 10, 1000), *areaLight);
 	std::shared_ptr<GameObject> areaLightObject = std::make_shared<GameObject>("AreaLight", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(areaLightModel));
 	areaLightObject->setLocalPosition(1000.0f, 1000.0f, -500.0f);
@@ -698,9 +698,9 @@ SceneAssets SceneList::Sponza(CameraInitialState& camera)
 
 	bool isProcedural = false;
 
-	Material* areaLight = Material::DiffuseLight(vec3(0.80, 0, 0) * 7.0f);
+	std::shared_ptr<Material> areaLight = Material::DiffuseLight(vec3(0.80, 0, 0) * 7.0f);
 	Model areaLightModel = Model::CreateBox(vec3(0, 0, 0), vec3(2000, 10, 2000), *areaLight);
-	Material* areaLight2 = Material::DiffuseLight(vec3(0, 0, 0.80) * 7.0f);
+	std::shared_ptr<Material> areaLight2 = Material::DiffuseLight(vec3(0, 0, 0.80) * 7.0f);
 	Model areaLightModel2 = Model::CreateBox(vec3(0, 0, 0), vec3(2000, 10, 2000), *areaLight2);
 
 	std::shared_ptr<GameObject> areaLightObject = std::make_shared<GameObject>("AreaLight", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(areaLightModel));

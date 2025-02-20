@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 
@@ -12,14 +13,14 @@ class MaterialLibrary
 {
 	// TODO: Need Text Files for created materials.
 private:
-	typedef std::unordered_map <std::wstring, Assets::Material*> MaterialMap;
+	typedef std::unordered_map <std::wstring, std::shared_ptr<Assets::Material>> MaterialMap;
 
 	MaterialMap materialMap;
 
 public:
-	void addMaterial(std::wstring materialName, Assets::Material* material);
+	void addMaterial(std::wstring materialName, std::shared_ptr<Assets::Material>);
 	void deleteMaterial(std::wstring materialName);
-	Assets::Material* getMaterial(std::wstring materialName);
+	std::shared_ptr<Assets::Material> getMaterial(std::wstring materialName);
 
 private:
 	static MaterialLibrary* sharedInstance;
