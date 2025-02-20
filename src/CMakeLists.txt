@@ -270,6 +270,8 @@ set(src_files_ui
 	UI/PlaybackScreen.h
 	UI/MaterialEditorScreen.cpp
 	UI/MaterialEditorScreen.h
+	UI/AssetExplorer.cpp
+	UI/AssetExplorer.h
 	UI/UIManager.cpp
 	UI/UIManager.h
 )
