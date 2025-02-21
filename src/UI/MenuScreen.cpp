@@ -68,6 +68,7 @@ void MenuScreen::drawUI()
 			if (ImGui::MenuItem("Load Cornell Box")) { this->OnLoadCornellBox(); }
 			if (ImGui::MenuItem("Load AnitoTracer Demo")) { this->OnLoadAnitoTracerDemo(); }
 			if (ImGui::MenuItem("Load Sponza Scene")) { this->OnLoadSponza(); }
+			if (ImGui::MenuItem("Delete All Objects in Current Scene")) { this->OnLoadEmpty(); }
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Game Object")) {
@@ -224,9 +225,9 @@ void MenuScreen::ShowLoadObjMenu()
 	{
 		static std::string name = "GameObject";
 		//GameObject::PrimitiveType type;
-		static float position[3] = {0, 0, 0};
-		static float rotation[3] = {0, 0, 0};
-		static float scale[3] = {1, 1, 1};
+		static float position[3] = { 0, 0, 0 };
+		static float rotation[3] = { 0, 0, 0 };
+		static float scale[3] = { 1, 1, 1 };
 
 		ImGui::Text("Spawn with the following attributes: ");
 		ImGui::InputTextWithHint("GameObject Name", "Name...", &name);
@@ -237,7 +238,7 @@ void MenuScreen::ShowLoadObjMenu()
 		//ImGui::SameLine();	
 		ImGui::InputFloat3("Scale", scale);
 		ImGui::Separator();
-		
+
 
 		if (ImGui::Button("Select File...", ImVec2(150, 25)))
 		{
@@ -249,7 +250,7 @@ void MenuScreen::ShowLoadObjMenu()
 				glm::vec3(rotation[0], rotation[1], rotation[2]),
 				glm::vec3(scale[0], scale[1], scale[2])
 			);
-			
+
 		}
 	}
 
@@ -292,6 +293,7 @@ void MenuScreen::ShowLoadObjMenu()
 void MenuScreen::OnCreatePlaneClicked()
 {
 	//initialize vertex for object
+	ModelManager::getInstance()->createObject(GameObject::PLANE);
 	// GameObjectManager::getInstance()->createObject(AGameObject::PrimitiveType::QUAD);
 }
 
@@ -347,6 +349,14 @@ void MenuScreen::OnLoadSponza()
 	std::shared_ptr<Parameters> parameters = std::make_shared<Parameters>(EventNames::ON_SCENE_LOADED);
 	parameters->encodeInt("SCENE_INDEX", 10);
 	EventBroadcaster::getInstance()->broadcastEventWithParams(EventNames::ON_SCENE_LOADED, parameters);
+}
+
+void MenuScreen::OnLoadEmpty()
+{
+	ModelManager::getInstance()->clearAllObjects();
+	// std::shared_ptr<Parameters> parameters = std::make_shared<Parameters>(EventNames::ON_SCENE_LOADED);
+	// parameters->encodeInt("SCENE_INDEX", 11);
+	// EventBroadcaster::getInstance()->broadcastEventWithParams(EventNames::ON_SCENE_LOADED, parameters);
 }
 
 void MenuScreen::ShowColorPickerWindow()

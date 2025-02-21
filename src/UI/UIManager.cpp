@@ -104,9 +104,9 @@ UIManager::UIManager()
 	this->uiTable[uiNames.MATERIAL_EDITOR_SCREEN] = materialEditorScreen;
 	this->uiList.push_back(materialEditorScreen);
 
-	std::shared_ptr<AssetExplorerScreen> assetExplorerScreen = std::make_shared<AssetExplorerScreen>();
-	this->uiTable[uiNames.ASSET_EXPLORER_SCREEN] = assetExplorerScreen;
-	this->uiList.push_back(assetExplorerScreen);
+	// std::shared_ptr<AssetExplorerScreen> assetExplorerScreen = std::make_shared<AssetExplorerScreen>();
+	// this->uiTable[uiNames.ASSET_EXPLORER_SCREEN] = assetExplorerScreen;
+	// this->uiList.push_back(assetExplorerScreen);
 
 	// nawt working yet lol!
 	// std::shared_ptr<ViewportScreen> viewportScreen = std::make_shared<ViewportScreen>();

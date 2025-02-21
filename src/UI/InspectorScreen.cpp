@@ -10,35 +10,35 @@ InspectorScreen::InspectorScreen() : AUIScreen("InspectorScreen")
 
 InspectorScreen::~InspectorScreen()
 {
-	
+
 }
 
 void InspectorScreen::drawUI()
 {
-	
+
 	ImGui::Begin("Inspector Window", 0, ImGuiWindowFlags_NoResize);
 	this->selectedObject = ModelManager::getInstance()->getSelectedObject();
-	if (this->selectedObject != nullptr) 
+	if (this->selectedObject != nullptr)
 	{
-		String name =  this->selectedObject->getName();
+		String name = this->selectedObject->getName();
 		ImGui::Text("Selected Object: %s", name.c_str());
 		this->updateTransformDisplays();
 		bool enabled = this->selectedObject->isEnabled();
 		if (ImGui::Checkbox("Enabled", &enabled)) { this->selectedObject->setEnabled(enabled); }
 		ImGui::SameLine();
-		if (ImGui::Button("Delete")) { 
+		if (ImGui::Button("Delete")) {
 			ModelManager::getInstance()->deleteObject(this->selectedObject);
 			ModelManager::getInstance()->setSelectedObject(static_cast<std::shared_ptr<GameObject>>(nullptr));
 		}
-		if (ImGui::DragFloat3("Position", this->positionDisplay, 0.01f, ImGuiInputTextFlags_EnterReturnsTrue)) { this->onTransformUpdate(); }
-		if (ImGui::DragFloat3("Rotation", this->rotationDisplay, 0.01f, ImGuiInputTextFlags_EnterReturnsTrue)) { this->onTransformUpdate(); }
-	
-		if(this->selectedObject->getType() == GameObject::PrimitiveType::SPHERE)
+		if (ImGui::InputFloat3("Position", this->positionDisplay, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue)) { this->onTransformUpdate(); }
+		if (ImGui::InputFloat3("Rotation", this->rotationDisplay, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue)) { this->onTransformUpdate(); }
+
+		if (this->selectedObject->getType() == GameObject::PrimitiveType::SPHERE)
 		{
-			if (ImGui::DragFloat("Resize", this->scaleDisplay, 0.01f, ImGuiInputTextFlags_EnterReturnsTrue)) { this->onTransformUpdate(); }
+			if (ImGui::InputFloat("Resize", this->scaleDisplay, 0, 0, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue)) { this->onTransformUpdate(); }
 		}
 		else {
-			if (ImGui::DragFloat3("Scale", this->scaleDisplay, 0.01f, ImGuiInputTextFlags_EnterReturnsTrue)) { this->onTransformUpdate(); }
+			if (ImGui::InputFloat3("Scale", this->scaleDisplay, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue)) { this->onTransformUpdate(); }
 		}
 
 		this->drawMaterialsTab();
@@ -57,7 +57,7 @@ void InspectorScreen::updateTransformDisplays()
 	this->positionDisplay[0] = pos.x;
 	this->positionDisplay[1] = pos.y;
 	this->positionDisplay[2] = pos.z;
-	
+
 	vec3 rot = this->selectedObject->getLocalRotation();
 	this->rotationDisplay[0] = rot.x;
 	this->rotationDisplay[1] = rot.y;
@@ -95,7 +95,7 @@ void InspectorScreen::drawMaterialsTab()
 	// {
 	// 	return;
 	// }
-	
+
 	// TexturedCube* texturedObj = static_cast<TexturedCube*>(this->selectedObject);
 	// this->materialPath = texturedObj->getRenderer()->getMaterialPath();
 	// this->FormatMatImage();
@@ -117,14 +117,14 @@ void InspectorScreen::drawMaterialsTab()
 
 void InspectorScreen::onTransformUpdate() const
 {
-	if (this->selectedObject != nullptr) 
+	if (this->selectedObject != nullptr)
 	{
 		// ActionHistory::getInstance()->recordAction(this->selectedObject);
-	
+
 		this->selectedObject->setLocalPosition(this->positionDisplay[0], this->positionDisplay[1], this->positionDisplay[2]);
 		this->selectedObject->setLocalRotation(this->rotationDisplay[0], this->rotationDisplay[1], this->rotationDisplay[2]);
-	
-		if(this->selectedObject->getType() == GameObject::PrimitiveType::SPHERE)
+
+		if (this->selectedObject->getType() == GameObject::PrimitiveType::SPHERE)
 		{
 			this->selectedObject->setLocalScale(this->scaleDisplay[0], this->scaleDisplay[0], this->scaleDisplay[0]);
 		}
@@ -132,6 +132,6 @@ void InspectorScreen::onTransformUpdate() const
 		{
 			this->selectedObject->setLocalScale(this->scaleDisplay[0], this->scaleDisplay[1], this->scaleDisplay[2]);
 		}
-		
+
 	}
 }

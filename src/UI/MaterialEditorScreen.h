@@ -44,10 +44,11 @@ namespace gdeng03
 		Material* selectedMaterial = nullptr;
 		GameObject* selectedObject = nullptr;
 
+		bool isMaterialChanged = false;
 		bool isColorPickerOpen = false;
 		//bool isMaterialEditorOpen = false;
 
-		 ImVec4 diffuse = ImVec4(1, 1, 1, 1);
+		ImVec4 diffuse = ImVec4(1, 1, 1, 1);
 		//
 		// // Base material
 		// //glm::vec4 Diffuse;

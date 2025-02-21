@@ -84,7 +84,8 @@ const std::vector<std::tuple<std::string, std::function<SceneAssets(SceneList::C
 	{"GRGRAP2 - Cornell Box", GDGRAP2_CornellBox},
 	{"GDGRAP2 - Box World", GDGRAP2_BoxWorld},
 	{"AnitoTracer - Demo Scene", AnitoTracer_DemoScene},
-	{"Sponza", Sponza}
+	{"Sponza", Sponza},
+	{"Empty", Empty},
 };
 
 SceneAssets SceneList::CubeAndSpheres(CameraInitialState& camera)
@@ -619,7 +620,7 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	ModelManager::getInstance()->addObject(cornellBoxObject);
 	cornellBoxObject->setLocalPosition(0, 1, 0);
 
-	Model capsuleTest = Model::CreateCapsule(vec3(2000,500,300), 100, 500, *white.get());
+	Model capsuleTest = Model::CreateCapsule(vec3(2000, 500, 300), 100, 500, *white.get());
 	std::shared_ptr<GameObject> capsuleObject = std::make_shared<GameObject>("Cylinder", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(capsuleTest));
 	ModelManager::getInstance()->addObject(capsuleObject);
 
@@ -734,6 +735,23 @@ SceneAssets SceneList::Sponza(CameraInitialState& camera)
 	// Add light objects
 	//std::shared_ptr<Light> pl1 = std::make_shared<Light>("Point Light 1", Light::LightType::PointLight);
 	//ModelManager::getInstance()->addLightObject(pl1);
+
+	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
+	std::vector<Texture> textures = AssembleTextureList();
+	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
+
+	return std::forward_as_tuple(std::move(models), std::move(textures), std::move(lights));
+}
+
+SceneAssets SceneList::Empty(CameraInitialState& camera)
+{
+	camera.ModelView = lookAt(vec3(278, 278, 800), vec3(278, 278, 0), vec3(0, 1, 0));
+	camera.FieldOfView = 40;
+	camera.Aperture = 0.0f;
+	camera.FocusDistance = 10.0f;
+	camera.ControlSpeed = 500.0f;
+	camera.GammaCorrection = true;
+	camera.HasSky = true;
 
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
 	std::vector<Texture> textures = AssembleTextureList();

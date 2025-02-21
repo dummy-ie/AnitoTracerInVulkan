@@ -23,6 +23,7 @@ private:
 	void OnLoadCornellBox();
 	void OnLoadAnitoTracerDemo();
 	void OnLoadSponza();
+	void OnLoadEmpty();
 	void ShowColorPickerWindow();
 
 	friend class UIManager;

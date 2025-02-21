@@ -23,7 +23,10 @@ bool MaterialEditorScreen::canSelectMaterial() const
 void MaterialEditorScreen::setSelectedMaterial(Material* mat)
 {
 	//loadDefaultTextures();
-	// diffuse = { mat->Diffuse.x, mat->Diffuse.y, mat->Diffuse.z, mat->Diffuse.w };
+	if (mat == selectedMaterial)
+		return;
+
+	diffuse = { mat->Diffuse.x, mat->Diffuse.y, mat->Diffuse.z, mat->Diffuse.w };
 	// diffuseTextureId = mat->DiffuseTextureId;
 	// fuzziness = mat->Fuzziness;
 	// refractionIndex = mat->RefractionIndex;
@@ -156,7 +159,15 @@ void MaterialEditorScreen::showMaterialEditorWindow()
 	//
 	// selectedMaterial = &vecMaterials[materialIndex];
 
-	selectedMaterial = selectedObject->getModel()->getMaterial(0);
+	const auto model = selectedObject->getModel();
+
+	if (!model)
+	{
+		ImGui::Text("Selected object has no model.");
+		return;
+	}
+
+	setSelectedMaterial(model->getMaterial(0));
 
 	if (!selectedMaterial)
 	{
