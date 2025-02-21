@@ -21,6 +21,7 @@ void Assets::Plane::Create(const glm::vec3& p0, const glm::vec3& p1, std::vector
 
 	indices =
 	{
-		0, 1, 2, 0, 2, 3
+		0, 1, 2, 0, 2, 3,
+		4, 5, 6, 6, 7, 4
 	};
 }

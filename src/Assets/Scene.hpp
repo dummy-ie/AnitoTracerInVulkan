@@ -38,12 +38,12 @@ namespace Assets
 		const Vulkan::Buffer& VertexBuffer() const { return *vertexBuffer_; }
 		const Vulkan::Buffer& IndexBuffer() const { return *indexBuffer_; }
 		const Vulkan::Buffer& MaterialBuffer() const { return *materialBuffer_; }
+		const Vulkan::Buffer& LightBuffer() const { return *lightsBuffer_; }
 		const Vulkan::Buffer& OffsetsBuffer() const { return *offsetBuffer_; }
 		const Vulkan::Buffer& AabbBuffer() const { return *aabbBuffer_; }
 		const Vulkan::Buffer& ProceduralBuffer() const { return *proceduralBuffer_; }
 		const std::vector<VkImageView> TextureImageViews() const { return textureImageViewHandles_; }
 		const std::vector<VkSampler> TextureSamplers() const { return textureSamplerHandles_; }
-		const Vulkan::Buffer& LightBuffer() const { return *lightsBuffer_; }
 
 	private:
 
