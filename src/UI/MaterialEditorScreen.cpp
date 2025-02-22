@@ -27,6 +27,7 @@ void MaterialEditorScreen::setSelectedMaterial(Material* mat)
 		return;
 
 	diffuse = { mat->Diffuse.x, mat->Diffuse.y, mat->Diffuse.z, mat->Diffuse.w };
+	textureId = mat->DiffuseTextureId;
 	// diffuseTextureId = mat->DiffuseTextureId;
 	// fuzziness = mat->Fuzziness;
 	// refractionIndex = mat->RefractionIndex;
@@ -124,6 +125,7 @@ void MaterialEditorScreen::updateSelectedMaterial()
 	}
 
 	selectedMaterial->Diffuse = { this->diffuse.x, this->diffuse.y, this->diffuse.z, this->diffuse.w };
+	selectedMaterial->DiffuseTextureId = this->textureId;
 }
 
 void MaterialEditorScreen::showMaterialEditorWindow()
@@ -185,6 +187,12 @@ void MaterialEditorScreen::showMaterialEditorWindow()
 	if (selectedMaterial->Diffuse != glm::vec4(this->diffuse.x, this->diffuse.y, this->diffuse.z, this->diffuse.w))
 	{
 		selectedMaterial->Diffuse = { this->diffuse.x, this->diffuse.y, this->diffuse.z, this->diffuse.w };
+		EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
+	}
+
+	if (ImGui::InputInt("Texture Id", &textureId))
+	{
+		selectedMaterial->DiffuseTextureId = textureId;
 		EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
 	}
 

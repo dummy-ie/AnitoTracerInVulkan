@@ -49,6 +49,7 @@ namespace gdeng03
 		//bool isMaterialEditorOpen = false;
 
 		ImVec4 diffuse = ImVec4(1, 1, 1, 1);
+		int textureId;
 		//
 		// // Base material
 		// //glm::vec4 Diffuse;
