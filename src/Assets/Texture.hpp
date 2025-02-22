@@ -32,7 +32,8 @@ namespace Assets
 		int width_;
 		int height_;
 		int channels_;
-		std::unique_ptr<unsigned char, void (*) (void*)> pixels_;
+		//std::unique_ptr<unsigned char, void (*) (void*)> pixels_;
+		std::shared_ptr<unsigned char> pixels_;
 	};
 
 }

@@ -339,7 +339,7 @@ void RayTracer::LoadScene(const uint32_t sceneIndex)
 	// If there are no texture, add a dummy one. It makes the pipeline setup a lot easier.
 	if (textures.empty())
 	{
-		textures.push_back(Assets::Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/white.png", Vulkan::SamplerConfig()));
+		textures.push_back(TextureLibrary::getInstance()->getTexture("white"));
 	}
 	// If there are no lights, add a dummy one. It makes the pipeline setup a lot easier.
 	if (lights.empty())
@@ -367,13 +367,13 @@ void RayTracer::LoadScene(const uint32_t sceneIndex)
 void RayTracer::ReloadModifiedScene()
 {
 	std::vector<Assets::Model> models = ModelManager::getInstance()->getAllObjectModels();
-	std::vector<Assets::Texture> textures = SceneList::AssembleTextureList();
+	std::vector<Assets::Texture> textures = TextureLibrary::getInstance()->getTextureLibraryList();
 	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
 
 	// If there are no texture, add a dummy one. It makes the pipeline setup a lot easier.
 	if (textures.empty())
 	{
-		textures.push_back(Assets::Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/white.png", Vulkan::SamplerConfig()));
+		textures.push_back(TextureLibrary::getInstance()->getTexture("white"));
 	}
 	// If there are no lights, add a dummy one. It makes the pipeline setup a lot easier.
 	if (lights.empty())

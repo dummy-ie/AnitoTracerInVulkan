@@ -14,12 +14,10 @@ namespace Assets
 	class Texture;
 }
 
-
-// Stores filepath lmao
 class TextureLibrary
 {
 private:
-	typedef std::unordered_map <std::string, std::string> TextureMap;
+	typedef std::unordered_map <std::string, Assets::Texture> TextureMap;
 
 	TextureMap textureMap;
 
@@ -27,6 +25,7 @@ public:
 	void addTexture(const std::string& textureName, const std::string& fileName);
 	void deleteTexture(std::string textureName);
 	Assets::Texture getTexture(std::string textureName);
+	std::vector<Assets::Texture> getTextureLibraryList();
 
 private:
 	static TextureLibrary* sharedInstance;

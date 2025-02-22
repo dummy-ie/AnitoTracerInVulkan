@@ -9,7 +9,8 @@
 TextureLibrary* TextureLibrary::sharedInstance = nullptr;
 void TextureLibrary::addTexture(const std::string& textureName, const std::string& fileName)
 {
-	this->textureMap[textureName] = fileName;
+	//this->textureMap[textureName] = std::make_shared<Assets::Texture>(Assets::Texture::LoadTexture(fileName, Vulkan::SamplerConfig()));
+	this->textureMap.insert(std::make_pair(textureName, Assets::Texture::LoadTexture(fileName, Vulkan::SamplerConfig())));
 }
 
 void TextureLibrary::deleteTexture(std::string textureName)
@@ -19,7 +20,17 @@ void TextureLibrary::deleteTexture(std::string textureName)
 
 Assets::Texture TextureLibrary::getTexture(std::string textureName)
 {
-	return Assets::Texture::LoadTexture(this->textureMap[textureName], Vulkan::SamplerConfig());
+	return this->textureMap[textureName];
+}
+
+std::vector<Assets::Texture> TextureLibrary::getTextureLibraryList()
+{
+	std::vector<Assets::Texture> textures;
+	for (auto& texture : this->textureMap)
+	{
+		textures.push_back(texture.second);
+	}
+	return textures;
 }
 
 void TextureLibrary::initialize()
@@ -34,6 +45,7 @@ void TextureLibrary::destroy()
 
 TextureLibrary::TextureLibrary()
 {
+	this->addTexture("white", FileUtils::getAssetsFolderPath().generic_string() + "/textures/white.png");
 	this->addTexture("2k_mars", FileUtils::getAssetsFolderPath().generic_string() + "/textures/2k_mars.jpg");
 	this->addTexture("2k_moon", FileUtils::getAssetsFolderPath().generic_string() + "/textures/2k_moon.jpg");
 	this->addTexture("land_ocean_ice_cloud_2048", FileUtils::getAssetsFolderPath().generic_string() + "/textures/land_ocean_ice_cloud_2048.png");

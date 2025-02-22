@@ -423,7 +423,7 @@ SceneAssets SceneList::GDGRAP2_SphereWorld(CameraInitialState& camera)
 
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
 
-	std::vector<Texture> textures = AssembleTextureList();
+	std::vector<Texture> textures = TextureLibrary::getInstance()->getTextureLibraryList();
 	// Add light objects
 	std::shared_ptr<GameObject> pl1 = std::make_shared<GameObject>("Point Light 1", GameObject::PrimitiveType::LIGHT);
 	ModelManager::getInstance()->addObject(pl1);
@@ -468,7 +468,7 @@ SceneAssets SceneList::GDGRAP2_CornellBox(CameraInitialState& camera)
 	ModelManager::getInstance()->addObject(cornellBoxObject);
 
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
-	std::vector<Texture> textures = AssembleTextureList();
+	std::vector<Texture> textures = TextureLibrary::getInstance()->getTextureLibraryList();
 	// Add light objects
 	std::shared_ptr<GameObject> pl1 = std::make_shared<GameObject>("Point Light 1", GameObject::PrimitiveType::LIGHT);
 	ModelManager::getInstance()->addObject(pl1);
@@ -564,7 +564,7 @@ SceneAssets SceneList::GDGRAP2_BoxWorld(CameraInitialState& camera)
 	ModelManager::getInstance()->addObject(sphereGroup);
 
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
-	std::vector<Texture> textures = AssembleTextureList();
+	std::vector<Texture> textures = TextureLibrary::getInstance()->getTextureLibraryList();
 
 	// Add light objects
 	std::shared_ptr<Light> pl1 = std::make_shared<Light>("Point Light 1", Light::LightType::PointLight);
@@ -679,7 +679,7 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	ModelManager::getInstance()->addLightObject(pl1);
 
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
-	std::vector<Texture> textures = AssembleTextureList();
+	std::vector<Texture> textures = TextureLibrary::getInstance()->getTextureLibraryList();
 	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
 
 	return std::forward_as_tuple(std::move(models), std::move(textures), std::move(lights));
@@ -738,7 +738,7 @@ SceneAssets SceneList::Sponza(CameraInitialState& camera)
 	//ModelManager::getInstance()->addLightObject(pl1);
 
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
-	std::vector<Texture> textures = AssembleTextureList();
+	std::vector<Texture> textures = TextureLibrary::getInstance()->getTextureLibraryList();
 	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
 
 	return std::forward_as_tuple(std::move(models), std::move(textures), std::move(lights));
@@ -755,7 +755,7 @@ SceneAssets SceneList::Empty(CameraInitialState& camera)
 	camera.HasSky = true;
 
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
-	std::vector<Texture> textures = AssembleTextureList();
+	std::vector<Texture> textures = TextureLibrary::getInstance()->getTextureLibraryList();
 	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
 
 	return std::forward_as_tuple(std::move(models), std::move(textures), std::move(lights));
