@@ -13,6 +13,7 @@
 #include "From-GDGRAP2/MathUtils.h"
 #include "From-GDGRAP2/ObjectGroup.h"
 #include "From-GDGRAP2/ModelManager.h"
+#include "From-GDGRAP2/TextureLibrary.h"
 #include "From-GDGRAP2/VectorUtils.h"
 #include "Utilities/Exception.hpp"
 #include "Utilities/FileUtils.h"
@@ -600,7 +601,7 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 
 	const auto i = mat4(1);
 	const auto white = MaterialLibrary::getInstance()->getMaterial(L"White");
-	const auto mirror = Material::Metallic(vec3(0.21f, 0.43f, 0.71f), 0.0f);
+	const auto mirror = MaterialLibrary::getInstance()->getMaterial(L"Mirror");
 	//const auto mirror = Material::Dielectric(1.6f, 0.0f); 
 
 	Model box0 = Model::CreateBox(vec3(0, 0, -165), vec3(165, 165, 0), *white);
@@ -763,11 +764,12 @@ SceneAssets SceneList::Empty(CameraInitialState& camera)
 std::vector<Assets::Texture> SceneList::AssembleTextureList()
 {
 	std::vector<Texture> textures;
-	textures.push_back(Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/2k_mars.jpg", Vulkan::SamplerConfig()));
-	textures.push_back(Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/2k_moon.jpg", Vulkan::SamplerConfig()));
-	textures.push_back(Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/land_ocean_ice_cloud_2048.png", Vulkan::SamplerConfig()));
-	textures.push_back(Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/checker.jpg", Vulkan::SamplerConfig()));
-	textures.push_back(Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/earthmap.jpg", Vulkan::SamplerConfig()));
+
+	textures.push_back(TextureLibrary::getInstance()->getTexture("2k_mars"));//(L"2k_mars"));
+	textures.push_back(TextureLibrary::getInstance()->getTexture("2k_moon"));
+	textures.push_back(TextureLibrary::getInstance()->getTexture("land_ocean_ice_cloud_2048"));
+	textures.push_back(TextureLibrary::getInstance()->getTexture("checker"));
+	textures.push_back(TextureLibrary::getInstance()->getTexture("earthmap"));
 
 	return textures;
 }

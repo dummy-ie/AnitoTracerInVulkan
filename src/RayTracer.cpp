@@ -18,6 +18,7 @@
 #include "From-GDGRAP2/ModelManager.h"
 #include "UI/UIManager.h"
 #include "From-GDGRAP2/MaterialLibrary.h"
+#include "From-GDGRAP2/TextureLibrary.h"
 #include "ImGui/imgui_impl_vulkan.h"
 
 #include "Engine/CameraSystem/CameraManager.h"
@@ -43,6 +44,7 @@ RayTracer::RayTracer(const UserSettings& userSettings, const Vulkan::WindowConfi
 	EventBroadcaster::getInstance()->addObserver(EventNames::ON_MARK_SCENE_DIRTY, this);
 
 	CameraManager::initialize();
+	TextureLibrary::initialize();
 	MaterialLibrary::initialize();
 }
 

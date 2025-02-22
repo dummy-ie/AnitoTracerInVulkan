@@ -18,7 +18,7 @@ private:
 	MaterialMap materialMap;
 
 public:
-	void addMaterial(std::wstring materialName, std::shared_ptr<Assets::Material>);
+	void addMaterial(std::wstring materialName, std::shared_ptr<Assets::Material> material);
 	void deleteMaterial(std::wstring materialName);
 	std::shared_ptr<Assets::Material> getMaterial(std::wstring materialName);
 
