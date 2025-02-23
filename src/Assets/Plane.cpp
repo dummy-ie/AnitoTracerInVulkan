@@ -13,10 +13,10 @@ void Assets::Plane::Create(const glm::vec3& p0, const glm::vec3& p1, std::vector
 		Vertex{vec3(p1.x, p0.y, p1.z), vec3(0, -1, 0), vec2(0), 0},
 		Vertex{vec3(p0.x, p0.y, p1.z), vec3(0, -1, 0), vec2(0), 0},
 
-		Vertex{vec3(p1.x, p1.y, p0.z), vec3(0, 1, 0), vec2(0), 0},
-		Vertex{vec3(p0.x, p1.y, p0.z), vec3(0, 1, 0), vec2(0), 0},
-		Vertex{vec3(p0.x, p1.y, p1.z), vec3(0, 1, 0), vec2(0), 0},
-		Vertex{vec3(p1.x, p1.y, p1.z), vec3(0, 1, 0), vec2(0), 0},
+		Vertex{vec3(p1.x, p0.y+0.0001, p0.z), vec3(0, 1, 0), vec2(0), 0},
+		Vertex{vec3(p0.x, p0.y + 0.0001, p0.z), vec3(0, 1, 0), vec2(0), 0},
+		Vertex{vec3(p0.x, p0.y + 0.0001, p1.z), vec3(0, 1, 0), vec2(0), 0},
+		Vertex{vec3(p1.x, p0.y + 0.0001, p1.z), vec3(0, 1, 0), vec2(0), 0},
 	};
 
 	indices =
