@@ -3,6 +3,7 @@
 #include "Material.hpp"
 #include "Procedural.hpp"
 #include "Vertex.hpp"
+#include <string>
 #include <memory>
 #include <string>
 #include <vector>
@@ -28,7 +29,7 @@ namespace Assets
 		Model(const Model&) = default;
 		Model(Model&&) = default;
 		~Model() = default;
-		Model(std::vector<Vertex>&& vertices, std::vector<uint32_t>&& indices, std::vector<Material>&& materials, const class Procedural* procedural);
+		Model(std::string name, std::vector<Vertex>&& vertices, std::vector<uint32_t>&& indices, std::vector<Material>&& materials, const class Procedural* procedural);
 
 		void SetMaterial(const Material& material);
 		void Transform(const glm::mat4& transform);
@@ -50,10 +51,11 @@ namespace Assets
 		uint32_t NumberOfVertices() const { return static_cast<uint32_t>(vertices_.size()); }
 		uint32_t NumberOfIndices() const { return static_cast<uint32_t>(indices_.size()); }
 		uint32_t NumberOfMaterials() const { return static_cast<uint32_t>(materials_.size()); }
+		std::string GetName() const { return name; }
 
 	private:
 
-
+		std::string name;
 		std::vector<Vertex> vertices_;
 		std::vector<uint32_t> indices_;
 		std::vector<Material> materials_;

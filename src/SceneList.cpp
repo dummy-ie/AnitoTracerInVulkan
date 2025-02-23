@@ -721,20 +721,40 @@ SceneAssets SceneList::Sponza(CameraInitialState& camera)
 	const auto white = MaterialLibrary::getInstance()->getMaterial(L"White");
 	const auto mirror = Material::Metallic(vec3(0.21f, 0.43f, 0.71f), 0.0f);
 
+	//auto sponza = Model::LoadModel(FileUtils::getAssetsFolderPath().generic_string() + "/models/sponza.obj");
+
+	//sponza.Transform(
+	//		rotate(
+	//			scale(
+	//				translate(i, vec3(0, 0, 0)),
+	//				vec3(0.6f)),
+	//			radians(75.0f), vec3(0, 1, 0)));
+
+	//	std::shared_ptr<GameObject> sponzaObj = std::make_shared<GameObject>(sponza.GetName(), GameObject::PrimitiveType::CUBE, std::make_shared<Model>(sponza));
+	//	ModelManager::getInstance()->addObject(sponzaObj);
+	//	sponzaObj->setLocalPosition(350, 0, 300);
+	 
+	 
 	std::vector<Model> sponza = Model::LoadModelGroup(FileUtils::getAssetsFolderPath().generic_string() + "/models/sponza.obj");
 	//sponza.SetMaterial(white);
 
 	for (int j = 0; j < sponza.size(); j++) 
 	{
-		//
-		//sponza[j].Transform(
-		//	rotate(
-		//		scale(
-		//			translate(i, vec3(0, 0, 0)),
-		//			vec3(0.6f)),`
-		//		radians(75.0f), vec3(0, 1, 0)));
+		
+		sponza[j].Transform(
+			rotate(
+				scale(
+					translate(i, vec3(0, 0, 0)),
+					vec3(0.6f)),
+				radians(75.0f), vec3(0, 1, 0)));
 
-		std::shared_ptr<GameObject> sponzaObj = std::make_shared<GameObject>("Sponza", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(sponza[j]));
+		std::shared_ptr<GameObject> sponzaObj;
+
+		if (sponza[j].GetName() == "")
+			sponzaObj = std::make_shared<GameObject>("Sponza" + j, GameObject::PrimitiveType::CUBE, std::make_shared<Model>(sponza[j]));
+		else
+			sponzaObj = std::make_shared<GameObject>(sponza[j].GetName(), GameObject::PrimitiveType::CUBE, std::make_shared<Model>(sponza[j]));
+
 		ModelManager::getInstance()->addObject(sponzaObj);
 		sponzaObj->setLocalPosition(350, 0, 300);
 	}

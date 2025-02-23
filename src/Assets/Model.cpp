@@ -116,7 +116,7 @@ namespace Assets {
 	//}
 
 	// Geometry
-
+	std::string name;
 	int totalvertices = 0;
 	for (int i = 0; i < model->mNumMeshes; i++) 
 	{
@@ -129,6 +129,7 @@ namespace Assets {
 
 	for (int m = 0; m < model->mNumMeshes; m++)
 	{
+		name = model->mName.C_Str();
 		//const auto& mesh = shape.mesh;
 
 		for (int v = 0; v < model->mMeshes[m]->mNumVertices; v++)
@@ -213,7 +214,7 @@ namespace Assets {
 	std::cout << "(" << totalvertices << " vertices, " << uniqueVertices.size() << " unique vertices, " << materials.size() << " materials) ";
 	std::cout << elapsed << "s" << std::endl;
 
-	return Model(std::move(vertices), std::move(indices), std::move(materials), nullptr);
+	return Model(name, std::move(vertices), std::move(indices), std::move(materials), nullptr);
 }
 
 std::vector<Model> Model::LoadModelGroup(const std::string& filename)
@@ -271,7 +272,7 @@ std::vector<Model> Model::LoadModelGroup(const std::string& filename)
 	}
 
 	// Geometry
-
+	std::string name = "";
 	int totalvertices = 0;
 	for (int i = 0; i < model->mNumMeshes; i++)
 	{
@@ -319,6 +320,7 @@ std::vector<Model> Model::LoadModelGroup(const std::string& filename)
 
 		for (int v = 0; v < model->mMeshes[m]->mNumVertices; v++)
 		{
+			name = model->mMeshes[m]->mName.C_Str();
 			Vertex vertex = {};
 
 			vertex.Position =
@@ -381,7 +383,7 @@ std::vector<Model> Model::LoadModelGroup(const std::string& filename)
 			}
 		}
 
-		Model model = Model(std::move(vertices), std::move(indices), std::move(materials), nullptr);
+		Model model = Model(name, std::move(vertices), std::move(indices), std::move(materials), nullptr);
 		models.push_back(model);
 	}
 
@@ -401,7 +403,7 @@ Model Model::CreateCornellBox(const float scale)
 
 	CornellBox::Create(scale, vertices, indices, materials);
 
-	return Model(
+	return Model("CornellBox",
 		std::move(vertices),
 		std::move(indices),
 		std::move(materials),
@@ -416,7 +418,7 @@ Model Model::CreateBox(const vec3& p0, const vec3& p1, const Material& material)
 
 	Box::Create(p0, p1, vertices, indices);
 
-	return Model(
+	return Model("Box",
 		std::move(vertices),
 		std::move(indices),
 		std::vector<Material>{material},
@@ -430,7 +432,7 @@ Model Model::CreatePlane(const glm::vec3& p0, const glm::vec3& p1, const Materia
 
 	Plane::Create(p0, p1, vertices, indices);
 
-	return Model(
+	return Model("Plane",
 		std::move(vertices),
 		std::move(indices),
 		std::vector<Material>{material},
@@ -444,7 +446,7 @@ Model Model::CreateSphere(const vec3& center, float radius, const Material& mate
 
 	Sphere::Create(center, radius, vertices, indices);
 
-	return Model(
+	return Model("Sphere",
 		std::move(vertices),
 		std::move(indices),
 		std::vector<Material>{material},
@@ -458,7 +460,7 @@ Model Model::CreateCylinder(const glm::vec3& center, float radius, float height,
 
 	Assets::Cylinder::Create(center, radius, height, vertices, indices);
 
-	return Model(
+	return Model("Cylinder",
 		std::move(vertices),
 		std::move(indices),
 		std::vector<Material>{material},
@@ -472,7 +474,7 @@ Model Model::CreateCapsule(const glm::vec3& center, float radius, float height, 
 
 	Assets::Capsule::Create(center, radius, height, vertices, indices);
 
-	return Model(
+	return Model("Capsule",
 		std::move(vertices),
 		std::move(indices),
 		std::vector<Material>{material},
@@ -500,12 +502,14 @@ void Model::Transform(const mat4& transform)
 	}
 }
 
-Model::Model(std::vector<Vertex>&& vertices, std::vector<uint32_t>&& indices, std::vector<Material>&& materials, const class Procedural* procedural) :
+Model::Model(std::string name, std::vector<Vertex>&& vertices, std::vector<uint32_t>&& indices, std::vector<Material>&& materials, const class Procedural* procedural) :
 	vertices_(std::move(vertices)), 
 	indices_(std::move(indices)),
 	materials_(std::move(materials)),
 	procedural_(procedural)
+
 {
+	this->name = name;
 }
 
 }
