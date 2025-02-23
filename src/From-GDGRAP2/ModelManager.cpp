@@ -250,6 +250,21 @@ void ModelManager::createObjectGroupFromFile(String name, GameObject::PrimitiveT
 
 }
 
+void ModelManager::createSponza()
+{
+	std::vector<Assets::Model> models = Assets::Model::LoadModelGroup(FileUtils::getAssetsFolderPath().generic_string() + "/models/sponza.obj");
+
+	//create a game object for each model
+	for (int i = 0; i < models.size(); i++)
+	{
+		std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>("Sponza " + i, GameObject::PrimitiveType::CUBE, std::make_shared<Assets::Model>(models[i]));
+		gameObject->setLocalPosition(0,0,0);
+		gameObject->setLocalRotation(0,0,0);
+		gameObject->setLocalScale(1,1,1);
+		addObject(gameObject);
+	}
+}
+
 void ModelManager::deleteObject(std::shared_ptr<GameObject> gameObject)
 {
 	this->gameObjectMap.erase(gameObject->getName());

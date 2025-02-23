@@ -228,11 +228,7 @@ std::vector<Model> Model::LoadModelGroup(const std::string& filename)
 	Assimp::Importer objectImporter;
 	std::vector<Model> models;
 
-	const aiScene* model = objectImporter.ReadFile(filename,
-		aiProcess_CalcTangentSpace |
-		aiProcess_Triangulate |
-		aiProcess_JoinIdenticalVertices |
-		aiProcess_SortByPType); //read file and return an aiScene containing model attributes
+	const aiScene* model = objectImporter.ReadFile(filename, 0); //read file and return an aiScene containing model attributes
 
 
 	if (model == nullptr)
