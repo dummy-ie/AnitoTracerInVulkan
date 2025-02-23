@@ -3,6 +3,7 @@
 #include <iostream>
 #include <glm/fwd.hpp>
 
+#include "From-GDGRAP2/Debug.h"
 #include "From-GDGRAP2/ModelManager.h"
 #include "OBB/Ray.hpp"
 #include "Vulkan/Vulkan.hpp"
@@ -66,10 +67,20 @@ bool Camera::OnCursorPosition(const double xpos, const double ypos)
 	const auto deltaX = static_cast<float>(xpos - mousePosX_);
 	const auto deltaY = static_cast<float>(ypos - mousePosY_);
 
+	const auto limit = 360*2;
 	if (mouseLeftPressed_)
 	{
 		cameraRotX_ += deltaX;
+		this->localRotation.x += deltaX;
+		if (localRotation.x > limit) {cameraRotX_ = 0; this->localRotation.x -= deltaX;}
+		if (localRotation.x < -limit) {cameraRotX_ = 0; this->localRotation.x -= deltaX;}
+
 		cameraRotY_ += deltaY;
+		this->localRotation.y += deltaY;
+		if (localRotation.y > limit) { cameraRotY_ = 0; this->localRotation.y -= deltaY; }
+		if (localRotation.y < -limit) { cameraRotY_ = 0; this->localRotation.y -= deltaY; }
+
+		Debug::Log("Camera rotation: " + std::to_string(localRotation.x) + ", " + std::to_string(localRotation.y) + "\n");
 	}
 
 	if (mouseRightPressed_)
