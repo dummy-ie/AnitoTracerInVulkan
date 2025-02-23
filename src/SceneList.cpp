@@ -613,7 +613,7 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	std::shared_ptr<GameObject> box0Obj = std::make_shared<GameObject>("Box", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(box0));
 	ModelManager::getInstance()->addObject(box0Obj);
 
-	std::shared_ptr<GameObject> box1Obj = std::make_shared<GameObject>("Box", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(box1));
+	std::shared_ptr<GameObject> box1Obj = std::make_shared<GameObject>("Box 1", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(box1));
 	ModelManager::getInstance()->addObject(box1Obj);
 
 	Model cornellBoxModel = Model::CreateCornellBox(555);
@@ -622,7 +622,7 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	cornellBoxObject->setLocalPosition(0, 1, 0);
 
 	Model capsuleTest = Model::CreateCapsule(vec3(2000, 500, 300), 100, 500, *white.get());
-	std::shared_ptr<GameObject> capsuleObject = std::make_shared<GameObject>("Cylinder", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(capsuleTest));
+	std::shared_ptr<GameObject> capsuleObject = std::make_shared<GameObject>("Capsule", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(capsuleTest));
 	ModelManager::getInstance()->addObject(capsuleObject);
 
 	Model cylinderTest = Model::CreateCylinder(vec3(2000, 200, 0), 100, 200, *white.get());

@@ -24,6 +24,8 @@ GameObject::GameObject(String name, PrimitiveType type, std::shared_ptr<Assets::
 	this->name = name;
 	this->type = type;
 	this->modelRef = modelRef;
+
+	this->updateWorldTransform();
 }
 
 GameObject::String GameObject::getName() const
