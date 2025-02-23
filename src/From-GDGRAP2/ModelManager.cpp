@@ -177,14 +177,14 @@ void ModelManager::createObject(GameObject::PrimitiveType type)
 	break;
 	case GameObject::CYLINDER:
 	{
-		Assets::Model cylinderModel = Assets::Model::CreateCylinder(vec3(0), 50, 100, *Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
+		Assets::Model cylinderModel = Assets::Model::CreateCylinder(50, 100, *Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
 		std::shared_ptr<GameObject> cylinder = std::make_shared<GameObject>("Cylinder", GameObject::PrimitiveType::CYLINDER, std::make_shared<Assets::Model>(cylinderModel));
 		addObject(cylinder);
 	}
 	break;
 	case GameObject::CAPSULE:
 	{
-		Assets::Model capsuleModel = Assets::Model::CreateCapsule(vec3(0), 50, 100, *Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
+		Assets::Model capsuleModel = Assets::Model::CreateCapsule(50, 150, *Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
 		std::shared_ptr<GameObject> capsule = std::make_shared<GameObject>("Capsule", GameObject::PrimitiveType::CAPSULE, std::make_shared<Assets::Model>(capsuleModel));
 		addObject(capsule);
 	}

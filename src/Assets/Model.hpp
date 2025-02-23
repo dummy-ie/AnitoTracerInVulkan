@@ -19,8 +19,8 @@ namespace Assets
 		static Model CreateBox(const glm::vec3& p0, const glm::vec3& p1, const Material& material);
 		static Model CreatePlane(const glm::vec3& p0, const glm::vec3& p1, const Material& material);
 		static Model CreateSphere(const glm::vec3& center, float radius, const Material& material, bool isProcedural);
-		static Model CreateCylinder(const glm::vec3& center, float radius, float height, const Material& material);
-		static Model CreateCapsule(const glm::vec3& center, float radius, float height, const Material& material);
+		static Model CreateCylinder(float radius, float height, const Material& material);
+		static Model CreateCapsule(float radius, float height, const Material& material);
 		
 		Model& operator = (const Model&) = delete;
 		Model& operator = (Model&&) = delete;
