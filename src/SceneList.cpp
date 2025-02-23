@@ -730,7 +730,13 @@ SceneAssets SceneList::Sponza(CameraInitialState& camera)
 	//				vec3(0.6f)),
 	//			radians(75.0f), vec3(0, 1, 0)));
 
-	//	std::shared_ptr<GameObject> sponzaObj = std::make_shared<GameObject>(sponza.GetName(), GameObject::PrimitiveType::CUBE, std::make_shared<Model>(sponza));
+	//	std::shared_ptr<GameObject> sponzaObj;
+
+	//	if (sponza.GetName() == "")
+	//		sponzaObj = std::make_shared<GameObject>("Sponza", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(sponza));
+	//	else
+	//		sponzaObj = std::make_shared<GameObject>(sponza.GetName(), GameObject::PrimitiveType::CUBE, std::make_shared<Model>(sponza));
+
 	//	ModelManager::getInstance()->addObject(sponzaObj);
 	//	sponzaObj->setLocalPosition(350, 0, 300);
 	 
@@ -769,6 +775,8 @@ SceneAssets SceneList::Sponza(CameraInitialState& camera)
 	std::vector<Model> models = ModelManager::getInstance()->getAllObjectModels();
 	std::vector<Texture> textures = TextureLibrary::getInstance()->getTextureLibraryList();
 	std::vector<Assets::LightProperties> lights = ModelManager::getInstance()->getAllLightProperties();
+
+	textures.push_back(Texture::LoadTexture(FileUtils::getAssetsFolderPath().generic_string() + "/textures/2k_moon.jpg", Vulkan::SamplerConfig()));
 
 	return std::forward_as_tuple(std::move(models), std::move(textures), std::move(lights));
 }

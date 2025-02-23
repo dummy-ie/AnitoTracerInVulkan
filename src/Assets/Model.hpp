@@ -15,6 +15,7 @@ namespace Assets
 	public:
 		static Model LoadModel(const std::string& filename);
 		static std::vector<Model> LoadModelGroup(const std::string& filename);
+
 		static Model CreateCornellBox(const float scale);
 		static Model CreateBox(const glm::vec3& p0, const glm::vec3& p1, const Material& material);
 		static Model CreatePlane(const glm::vec3& p0, const glm::vec3& p1, const Material& material);

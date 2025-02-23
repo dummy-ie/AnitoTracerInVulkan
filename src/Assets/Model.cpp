@@ -19,6 +19,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <Assimp/postprocess.h>
+#include <Assimp/texture.h>
 
 #include "Capsule.hpp"
 #include "Cylinder.hpp"
@@ -81,7 +82,7 @@ namespace Assets {
 			Material m{};
 
 			aiColor4D diffuse;
-			aiGetMaterialColor(model->mMaterials[i], AI_MATKEY_COLOR_DIFFUSE, &diffuse);
+			model->mMaterials[i]->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
 
 			//m.Diffuse.r = diffuse[0];
 			//m.Diffuse.g = diffuse[1];
@@ -240,37 +241,6 @@ std::vector<Model> Model::LoadModelGroup(const std::string& filename)
 	// Materials
 	std::vector<Material> materials;
 
-	if (model->HasMaterials())
-	{
-		for (int i = 0; i < model->mNumMaterials; i++)
-		{
-			Material m{};
-
-			aiColor4D diffuse;
-			aiGetMaterialColor(model->mMaterials[i], AI_MATKEY_COLOR_DIFFUSE, &diffuse);
-
-			//m.Diffuse.r = diffuse[0];
-			//m.Diffuse.g = diffuse[1];
-			//m.Diffuse.b = diffuse[2];
-			//m.Diffuse.a = 1.0f;
-
-			m.Diffuse = vec4(diffuse[0], diffuse[1], diffuse[2], 1.0);
-
-			m.DiffuseTextureId = -1;
-
-			materials.emplace_back(m);
-		}
-	}
-	else
-	{
-		Material m{};
-
-		m.Diffuse = vec4(0.7f, 0.7f, 0.7f, 1.0);
-		m.DiffuseTextureId = -1;
-
-		materials.emplace_back(m);
-	}
-
 	// Geometry
 	std::string name = "";
 	int totalvertices = 0;
@@ -278,41 +248,49 @@ std::vector<Model> Model::LoadModelGroup(const std::string& filename)
 	{
 		totalvertices += model->mMeshes[i]->mNumVertices;
 	}
-	std::vector<Vertex> vertices;
-	std::vector<uint32_t> indices;
-	std::unordered_map<Vertex, uint32_t> uniqueVertices(totalvertices);
+
 	size_t faceId = 0;
 
 	for (int m = 0; m < model->mNumMeshes; m++)
 	{
+		std::vector<Vertex> vertices;
+		std::vector<uint32_t> indices;
+		std::unordered_map<Vertex, uint32_t> uniqueVertices(totalvertices);
+
 		//const auto& mesh = shape.mesh;
 		materials.clear();
 		if (model->HasMaterials())
 		{
 			for (int i = 0; i < model->mNumMaterials; i++)
 			{
-				Material m{};
+				Material mat{};
 
+				
 				aiColor4D diffuse;
-				aiGetMaterialColor(model->mMaterials[i], AI_MATKEY_COLOR_DIFFUSE, &diffuse);
+				model->mMaterials[i]->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+				//const aiMesh* model = scene->mMeshes[i];
+				//const aiMaterial* mtl = scene->mMaterials[model->mMaterialIndex];
+
+				//	color = color4<float>(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
+				//colors.push_back(color);
 
 				//m.Diffuse.r = diffuse[0];
 				//m.Diffuse.g = diffuse[1];
 				//m.Diffuse.b = diffuse[2];
 				//m.Diffuse.a = 1.0f;
 
-				m.Diffuse = vec4(diffuse[0], diffuse[1], diffuse[2], 1.0);
+				mat.Diffuse = vec4(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
 
-				m.DiffuseTextureId = -1;
+				mat.DiffuseTextureId = -1;
 
-				materials.emplace_back(m);
+				materials.emplace_back(mat);
 			}
 		}
 		else
 		{
 			Material m{};
 
-			m.Diffuse = vec4(0.7f, 0.7f, 0.7f, 1.0);
+			m.Diffuse = vec4(0.5f, 0.0f, 0.5f, 1.0);
 			m.DiffuseTextureId = -1;
 
 			materials.emplace_back(m);
@@ -344,8 +322,8 @@ std::vector<Model> Model::LoadModelGroup(const std::string& filename)
 			{
 				vertex.TexCoord =
 				{
-					model->mMeshes[m]->mTextureCoords[v]->x,
-					1 - model->mMeshes[m]->mTextureCoords[v]->y
+					(float)model->mMeshes[m]->mTextureCoords[0][v].x,
+					(float)model->mMeshes[m]->mTextureCoords[0][v].y
 				};
 			}
 
@@ -383,17 +361,21 @@ std::vector<Model> Model::LoadModelGroup(const std::string& filename)
 			}
 		}
 
+		if (name == "")
+			name = "Sponza_" + m;
+
 		Model model = Model(name, std::move(vertices), std::move(indices), std::move(materials), nullptr);
 		models.push_back(model);
 	}
 
 	const auto elapsed = std::chrono::duration<float, std::chrono::seconds::period>(std::chrono::high_resolution_clock::now() - timer).count();
 
-	std::cout << "(" << totalvertices << " vertices, " << uniqueVertices.size() << " unique vertices, " << materials.size() << " materials) ";
-	std::cout << elapsed << "s" << std::endl;
+	//std::cout << "(" << totalvertices << " vertices, " << uniqueVertices.size() << " unique vertices, " << materials.size() << " materials) ";
+	//std::cout << elapsed << "s" << std::endl;
 
 	return models;
 }
+
 
 Model Model::CreateCornellBox(const float scale)
 {
