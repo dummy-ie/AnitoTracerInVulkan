@@ -42,33 +42,37 @@ vec3 calculatePointLight(LightProperties pl, vec3 worldPos, vec3 normal)
 	vec3 diffuseLight = lightCol * max(dot(worldNrm, normalize(lightDir)), 0);
 	
 	vec3 lighting = diffuseLight + ambientLight;
-
+	 
 	return lighting;
 }
-
+ 
 vec3 calculateDirectionalLight(LightProperties dl, vec3 worldPos, vec3 normal) 
 {
-	// Computing the coordinates of the hit position
-	const vec3 worldNrm = normalize(transpose(inverse(mat3(gl_ObjectToWorldEXT))) * normal);
+	vec3 worldNrm = normalize(transpose(inverse(mat3(gl_ObjectToWorldEXT))) * normal);
+	vec3 lightDir = -normalize(dl.LightPos);
 
-	// Compute the diffuse light.
-	vec3 lightDir = dl.LightPos.xyz - worldPos;
-	vec3 lighting = dl.LightColor.rgb * max(dot(worldNrm, normalize(lightDir)), 0);
+	vec3 ambientColor = dl.AmbientColor.rgb * dl.AmbientColor.w;
 
+    float diffuseFactor = max(dot(worldNrm, lightDir), 0.f);
+    vec3 diffuseColor = dl.LightColor.rgb * dl.LightColor.w * diffuseFactor;
+	 
+	vec3 lighting = ambientColor + diffuseColor;
 	return lighting;
-}
-
+} 
+   
 vec3 calculateSpotLight(LightProperties sl, vec3 worldPos, vec3 normal) 
 {                      
-	float cutoff = 10;
-    vec3 LightToPixel = normalize(worldPos - sl.LightPos);    
-	vec3 lightDir = sl.LightPos.xyz - worldPos;                         
-    float SpotFactor = dot(LightToPixel, lightDir);    
-
-	if (SpotFactor > cutoff) {                                                            
-        vec3 lighting = calculatePointLight(sl, worldPos, normal);                         
-        return lighting * (1.0 - (1.0 - SpotFactor) * 1.0/(1.0 - cutoff));                   
-    }
+	float cutoff = cos(radians(90.0)); // Convert degrees to radians and compute cosine
+	vec3 lightDir = normalize(sl.LightPos.xyz - worldPos); // Direction from light to hit point
+	vec3 lightDirection = vec3(0, -1, 0);
+	vec3 spotDir = normalize(lightDirection); // Direction of the spot light 
+	float spotFactor = dot(lightDir, -spotDir); // Cosine of the angle between lightDir and spotDir
+	 
+	if (spotFactor > cutoff) {
+		vec3 lighting = calculatePointLight(sl, worldPos, normal);
+		return lighting * (1.0 - (1.0 - spotFactor) * 1.0 / (1.0 - cutoff));
+	}
+	return vec3(0.0); // Return no light if outside the spot light cone
 }
 
 void NVidiaTutLightingComp(LightProperties pl, vec3 normal) // Unused 
@@ -105,7 +109,7 @@ void main()
 	const Vertex v2 = UnpackVertex(vertexOffset + Indices[indexOffset + gl_PrimitiveID * 3 + 2]);
 	const Material material = Materials[v0.MaterialIndex];
 	 
-	// Compute the ray hit point properties.
+	// Compute the ray hit point properties.	
 	const vec3 barycentrics = vec3(1.0 - HitAttributes.x - HitAttributes.y, HitAttributes.x, HitAttributes.y);
 	const vec3 normal = normalize(Mix(v0.Normal, v1.Normal, v2.Normal, barycentrics));
 	const vec2 texCoord = Mix(v0.TexCoord, v1.TexCoord, v2.TexCoord, barycentrics);
@@ -115,24 +119,26 @@ void main()
 	const vec3 worldPos = vec3(gl_ObjectToWorldEXT * vec4(pos, 1.0));  // Transforming the position to world space
 	
 	vec3 lighting = vec3(0);
-	for (int i = 0; i < Lights.length(); i++) {
-		if (Lights[i].LightType == PointLight) { // Point Light
-			lighting += calculatePointLight(Lights[i], worldPos, normal);
-		} else if (Lights[i].LightType == DirectionalLight) { // Directional Light
-			lighting += calculateDirectionalLight(Lights[i], worldPos, normal);
-		} else if (Lights[i].LightType == SpotLight) { // Spot Light
-			//lighting += calculateSpotLight(Lights[i], worldPos, normal);
-		} 
-	}
+	
 	if (Lights.length() == 0) { // Pink light if buffer is empty
-		LightProperties sl = InitializeTestPLProperties(); // Adding spot light.
-		lighting += calculatePointLight(sl, worldPos, normal);
+		//LightProperties dl = InitializeTestDLProperties(); // Adding directional light.
+		//lighting += calculateDirectionalLight(dl, worldPos, normal);
+		//LightProperties pl = InitializeTestPLProperties(); // Adding point light.
+		//lighting += calculatePointLight(pl, worldPos, normal);
+		LightProperties sl = InitializeTestSLProperties(); // Adding spot light.
+		lighting += calculateSpotLight(sl, worldPos, normal);
+	} else {
+		for (int i = 0; i < Lights.length(); i++) {
+			if (Lights[i].LightType == PointLight) { // Point Light
+				lighting += calculatePointLight(Lights[i], worldPos, normal);
+			} else if (Lights[i].LightType == DirectionalLight) { // Directional Light
+				lighting += calculateDirectionalLight(Lights[i], worldPos, normal);
+			} else if (Lights[i].LightType == SpotLight) { // Spot Light
+				//lighting += calculateSpotLight(Lights[i], worldPos, normal);
+			} 
+		}
 	}
-	//LightProperties dl = InitializeTestDLProperties(); // Adding directional light.
-	//lighting += calculateDirectionalLight(dl, worldPos, normal);
-	//LightProperties pl = InitializeTestPLProperties(); // Adding point light.
-	//lighting += calculatePointLight(pl, worldPos, normal);
-
+	
 	Ray = Scatter(material, gl_WorldRayDirectionEXT, normal, texCoord, gl_HitTEXT, Ray.RandomSeed, lighting);
 }
 	

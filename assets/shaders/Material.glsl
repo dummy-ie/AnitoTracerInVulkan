@@ -41,10 +41,21 @@ LightProperties InitializeTestPLProperties()
 LightProperties InitializeTestDLProperties() 
 {
 	LightProperties dl;
-	dl.LightPos = vec3(1600, 200.0, 0);
-	dl.AmbientColor = vec4(1.0, 1.0, 1.0, 0.02);
-	dl.LightColor = vec4(0.2, 0.4, 1.0, 10.0f);
+	dl.LightPos = vec3(1, 0, 0);
+	dl.AmbientColor = vec4(1.0, 1.0, 1.0, 1.0f);
+	dl.LightColor = vec4(1.0, 0.4, 0.5, 15.0f);
 	dl.LightType = DirectionalLight;
 
 	return dl;
+}
+
+LightProperties InitializeTestSLProperties() 
+{
+	LightProperties sl;
+	sl.LightPos = vec3(1000, 400, 0);
+	sl.AmbientColor = vec4(1.0, 1.0, 1.0, 0.02);
+	sl.LightColor = vec4(0.6, 1.0, 0.4, 500000.0f);
+	sl.LightType = SpotLight;
+
+	return sl;
 }
