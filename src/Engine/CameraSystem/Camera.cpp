@@ -81,7 +81,7 @@ bool Camera::OnCursorPosition(const double xpos, const double ypos)
 		if (localRotation.y > limit) { cameraRotY_ = 0; this->localRotation.y -= deltaY; }
 		if (localRotation.y < -limit) { cameraRotY_ = 0; this->localRotation.y -= deltaY; }
 
-		Debug::Log("Camera rotation: " + std::to_string(localRotation.x) + ", " + std::to_string(localRotation.y) + "\n");
+		//Debug::Log("Camera rotation: " + std::to_string(localRotation.x) + ", " + std::to_string(localRotation.y) + "\n");
 	}
 
 	if (mouseRightPressed_)
@@ -104,14 +104,14 @@ bool Camera::OnMouseButton(const int button, const int action, const int mods)
 		float ndcY = 1.0f - (2.0f * static_cast<float>(mousePosY_)) / windowHeight_;
 		glm::vec2 mouseNDC(ndcX, ndcY);
 
-		glm::mat4 view = glm::translate(glm::mat4(1.0f), -glm::vec3(position_)) * orientation_;
+		glm::mat4 view = orientation_ * glm::translate(glm::mat4(1), -glm::vec3(position_));
 ;
 		glm::mat4 proj = projection_;
 		proj[1][1] *= -1;
 
 		glm::mat4 invVP = glm::inverse(proj * view);
 
-		glm::vec4 rayStartNDC(mouseNDC, 0.0f, 1.0f);
+		glm::vec4 rayStartNDC(mouseNDC, 0.3f, 1.0f);
 		glm::vec4 rayEndNDC(mouseNDC, 1.0f, 1.0f);
 
 		glm::vec4 rayStartWorld = invVP * rayStartNDC;
@@ -123,42 +123,41 @@ bool Camera::OnMouseButton(const int button, const int action, const int mods)
 		glm::vec rayEnd = glm::vec3(rayEndWorld);
 		glm::vec3 rayDirection = glm::normalize(glm::vec3(rayEndWorld - rayStartWorld));
 
-		// Construct the picking ray.
 		Ray pickingRay(rayOrigin, rayDirection);
 
-		std::cout << (rayOrigin.y) << std::endl;
+		std::cout << "Ray Direction: " << glm::to_string(rayDirection) << std::endl;
 
-		//Assets::Model cubeModel = Assets::Model::CreateBox(vec3(0, 0, -100), vec3(100, 100, 0), *Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
-		//std::shared_ptr<GameObject> cube = std::make_shared<GameObject>("Cube", GameObject::PrimitiveType::CUBE, std::make_shared<Assets::Model>(cubeModel));
-		//ModelManager::getInstance()->addObject(cube);
-		//cube->setLocalPosition(rayOrigin);
-
-		// Iterate over objects from ModelManager.
 		auto objects = ModelManager::getInstance()->getAllObjects();
-		//for (auto& obj : objects)
-		//{
-		//	if (!obj->isEnabled())
-		//		continue;
+		float closestT = std::numeric_limits<float>::max();
+		std::shared_ptr<GameObject> selectedObject = nullptr;
 
-		//	auto obb = obj->getOBB();
-		//	if (obb)
-		//	{
-		//		std::cout << obj->getName() << std::endl;
+		for (auto& obj : objects)
+		{
+			if (!obj->isEnabled())
+				continue;
 
-		//		
-		//		float tHit = 0.0f;
-		//		if (pickingRay.intersects(*obb, tHit))
-		//		{
-		//			glm::vec3 hitPoint = rayOrigin + rayDirection * tHit;
-		//			std::cout << "Picked object: " << obj->getName() << "\n";
-		//			std::cout << "Intersection at (" << hitPoint.x << ", "
-		//				<< hitPoint.y << ", " << hitPoint.z << ")\n";
+			auto obb = obj->getOBB();
+			if (obb)
+			{
+				float tHit = 0.0f;
+				if (pickingRay.intersects(*obb, tHit))
+				{
+					if (tHit < closestT)
+					{
+						closestT = tHit;
+						selectedObject = obj;
+					}
+				}
+			}
+		}
 
-		//			ModelManager::getInstance()->setSelectedObject(obj);
-		//			break;
-		//		}
-		//	}
-		//}	
+		if (selectedObject)
+		{
+			glm::vec3 hitPoint = rayOrigin + rayDirection * closestT;
+			std::cout << "Intersection at (" << hitPoint.x << ", "
+				<< hitPoint.y << ", " << hitPoint.z << ")\n";
+			ModelManager::getInstance()->setSelectedObject(selectedObject);
+		}
 	}
 
 	if (button == GLFW_MOUSE_BUTTON_LEFT)

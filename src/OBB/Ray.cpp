@@ -46,11 +46,12 @@ bool Ray::intersects(const BoundingBox& box, float& tOut) const
     }
 
     if (tMax < 0)
-        return false; // Intersection is behind the ray.
+        return false;
 
     tOut = (tMin >= 0.0f) ? tMin : tMax;
     return true;
 }
+
 
 glm::vec3 Ray::getOrigin() const
 {

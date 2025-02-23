@@ -32,4 +32,5 @@ BoundingBox::BoundingBox(const std::vector<glm::vec3>& vertices, const std::arra
         (maxProj[1] - minProj[1]) * 0.5f,
         (maxProj[2] - minProj[2]) * 0.5f
     );
+
 }
