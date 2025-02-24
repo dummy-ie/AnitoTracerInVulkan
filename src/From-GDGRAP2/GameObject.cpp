@@ -332,22 +332,23 @@ void GameObject::performModelTransform()
 
 void GameObject::performModelRotate()
 {
+    vec3 rotOffset = this->worldRotation - this->originRot;
 
-	vec3 rotOffset = this->worldRotation - this->originRot;
+    mat4 translateToOrigin = glm::translate(mat4(1.0f), -this->worldPosition);
 
-	mat4 rotateXOp = glm::rotate(mat4(1), glm::radians(rotOffset.x), vec3(1, 0, 0));
-	mat4 rotateYOp = glm::rotate(mat4(1), glm::radians(rotOffset.y), vec3(0, 1, 0));
-	mat4 rotateZOp = glm::rotate(mat4(1), glm::radians(rotOffset.z), vec3(0, 0, 1));
+    mat4 rotateXOp = glm::rotate(mat4(1), glm::radians(rotOffset.x), vec3(1, 0, 0));
+    mat4 rotateYOp = glm::rotate(mat4(1), glm::radians(rotOffset.y), vec3(0, 1, 0));
+    mat4 rotateZOp = glm::rotate(mat4(1), glm::radians(rotOffset.z), vec3(0, 0, 1));
 
-	if (modelRef)
-	{
-		this->modelRef->Transform(rotateXOp);
-		this->modelRef->Transform(rotateYOp);
-		this->modelRef->Transform(rotateZOp);
-	}
+    mat4 translateBack = glm::translate(mat4(1.0f), this->worldPosition);
 
-	this->originRot = this->worldRotation;
-	EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
+    mat4 finalRotation = translateBack * rotateZOp * rotateYOp * rotateXOp * translateToOrigin;
+
+    if (modelRef)
+        this->modelRef->Transform(finalRotation);
+
+    this->originRot = this->worldRotation;
+    EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
 }
 
 void GameObject::performModelScale()

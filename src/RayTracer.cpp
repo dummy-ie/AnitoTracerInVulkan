@@ -146,9 +146,9 @@ void RayTracer::DrawFrame()
 	if (!userSettings_.IsRayTraced && this->isSceneDirty)
 	{
 		this->isSceneDirty = false;
-		//DeleteSwapChain();
-		//ReloadModifiedScene();
-		//CreateSwapChain();
+		DeleteSwapChain();
+		ReloadModifiedScene();
+		CreateSwapChain();
 		Application::DrawFrame();
 		return;
 	}
