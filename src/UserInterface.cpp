@@ -21,6 +21,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Engine/CameraSystem/CameraManager.h"
+#include "From-GDGRAP2/EventBroadcaster.h"
+#include "From-GDGRAP2/EventNames.h"
 #include "From-GDGRAP2/ModelManager.h"
 #include "UI/UIManager.h"
 #include "From-GDGRAP2/RTConfig.h"
@@ -141,47 +143,59 @@ void UserInterface::Render(VkCommandBuffer commandBuffer, const Vulkan::FrameBuf
 	// Draw the rest of your UI first.
 	UIManager::getInstance()->drawAllUI();
 
+	imguizmoOpen = false;
+
 	//Start ImGuizmo frame.
 	if (ModelManager::getInstance()->getSelectedObject() != nullptr)
 	{
+		imguizmoOpen = true;
+		static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
+
+		if (ImGui::IsKeyPressed(ImGuiKey_W)) mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+		if (ImGui::IsKeyPressed(ImGuiKey_E)) mCurrentGizmoOperation = ImGuizmo::ROTATE;
+		if (ImGui::IsKeyPressed(ImGuiKey_R)) mCurrentGizmoOperation = ImGuizmo::SCALE;
+
 		auto selectedObject = ModelManager::getInstance()->getSelectedObject();
 
 		ImGuizmo::BeginFrame();
 
-		// Set the viewport to the full window.
 		float viewportX = 0;
 		float viewportY = 0;
 		float viewportWidth = swapChain.Extent().width;
 		float viewportHeight = swapChain.Extent().height;
 		ImGuizmo::SetRect(viewportX, viewportY, viewportWidth, viewportHeight);
 
-		// Set up the transformation matrices.
 		glm::mat4 objectMatrix = glm::translate(glm::mat4(1.0f), selectedObject->getWorldPosition());
+		glm::quat rotationQuat = glm::quat(glm::radians(selectedObject->getLocalRotation()));
+		objectMatrix *= glm::mat4_cast(rotationQuat);
+		objectMatrix = glm::scale(objectMatrix, selectedObject->getLocalScale());
+
 		glm::mat4 viewMatrix = CameraManager::getInstance()->getActiveCamera()->ModelView();
 		glm::mat4 projMatrix = glm::perspective(glm::radians(userSettings_.FieldOfView), viewportWidth / viewportHeight, 0.1f, 10000.0f);
 
-		// Render the gizmo (which will appear at the center if the camera is centered on the origin).
 		if (ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projMatrix),
-			ImGuizmo::TRANSLATE, ImGuizmo::LOCAL,
-			glm::value_ptr(objectMatrix)))
+			mCurrentGizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(objectMatrix)))
 		{
-			// Extract the new translation from the objectMatrix.
-			glm::vec3 newPosition = glm::vec3(objectMatrix[3]);
+			float translation[3], rotation[3], scale[3];
+			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(objectMatrix), translation, rotation, scale);
 
-			// Convert world position to local position relative to parent.
-			if (selectedObject->getParent() != nullptr)
+			if (mCurrentGizmoOperation == ImGuizmo::TRANSLATE)
 			{
-				//glm::mat4 parentWorldTransform = selectedObject->getParent()->getWorldTransform();
-				//glm::mat4 parentWorldInverse = glm::inverse(parentWorldTransform);
-				//glm::vec4 localPos = parentWorldInverse * glm::vec4(newPosition, 1.0f);
-				//selectedObject->setLocalPosition(glm::vec3(localPos));
+				selectedObject->setLocalPosition(glm::vec3(translation[0], translation[1], translation[2]));
 			}
-			else
+			else if (mCurrentGizmoOperation == ImGuizmo::ROTATE)
 			{
-				selectedObject->setLocalPosition(newPosition);
+				glm::vec3 newRotation(rotation[0], rotation[1], rotation[2]);
+				selectedObject->setLocalRotation(newRotation);
 			}
+			else if (mCurrentGizmoOperation == ImGuizmo::SCALE)
+			{
+				glm::vec3 newScale(scale[0], scale[1], scale[2]);
+				selectedObject->setLocalScale(newScale);
+			}
+
+			EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
 		}
-
 	}
 
 	ImGui::Render();

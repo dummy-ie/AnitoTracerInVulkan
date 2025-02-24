@@ -2,6 +2,8 @@
 #include "Vulkan/Vulkan.hpp"
 #include <memory>
 
+
+
 namespace Vulkan
 {
 	class CommandPool;
@@ -21,6 +23,7 @@ struct Statistics final
 	float RayRate;
 	uint32_t TotalSamples;
 };
+
 
 class UserInterface final
 {
@@ -52,4 +55,6 @@ private:
 	UserSettings& userSettings_;
 
 	const Vulkan::SwapChain& swapChain;
+
+	bool imguizmoOpen = false;
 };

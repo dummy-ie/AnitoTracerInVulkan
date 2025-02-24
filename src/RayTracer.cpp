@@ -142,6 +142,17 @@ void RayTracer::DeleteSwapChain()
 
 void RayTracer::DrawFrame()
 {
+
+	if (!userSettings_.IsRayTraced && this->isSceneDirty)
+	{
+		this->isSceneDirty = false;
+		//DeleteSwapChain();
+		//ReloadModifiedScene();
+		//CreateSwapChain();
+		Application::DrawFrame();
+		return;
+	}
+
 	// Check if the scene has been changed by the user via select new scene
 	if (sceneIndex_ != static_cast<uint32_t>(userSettings_.SceneIndex))
 	{
@@ -245,7 +256,7 @@ void RayTracer::OnKey(int key, int scancode, int action, int mods)
 			case GLFW_KEY_F2: userSettings_.ShowOverlay = !userSettings_.ShowOverlay; break;
 			case GLFW_KEY_1: CameraManager::getInstance()->setSceneCameraProjection(0); break;
 			case GLFW_KEY_2: CameraManager::getInstance()->setSceneCameraProjection(1); break;
-			case GLFW_KEY_R: userSettings_.IsRayTraced = !userSettings_.IsRayTraced; break;
+			case GLFW_KEY_T: userSettings_.IsRayTraced = !userSettings_.IsRayTraced; break;
 			case GLFW_KEY_H: userSettings_.ShowHeatmap = !userSettings_.ShowHeatmap; break;
 			case GLFW_KEY_P: isWireFrame_ = !isWireFrame_; break;
 			default: break;
@@ -282,10 +293,6 @@ void RayTracer::OnMouseButton(const int button, const int action, const int mods
 	{
 		return;
 	}
-
-
-
-
 
 	// Camera motions
 	resetAccumulation_ |= CameraManager::getInstance()->getActiveCamera()->OnMouseButton(button, action, mods);

@@ -79,7 +79,7 @@ bool Camera::OnCursorPosition(const double xpos, const double ypos)
 	const auto deltaY = static_cast<float>(ypos - mousePosY_);
 
 	const auto limit = 360*2;
-	if (mouseLeftPressed_)
+	if (mouseRightPressed_)
 	{
 		cameraRotX_ += deltaX;
 		this->localRotation.x += deltaX;
@@ -96,11 +96,11 @@ bool Camera::OnCursorPosition(const double xpos, const double ypos)
 		//Debug::Log("Camera rotation: " + std::to_string(localRotation.x) + ", " + std::to_string(localRotation.y) + "\n");
 	}
 
-	if (mouseRightPressed_)
-	{
-		modelRotX_ += deltaX;
-		modelRotY_ += deltaY;
-	}
+	//if (mouseRightPressed_)
+	//{
+	//	modelRotX_ += deltaX;
+	//	modelRotY_ += deltaY;
+	//}
 
 	mousePosX_ = xpos;
 	mousePosY_ = ypos;

@@ -283,7 +283,7 @@ void Application::Render(VkCommandBuffer commandBuffer, const uint32_t imageInde
 		uint32_t vertexOffset = 0;
 		uint32_t indexOffset = 0;
 
-		for (const auto& model : scene.Models())
+		for (const auto& model : ModelManager::getInstance()->getAllObjectModels())
 		{
 			const auto vertexCount = static_cast<uint32_t>(model.NumberOfVertices());
 			const auto indexCount = static_cast<uint32_t>(model.NumberOfIndices());
