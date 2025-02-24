@@ -217,141 +217,129 @@ std::vector<Model> Model::LoadModelGroup(const std::string& filename)
 	const auto timer = std::chrono::high_resolution_clock::now();
 	const std::string materialPath = std::filesystem::path(filename).parent_path().string();
 
-	//tinyobj::ObjReader objReader;
-
 	Assimp::Importer objectImporter;
 	std::vector<Model> models;
 
-	const aiScene* model = objectImporter.ReadFile(filename, 0); //read file and return an aiScene containing model attributes
+	const aiScene* scene = objectImporter.ReadFile(filename, aiProcessPreset_TargetRealtime_MaxQuality); //read file and return an aiScene containing model attributes
 
 
-	if (model == nullptr)
+	if (scene == nullptr)
 	{
 		Throw(std::runtime_error("failed to load model '" + filename + "':\n" + objectImporter.GetErrorString()));
 	}
-
-	// Materials
-	std::vector<Material> materials;
-
 	// Geometry
 	std::string name = "";
 	int totalvertices = 0;
-	for (int i = 0; i < model->mNumMeshes; i++)
-	{
-		totalvertices += model->mMeshes[i]->mNumVertices;
-	}
+	//for (int i = 0; i < scene->mNumMeshes; i++)
+	//{
+	//	totalvertices += scene->mMeshes[i]->mNumVertices;
+	//}
 
 	size_t faceId = 0;
 
-	for (int m = 0; m < model->mNumMeshes; m++)
+	for (int m = 0; m < scene->mNumMeshes; m++)
 	{
+		name = scene->mMeshes[m]->mName.C_Str();
 		std::vector<Vertex> vertices;
 		std::vector<uint32_t> indices;
-		std::unordered_map<Vertex, uint32_t> uniqueVertices(totalvertices);
+		std::unordered_map<Vertex, uint32_t> uniqueVertices(scene->mMeshes[m]->mNumVertices);
 
-		//const auto& mesh = shape.mesh;
-		materials.clear();
-		if (model->HasMaterials())
+		//Materials
+		std::vector<Material> materials;
+		aiColor4D diffuse;
+		Material material{};
+		if (AI_SUCCESS != scene->mMaterials[scene->mMeshes[m]->mMaterialIndex]->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse))
 		{
-			for (int i = 0; i < model->mNumMaterials; i++)
-			{
-				Material mat{};
+			
+			material.Diffuse = vec4(0.7f, 0.7f, 0.7f, 1.0);
+			material.DiffuseTextureId = -1;
 
-				
-				aiColor4D diffuse;
-				model->mMaterials[i]->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
-				//const aiMesh* model = scene->mMeshes[i];
-				//const aiMaterial* mtl = scene->mMaterials[model->mMaterialIndex];
-
-				//	color = color4<float>(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
-				//colors.push_back(color);
-
-				//m.Diffuse.r = diffuse[0];
-				//m.Diffuse.g = diffuse[1];
-				//m.Diffuse.b = diffuse[2];
-				//m.Diffuse.a = 1.0f;
-
-				mat.Diffuse = vec4(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
-
-				mat.DiffuseTextureId = -1;
-
-				materials.emplace_back(mat);
-			}
 		}
-		else
+		else 
 		{
-			Material m{};
-
-			m.Diffuse = vec4(0.5f, 0.0f, 0.5f, 1.0);
-			m.DiffuseTextureId = -1;
-
-			materials.emplace_back(m);
+			material.Diffuse = vec4(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
+			material.DiffuseTextureId = -1;
 		}
 
-		for (int v = 0; v < model->mMeshes[m]->mNumVertices; v++)
-		{
-			name = model->mMeshes[m]->mName.C_Str();
-			Vertex vertex = {};
+		materials.emplace_back(material);
 
-			vertex.Position =
-			{
-				model->mMeshes[m]->mVertices[v].x,
-				model->mMeshes[m]->mVertices[v].y,
-				model->mMeshes[m]->mVertices[v].z,
-			};
+		//faces
+		for (int f = 0; f < scene->mMeshes[m]->mNumFaces; f++) {
 
-			if (model->mMeshes[m]->HasNormals())
+			for (int i = 0; i < scene->mMeshes[m]->mFaces[f].mNumIndices; i++)
 			{
-				vertex.Normal =
+
+				Vertex vertex = {};
+				int v = scene->mMeshes[m]->mFaces[f].mIndices[i];
+
+				vertex.Position =
 				{
-					model->mMeshes[m]->mNormals[v].x,
-					model->mMeshes[m]->mNormals[v].y,
-					model->mMeshes[m]->mNormals[v].z,
+					scene->mMeshes[m]->mVertices[v].x,
+					scene->mMeshes[m]->mVertices[v].y,
+					scene->mMeshes[m]->mVertices[v].z,
 				};
-			}
 
-			if (model->mMeshes[m]->HasTextureCoords(v))
-			{
-				vertex.TexCoord =
+				if (scene->mMeshes[m]->HasNormals())
 				{
-					(float)model->mMeshes[m]->mTextureCoords[0][v].x,
-					(float)model->mMeshes[m]->mTextureCoords[0][v].y
-				};
-			}
+					vertex.Normal =
+					{
+						scene->mMeshes[m]->mNormals[v].x,
+						scene->mMeshes[m]->mNormals[v].y,
+						scene->mMeshes[m]->mNormals[v].z,
+					};
+				}
+				else
+				{
+					vertex.Normal =
+					{
+						scene->mMeshes[m]->mVertices[v].Normalize().x,
+						scene->mMeshes[m]->mVertices[v].Normalize().y,
+						scene->mMeshes[m]->mVertices[v].Normalize().z,
+					};
+				}
 
-			//vertex.MaterialIndex = std::max(0, mesh.material_ids[faceId++ / 3]);
+				if (scene->mMeshes[m]->HasTextureCoords(0))
+				{
+					vertex.TexCoord =
+					{
+						(float)scene->mMeshes[m]->mTextureCoords[0][v].x,
+						(float)scene->mMeshes[m]->mTextureCoords[0][v].y
+					};
+				}
 
-			vertex.MaterialIndex = model->mMeshes[m]->mMaterialIndex;
+				//vertex.MaterialIndex = std::max(0, mesh.material_ids[faceId++ / 3]);
 
-			if (uniqueVertices.count(vertex) == 0)
-			{
+				vertex.MaterialIndex = scene->mMeshes[m]->mMaterialIndex;
+
 				uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
 				vertices.push_back(vertex);
+
+				
+				indices.push_back(uniqueVertices[vertex]);
 			}
 
-			indices.push_back(uniqueVertices[vertex]);
 		}
 
-		if (!model->mMeshes[m]->HasNormals())
-		{
-			std::vector<vec3> normals(vertices.size());
+		//if (!scene->mMeshes[m]->HasNormals())
+		//{
+		//	std::vector<vec3> normals(vertices.size());
 
-			for (size_t i = 0; i < indices.size(); i += 3)
-			{
-				const auto normal = normalize(cross(
-					vec3(vertices[indices[i + 1]].Position) - vec3(vertices[indices[i]].Position),
-					vec3(vertices[indices[i + 2]].Position) - vec3(vertices[indices[i]].Position)));
+		//	for (size_t i = 0; i < indices.size(); i += 3)
+		//	{
+		//		const auto normal = normalize(cross(
+		//			vec3(vertices[indices[i + 1]].Position) - vec3(vertices[indices[i]].Position),
+		//			vec3(vertices[indices[i + 2]].Position) - vec3(vertices[indices[i]].Position)));
 
-				vertices[indices[i + 0]].Normal += normal;
-				vertices[indices[i + 1]].Normal += normal;
-				vertices[indices[i + 2]].Normal += normal;
-			}
+		//		vertices[indices[i + 0]].Normal += normal;
+		//		vertices[indices[i + 1]].Normal += normal;
+		//		vertices[indices[i + 2]].Normal += normal;
+		//	}
 
-			for (auto& vertex : vertices)
-			{
-				vertex.Normal = normalize(vertex.Normal);
-			}
-		}
+		//	for (auto& vertex : vertices)
+		//	{
+		//		vertex.Normal = normalize(vertex.Normal);
+		//	}
+		//}
 
 		if (name == "")
 			name = "Sponza_" + m;
@@ -365,6 +353,7 @@ std::vector<Model> Model::LoadModelGroup(const std::string& filename)
 	//std::cout << "(" << totalvertices << " vertices, " << uniqueVertices.size() << " unique vertices, " << materials.size() << " materials) ";
 	//std::cout << elapsed << "s" << std::endl;
 
+	objectImporter.FreeScene();
 	return models;
 }
 
