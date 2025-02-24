@@ -2,14 +2,13 @@
 
 #include <glm/ext/quaternion_geometric.hpp>
 
-BoundingBox::BoundingBox(const std::vector<glm::vec3>& vertices, const std::array<glm::vec3, 3>& inAxes)
-    : axes(inAxes)
+BoundingBox::BoundingBox(const glm::vec3& center, const std::vector<glm::vec3>& vertices, const std::array<glm::vec3, 3>& inAxes)
+    : axes(inAxes), center(center)
 {
     glm::vec3 sum(0.0f);
     for (const auto& v : vertices) {
         sum += v;
     }
-    center = sum / static_cast<float>(vertices.size());
 
     float minProj[3] = { std::numeric_limits<float>::max(),
                          std::numeric_limits<float>::max(),
@@ -17,7 +16,6 @@ BoundingBox::BoundingBox(const std::vector<glm::vec3>& vertices, const std::arra
     float maxProj[3] = { -std::numeric_limits<float>::max(),
                          -std::numeric_limits<float>::max(),
                          -std::numeric_limits<float>::max() };
-
     for (const auto& v : vertices) {
         glm::vec3 diff = v - center;
         for (int i = 0; i < 3; ++i) {

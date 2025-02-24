@@ -4,6 +4,7 @@
 #include <glm/gtx/euler_angles.hpp>
 
 #include "EventBroadcaster.h"
+#include "ModelManager.h"
 
 GameObject::GameObject()
 {
@@ -226,6 +227,7 @@ std::shared_ptr<BoundingBox> GameObject::getOBB() const
 
 void GameObject::updateWorldTransform()
 {
+
 	if (this->parent)
 	{
 		this->worldPosition = this->parent->worldPosition + this->localPosition;
@@ -282,7 +284,28 @@ void GameObject::updateWorldTransform()
 
 		std::array<glm::vec3, 3> axes = { axisX, axisY, axisZ };
 
-		BoundingBox newOBB(worldPositions, axes);
+		glm::vec3 computedCenter(0.0f);
+		for (const auto& pos : worldPositions)
+		{
+			computedCenter += pos;
+		}
+		computedCenter /= static_cast<float>(worldPositions.size());
+
+		std::cout << "Object worldPosition: (" << this->worldPosition.x << ", "
+			<< this->worldPosition.y << ", " << this->worldPosition.z << ")\n";
+		std::cout << "Computed center from vertices: (" << computedCenter.x << ", "
+			<< computedCenter.y << ", " << computedCenter.z << ")\n";
+
+		if (glm::length(computedCenter - this->worldPosition) < 0.001f)
+		{
+			std::cout << "The computed center matches the world position.\n";
+		}
+		else
+		{
+			std::cout << "Mismatch: the computed center does not equal the world position!\n";
+		}
+
+		BoundingBox newOBB(this->worldPosition, worldPositions, axes);
 
 		setOBB(newOBB);
 	}

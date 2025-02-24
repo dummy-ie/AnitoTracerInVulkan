@@ -9,7 +9,7 @@
 class BoundingBox 
 {
 public:
-    BoundingBox(const std::vector<glm::vec3>& vertices, const std::array<glm::vec3, 3>& axes);
+    BoundingBox(const glm::vec3& center, const std::vector<glm::vec3>& vertices, const std::array<glm::vec3, 3>& axes);
     ~BoundingBox() {}
 
 public:

@@ -111,7 +111,7 @@ bool Camera::OnMouseButton(const int button, const int action, const int mods)
 
 		glm::mat4 invVP = glm::inverse(proj * view);
 
-		glm::vec4 rayStartNDC(mouseNDC, 0.3f, 1.0f);
+		glm::vec4 rayStartNDC(mouseNDC, 0.0f, 1.0f);
 		glm::vec4 rayEndNDC(mouseNDC, 1.0f, 1.0f);
 
 		glm::vec4 rayStartWorld = invVP * rayStartNDC;
@@ -125,6 +125,7 @@ bool Camera::OnMouseButton(const int button, const int action, const int mods)
 
 		Ray pickingRay(rayOrigin, rayDirection);
 
+		std::cout << "Ray Origin: " << glm::to_string(rayOrigin) << std::endl;
 		std::cout << "Ray Direction: " << glm::to_string(rayDirection) << std::endl;
 
 		auto objects = ModelManager::getInstance()->getAllObjects();
@@ -139,6 +140,13 @@ bool Camera::OnMouseButton(const int button, const int action, const int mods)
 			auto obb = obj->getOBB();
 			if (obb)
 			{
+
+				glm::vec3 minCorner = obb->center - obb->halfExtents;
+				glm::vec3 maxCorner = obb->center + obb->halfExtents;
+
+				std::cout << obj->getName() << " center: " << glm::to_string(obb->center) << std::endl;
+				std::cout << "Max Corner: " << glm::to_string(maxCorner) << std::endl;
+
 				float tHit = 0.0f;
 				if (pickingRay.intersects(*obb, tHit))
 				{

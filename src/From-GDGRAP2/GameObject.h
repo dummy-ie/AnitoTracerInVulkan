@@ -69,6 +69,9 @@ protected:
     PrimitiveType type;
     bool enabled = true;
 
+    std::shared_ptr<GameObject> debugCube = nullptr;
+
+
     uint32_t id = 0;
 
     vec3 origin = VectorUtils::zeros();

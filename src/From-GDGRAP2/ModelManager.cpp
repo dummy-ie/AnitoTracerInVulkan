@@ -1,6 +1,7 @@
 #include "ModelManager.h"
 
 #include <iostream>
+#include <glm/gtx/euler_angles.hpp>
 
 #include "Debug.h"
 #include "Utilities/FileUtils.h"
@@ -152,11 +153,12 @@ void ModelManager::createObject(GameObject::PrimitiveType type)
 		break;
 	case GameObject::CUBE:
 	{
-		Assets::Model cubeModel = Assets::Model::CreateBox(vec3(0, 0, -100), vec3(100, 100, 0), *Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
+		Assets::Model cubeModel = Assets::Model::CreateBox(vec3(0, 0, -50), vec3(50, 50, 0), *Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
 		std::shared_ptr<GameObject> cube = std::make_shared<GameObject>("Cube", GameObject::PrimitiveType::CUBE, std::make_shared<Assets::Model>(cubeModel));
 		addObject(cube);
+
+		break;
 	}
-	break;
 	case GameObject::OBJECT_GROUP:
 		break;
 	case GameObject::QUAD:
@@ -177,14 +179,15 @@ void ModelManager::createObject(GameObject::PrimitiveType type)
 	break;
 	case GameObject::CYLINDER:
 	{
-		Assets::Model cylinderModel = Assets::Model::CreateCylinder(50, 100, *Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
+		Assets::Model cylinderModel = Assets::Model::CreateCylinder(25, 50, *Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
 		std::shared_ptr<GameObject> cylinder = std::make_shared<GameObject>("Cylinder", GameObject::PrimitiveType::CYLINDER, std::make_shared<Assets::Model>(cylinderModel));
 		addObject(cylinder);
+
 	}
 	break;
 	case GameObject::CAPSULE:
 	{
-		Assets::Model capsuleModel = Assets::Model::CreateCapsule(50, 150, *Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
+		Assets::Model capsuleModel = Assets::Model::CreateCapsule(25, 100, *Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
 		std::shared_ptr<GameObject> capsule = std::make_shared<GameObject>("Capsule", GameObject::PrimitiveType::CAPSULE, std::make_shared<Assets::Model>(capsuleModel));
 		addObject(capsule);
 	}
