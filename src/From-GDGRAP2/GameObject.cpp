@@ -250,64 +250,69 @@ void GameObject::updateWorldTransform()
 		}
 	}
 
-	this->performModelTransform();
-	this->performModelRotate();
-	this->performModelScale();
 
-	if (this->modelRef && !this->modelRef->Vertices().empty())
+	if (type != CAMERA)
 	{
-		glm::mat4 worldTransform = glm::translate(glm::mat4(1.0f), this->worldPosition);
+		
+		this->performModelTransform();
+		this->performModelRotate();
+		this->performModelScale();
 
-		worldTransform *= glm::eulerAngleYXZ(glm::radians(this->worldRotation.y),
-			glm::radians(this->worldRotation.x),
-			glm::radians(this->worldRotation.z));
-
-		worldTransform = glm::scale(worldTransform, this->worldScale);
-
-		std::vector<glm::vec3> worldPositions;
-
-		worldPositions.reserve(this->modelRef->Vertices().size());
-
-		for (const auto& vertex : this->modelRef->Vertices())
+		if (this->modelRef && !this->modelRef->Vertices().empty())
 		{
-			glm::vec3 posWorld = glm::vec3(worldTransform * glm::vec4(vertex.Position, 1.0f));
-			worldPositions.push_back(posWorld);
+			glm::mat4 worldTransform = glm::translate(glm::mat4(1.0f), this->worldPosition);
+
+			worldTransform *= glm::eulerAngleYXZ(glm::radians(this->worldRotation.y),
+				glm::radians(this->worldRotation.x),
+				glm::radians(this->worldRotation.z));
+
+			worldTransform = glm::scale(worldTransform, this->worldScale);
+
+			std::vector<glm::vec3> worldPositions;
+
+			worldPositions.reserve(this->modelRef->Vertices().size());
+
+			for (const auto& vertex : this->modelRef->Vertices())
+			{
+				glm::vec3 posWorld = glm::vec3(worldTransform * glm::vec4(vertex.Position, 1.0f));
+				worldPositions.push_back(posWorld);
+			}
+
+			glm::mat4 rotMat = glm::eulerAngleYXZ(glm::radians(this->worldRotation.y),
+				glm::radians(this->worldRotation.x),
+				glm::radians(this->worldRotation.z));
+
+			glm::vec3 axisX = glm::normalize(glm::vec3(rotMat[0]));
+			glm::vec3 axisY = glm::normalize(glm::vec3(rotMat[1]));
+			glm::vec3 axisZ = glm::normalize(glm::vec3(rotMat[2]));
+
+			std::array<glm::vec3, 3> axes = { axisX, axisY, axisZ };
+
+			glm::vec3 computedCenter(0.0f);
+			for (const auto& pos : worldPositions)
+			{
+				computedCenter += pos;
+			}
+			computedCenter /= static_cast<float>(worldPositions.size());
+
+			std::cout << "Object worldPosition: (" << this->worldPosition.x << ", "
+				<< this->worldPosition.y << ", " << this->worldPosition.z << ")\n";
+			std::cout << "Computed center from vertices: (" << computedCenter.x << ", "
+				<< computedCenter.y << ", " << computedCenter.z << ")\n";
+
+			if (glm::length(computedCenter - this->worldPosition) < 0.001f)
+			{
+				std::cout << "The computed center matches the world position.\n";
+			}
+			else
+			{
+				std::cout << "Mismatch: the computed center does not equal the world position!\n";
+			}
+
+			BoundingBox newOBB(this->worldPosition, worldPositions, axes);
+
+			setOBB(newOBB);
 		}
-
-		glm::mat4 rotMat = glm::eulerAngleYXZ(glm::radians(this->worldRotation.y),
-			glm::radians(this->worldRotation.x),
-			glm::radians(this->worldRotation.z));
-
-		glm::vec3 axisX = glm::normalize(glm::vec3(rotMat[0]));
-		glm::vec3 axisY = glm::normalize(glm::vec3(rotMat[1]));
-		glm::vec3 axisZ = glm::normalize(glm::vec3(rotMat[2]));
-
-		std::array<glm::vec3, 3> axes = { axisX, axisY, axisZ };
-
-		glm::vec3 computedCenter(0.0f);
-		for (const auto& pos : worldPositions)
-		{
-			computedCenter += pos;
-		}
-		computedCenter /= static_cast<float>(worldPositions.size());
-
-		std::cout << "Object worldPosition: (" << this->worldPosition.x << ", "
-			<< this->worldPosition.y << ", " << this->worldPosition.z << ")\n";
-		std::cout << "Computed center from vertices: (" << computedCenter.x << ", "
-			<< computedCenter.y << ", " << computedCenter.z << ")\n";
-
-		if (glm::length(computedCenter - this->worldPosition) < 0.001f)
-		{
-			std::cout << "The computed center matches the world position.\n";
-		}
-		else
-		{
-			std::cout << "Mismatch: the computed center does not equal the world position!\n";
-		}
-
-		BoundingBox newOBB(this->worldPosition, worldPositions, axes);
-
-		setOBB(newOBB);
 	}
 }
 

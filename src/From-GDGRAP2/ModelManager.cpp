@@ -172,7 +172,7 @@ void ModelManager::createObject(GameObject::PrimitiveType type)
 	break;
 	case GameObject::PLANE:
 	{
-		Assets::Model planeModel = Assets::Model::CreatePlane(vec3(0, 0, -100), vec3(100, 100, 0), *Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
+		Assets::Model planeModel = Assets::Model::CreatePlane(vec3(0, 0, -100), vec3(100, -100, 0), *Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
 		std::shared_ptr<GameObject> plane = std::make_shared<GameObject>("Plane", GameObject::PrimitiveType::PLANE, std::make_shared<Assets::Model>(planeModel));
 		addObject(plane);
 	}

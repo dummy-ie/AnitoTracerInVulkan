@@ -21,6 +21,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Engine/CameraSystem/CameraManager.h"
+#include "From-GDGRAP2/ModelManager.h"
 #include "UI/UIManager.h"
 #include "From-GDGRAP2/RTConfig.h"
 #include "ImGui/ImGuizmo.h"
@@ -140,25 +141,48 @@ void UserInterface::Render(VkCommandBuffer commandBuffer, const Vulkan::FrameBuf
 	// Draw the rest of your UI first.
 	UIManager::getInstance()->drawAllUI();
 
-	// Start ImGuizmo frame.
-	//ImGuizmo::BeginFrame();
+	//Start ImGuizmo frame.
+	if (ModelManager::getInstance()->getSelectedObject() != nullptr)
+	{
+		auto selectedObject = ModelManager::getInstance()->getSelectedObject();
 
-	//// Set the viewport to the full window.
-	//float viewportX = 0;
-	//float viewportY = 0;
-	//float viewportWidth = swapChain.Extent().width;
-	//float viewportHeight = swapChain.Extent().height;
-	//ImGuizmo::SetRect(viewportX, viewportY, viewportWidth, viewportHeight);
+		ImGuizmo::BeginFrame();
 
-	//// Set up the transformation matrices.
-	//glm::mat4 objectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
-	//glm::mat4 viewMatrix = CameraManager::getInstance()->getActiveCamera()->ModelView();
-	//glm::mat4 projMatrix = glm::perspective(glm::radians(userSettings_.FieldOfView), viewportWidth / viewportHeight, 0.1f, 10000.0f);
+		// Set the viewport to the full window.
+		float viewportX = 0;
+		float viewportY = 0;
+		float viewportWidth = swapChain.Extent().width;
+		float viewportHeight = swapChain.Extent().height;
+		ImGuizmo::SetRect(viewportX, viewportY, viewportWidth, viewportHeight);
 
-	//// Render the gizmo (which will appear at the center if the camera is centered on the origin).
-	//ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projMatrix),
-	//	ImGuizmo::TRANSLATE, ImGuizmo::LOCAL,
-	//	glm::value_ptr(objectMatrix));
+		// Set up the transformation matrices.
+		glm::mat4 objectMatrix = glm::translate(glm::mat4(1.0f), selectedObject->getWorldPosition());
+		glm::mat4 viewMatrix = CameraManager::getInstance()->getActiveCamera()->ModelView();
+		glm::mat4 projMatrix = glm::perspective(glm::radians(userSettings_.FieldOfView), viewportWidth / viewportHeight, 0.1f, 10000.0f);
+
+		// Render the gizmo (which will appear at the center if the camera is centered on the origin).
+		if (ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projMatrix),
+			ImGuizmo::TRANSLATE, ImGuizmo::LOCAL,
+			glm::value_ptr(objectMatrix)))
+		{
+			// Extract the new translation from the objectMatrix.
+			glm::vec3 newPosition = glm::vec3(objectMatrix[3]);
+
+			// Convert world position to local position relative to parent.
+			if (selectedObject->getParent() != nullptr)
+			{
+				//glm::mat4 parentWorldTransform = selectedObject->getParent()->getWorldTransform();
+				//glm::mat4 parentWorldInverse = glm::inverse(parentWorldTransform);
+				//glm::vec4 localPos = parentWorldInverse * glm::vec4(newPosition, 1.0f);
+				//selectedObject->setLocalPosition(glm::vec3(localPos));
+			}
+			else
+			{
+				selectedObject->setLocalPosition(newPosition);
+			}
+		}
+
+	}
 
 	ImGui::Render();
 

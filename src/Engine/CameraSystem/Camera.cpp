@@ -59,6 +59,16 @@ bool Camera::OnKey(const int key, const int scancode, const int action, const in
 	case GLFW_KEY_D: cameraMovingRight_ = action != GLFW_RELEASE; return true;
 	case GLFW_KEY_LEFT_CONTROL: cameraMovingDown_ = action != GLFW_RELEASE; return true;
 	case GLFW_KEY_LEFT_SHIFT: cameraMovingUp_ = action != GLFW_RELEASE; return true;
+
+	case GLFW_KEY_F: {
+
+			auto selected = ModelManager::getInstance()->getSelectedObject();
+
+			this->Reset(lookAt(selected->getWorldPosition(), selected->getWorldPosition() - vec3(0, 0, 100), vec3(0, 1, 0)));
+
+			break;
+	}
+
 	default: return false;
 	}
 }
@@ -80,6 +90,8 @@ bool Camera::OnCursorPosition(const double xpos, const double ypos)
 		this->localRotation.y += deltaY;
 		if (localRotation.y > limit) { cameraRotY_ = 0; this->localRotation.y -= deltaY; }
 		if (localRotation.y < -limit) { cameraRotY_ = 0; this->localRotation.y -= deltaY; }
+
+		this->setLocalRotation(glm::vec3(localRotation));
 
 		//Debug::Log("Camera rotation: " + std::to_string(localRotation.x) + ", " + std::to_string(localRotation.y) + "\n");
 	}
@@ -144,8 +156,14 @@ bool Camera::OnMouseButton(const int button, const int action, const int mods)
 				glm::vec3 minCorner = obb->center - obb->halfExtents;
 				glm::vec3 maxCorner = obb->center + obb->halfExtents;
 
-				std::cout << obj->getName() << " center: " << glm::to_string(obb->center) << std::endl;
-				std::cout << "Max Corner: " << glm::to_string(maxCorner) << std::endl;
+				if (obj->getName().find("Light") == std::string::npos)
+				{
+					std::cout << obj->getName() << " center: " << glm::to_string(obb->center) << std::endl;
+					std::cout << "Min Corner: " << glm::to_string(minCorner) << std::endl;
+					std::cout << "Max Corner: " << glm::to_string(maxCorner) << std::endl;
+
+					std::cout << "----------------\n\n" << std::endl;
+				}
 
 				float tHit = 0.0f;
 				if (pickingRay.intersects(*obb, tHit))
@@ -162,8 +180,8 @@ bool Camera::OnMouseButton(const int button, const int action, const int mods)
 		if (selectedObject)
 		{
 			glm::vec3 hitPoint = rayOrigin + rayDirection * closestT;
-			std::cout << "Intersection at (" << hitPoint.x << ", "
-				<< hitPoint.y << ", " << hitPoint.z << ")\n";
+			//std::cout << "Intersection at (" << hitPoint.x << ", "
+			//	<< hitPoint.y << ", " << hitPoint.z << ")\n";
 			ModelManager::getInstance()->setSelectedObject(selectedObject);
 		}
 	}
@@ -239,16 +257,19 @@ void Camera::SetProjectionType(ProjectionMode type)
 void Camera::MoveForward(const float d)
 {
 	position_ += d * forward_;
+	this->setLocalPosition(glm::vec3(position_));
 }
 
 void Camera::MoveRight(const float d)
 {
 	position_ += d * right_;
+	this->setLocalPosition(glm::vec3(position_));
 }
 
 void Camera::MoveUp(const float d)
 {
 	position_ += d * up_;
+	this->setLocalPosition(glm::vec3(position_));
 }
 
 void Camera::Rotate(const float y, const float x)

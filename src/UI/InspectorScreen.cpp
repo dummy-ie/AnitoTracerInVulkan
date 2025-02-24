@@ -1,4 +1,7 @@
 #include "InspectorScreen.h"
+
+#include <glm/gtx/string_cast.hpp>
+
 #include "imgui.h"
 #include "From-GDGRAP2/ModelManager.h"
 #include "UIManager.h"

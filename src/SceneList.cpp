@@ -598,6 +598,7 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 
 	std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>("Camera", GameObject::PrimitiveType::CAMERA);
 	ModelManager::getInstance()->addObject(cameraObj);
+	cameraObj->setLocalPosition(vec3(0, 0, 0));
 
 	const auto i = mat4(1);
 	const auto white = MaterialLibrary::getInstance()->getMaterial(L"White");
