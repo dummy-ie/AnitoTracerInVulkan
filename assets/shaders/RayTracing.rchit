@@ -56,12 +56,12 @@ vec3 calculateDirectionalLight(LightProperties dl, vec3 worldPos, vec3 normal)
     float diffuseFactor = max(dot(worldNrm, lightDir), 0.f);
     vec3 diffuseColor = dl.LightColor.rgb * dl.LightColor.w * diffuseFactor;
 	 
-	vec3 lighting = ambientColor + diffuseColor;
+	vec3 lighting = (ambientColor + diffuseColor) * 0.2;
 	return lighting;
 } 
-   
+
 vec3 calculateSpotLight(LightProperties sl, vec3 worldPos, vec3 normal) 
-{                      
+{         
 	float cutoff = cos(radians(90.0)); // Convert degrees to radians and compute cosine
 	vec3 lightDir = normalize(sl.LightPos.xyz - worldPos); // Direction from light to hit point
 	vec3 lightDirection = vec3(0, -1, 0);
@@ -75,29 +75,6 @@ vec3 calculateSpotLight(LightProperties sl, vec3 worldPos, vec3 normal)
 	return vec3(0.0); // Return no light if outside the spot light cone
 }
 
-void NVidiaTutLightingComp(LightProperties pl, vec3 normal) // Unused 
-{
-	//const vec3 worldNrm = normalize(vec3(normal * gl_WorldToObjectEXT));  // Transforming the normal to world space
-
-	// Vector toward the light
-	//vec3  L;
-	//float lightIntensity = pl.lightColor.w;
-	//float lightDistance  = 100000.0;
-	// Point light
-	//if(lightType == 0)
-	//{
-		//vec3 lDir      = pl.lightPos - worldPos;
-		//lightDistance  = length(lDir);
-		//lightIntensity = lightIntensity / (lightDistance * lightDistance);
-		//L              = pl.lightColor.rgb * max(dot(worldNrm, normalize(lDir)), 0);
-	//}
-	//else  // Directional light
-	//{
-		//vec3 lDir      = pl.lightPos - worldPos; 
-		//L = pl.lightColor.rgb * max(dot(worldNrm, normalize(lDir)), 0);
-	//}
-}
-
 void main()
 {
 	// Get the material.
@@ -108,7 +85,7 @@ void main()
 	const Vertex v1 = UnpackVertex(vertexOffset + Indices[indexOffset + gl_PrimitiveID * 3 + 1]);
 	const Vertex v2 = UnpackVertex(vertexOffset + Indices[indexOffset + gl_PrimitiveID * 3 + 2]);
 	const Material material = Materials[v0.MaterialIndex];
-	 
+	  
 	// Compute the ray hit point properties.	
 	const vec3 barycentrics = vec3(1.0 - HitAttributes.x - HitAttributes.y, HitAttributes.x, HitAttributes.y);
 	const vec3 normal = normalize(Mix(v0.Normal, v1.Normal, v2.Normal, barycentrics));
@@ -117,16 +94,16 @@ void main()
 	// For lighting computations.
 	const vec3 pos = Mix(v0.Position, v1.Position, v2.Position, barycentrics);
 	const vec3 worldPos = vec3(gl_ObjectToWorldEXT * vec4(pos, 1.0));  // Transforming the position to world space
-	
+	 
 	vec3 lighting = vec3(0);
-	
+	 
 	if (Lights.length() == 0) { // Pink light if buffer is empty
 		//LightProperties dl = InitializeTestDLProperties(); // Adding directional light.
 		//lighting += calculateDirectionalLight(dl, worldPos, normal);
 		//LightProperties pl = InitializeTestPLProperties(); // Adding point light.
 		//lighting += calculatePointLight(pl, worldPos, normal);
-		LightProperties sl = InitializeTestSLProperties(); // Adding spot light.
-		lighting += calculateSpotLight(sl, worldPos, normal);
+		//LightProperties sl = InitializeTestSLProperties(); // Adding spot light.
+		//lighting += calculateSpotLight(sl, worldPos, normal);
 	} else {
 		for (int i = 0; i < Lights.length(); i++) {
 			if (Lights[i].LightType == PointLight) { // Point Light
@@ -135,7 +112,7 @@ void main()
 				lighting += calculateDirectionalLight(Lights[i], worldPos, normal);
 			} else if (Lights[i].LightType == SpotLight) { // Spot Light
 				//lighting += calculateSpotLight(Lights[i], worldPos, normal);
-			} 
+			}
 		}
 	}
 	

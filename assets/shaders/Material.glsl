@@ -22,9 +22,11 @@ const uint SpotLight = 2;
 struct LightProperties 
 {
 	vec3 LightPos;
+	float padding1;
 	vec4 AmbientColor;
 	vec4 LightColor;
 	uint LightType;
+	uint padding2[3];
 };
 
 LightProperties InitializeTestPLProperties() 
@@ -43,7 +45,7 @@ LightProperties InitializeTestDLProperties()
 	LightProperties dl;
 	dl.LightPos = vec3(1, 0, 0);
 	dl.AmbientColor = vec4(1.0, 1.0, 1.0, 1.0f);
-	dl.LightColor = vec4(1.0, 0.4, 0.5, 15.0f);
+	dl.LightColor = vec4(1.0, 0.4, 0.5, 1.0f);
 	dl.LightType = DirectionalLight;
 
 	return dl;
