@@ -153,6 +153,11 @@ void GameObject::setLocalScale(float x, float y, float z)
 	this->updateWorldTransform();
 }
 
+glm::mat4& GameObject::getObjectMatrix()
+{
+	return this->mat_;
+}
+
 std::shared_ptr<Assets::Model> GameObject::getModel()
 {
 	return this->modelRef;
@@ -263,6 +268,20 @@ std::shared_ptr<BoundingBox> GameObject::getOBB() const
 	return this->obb;
 }
 
+void GameObject::updateObjectMatrix()
+{
+	this->mat_ = glm::translate(glm::mat4(1.0f), this->worldPosition);
+
+	glm::mat4 rotateZ = glm::rotate(glm::mat4(1.0f), glm::radians(this->worldRotation.z), glm::vec3(0, 0, 1));
+	glm::mat4 rotateY = glm::rotate(glm::mat4(1.0f), glm::radians(this->worldRotation.y), glm::vec3(0, 1, 0));
+	glm::mat4 rotateX = glm::rotate(glm::mat4(1.0f), glm::radians(this->worldRotation.x), glm::vec3(1, 0, 0));
+
+	this->mat_ *= rotateZ * rotateY * rotateX; 
+
+	this->mat_ = glm::scale(this->mat_, this->worldScale);
+}
+
+
 void GameObject::updateWorldTransform()
 {
 
@@ -288,6 +307,7 @@ void GameObject::updateWorldTransform()
 		}
 	}
 
+	updateObjectMatrix();
 
 	if (type != CAMERA)
 	{

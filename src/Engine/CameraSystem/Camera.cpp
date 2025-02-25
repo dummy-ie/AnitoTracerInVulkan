@@ -35,16 +35,18 @@ void Camera::Reset(const glm::mat4& modelView)
 	UpdateVectors();
 }
 
-glm::mat4 Camera::ModelView() const
+glm::mat4 Camera::ModelView()
 {
-	const auto cameraRotX = static_cast<float>(modelRotY_ / 300.0);
-	const auto cameraRotY = static_cast<float>(modelRotX_ / 300.0);
+	auto cameraRotX = static_cast<float>(modelRotY_ / 300.0);
+	auto cameraRotY = static_cast<float>(modelRotX_ / 300.0);
 
-	const auto model =
+	auto model =
 		glm::rotate(glm::mat4(1.0f), cameraRotY * glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) *
 		glm::rotate(glm::mat4(1.0f), cameraRotX * glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-	const auto view = orientation_ * glm::translate(glm::mat4(1), -glm::vec3(position_));
+	auto view = orientation_ * glm::translate(glm::mat4(1), -glm::vec3(position_));
+
+	view_ = view;
 
 	return view * model;
 }
@@ -132,8 +134,8 @@ bool Camera::OnMouseButton(const int button, const int action, const int mods)
 
 		Ray pickingRay(rayOrigin, rayDirection);
 
-		std::cout << "Ray Origin: " << glm::to_string(rayOrigin) << std::endl;
-		std::cout << "Ray Direction: " << glm::to_string(rayDirection) << std::endl;
+		//std::cout << "Ray Origin: " << glm::to_string(rayOrigin) << std::endl;
+		//std::cout << "Ray Direction: " << glm::to_string(rayDirection) << std::endl;
 
 		auto objects = ModelManager::getInstance()->getAllObjects();
 		float closestT = std::numeric_limits<float>::max();
@@ -244,9 +246,19 @@ glm::mat4 Camera::GetProjection(UserSettings settings, const VkExtent2D extent)
 	return projection_;
 }
 
+glm::mat4 Camera::GetProjection()
+{
+	return this->projection_;
+}
+
 void Camera::SetProjectionType(ProjectionMode type)
 {
 	this->projMode = type;
+}
+
+glm::mat4 Camera::GetView()
+{
+	return this->view_;
 }
 
 void Camera::setLocalPosition(float x, float y, float z)
