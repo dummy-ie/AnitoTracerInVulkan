@@ -167,7 +167,7 @@ void UserInterface::Render(VkCommandBuffer commandBuffer, const Vulkan::FrameBuf
 		glm::mat4 projMatrix = glm::perspective(glm::radians(userSettings_.FieldOfView), viewportWidth / viewportHeight, 0.1f, 10000.0f);
 
 		glm::vec3 translateVec = selectedObject->getWorldPosition();
-		glm::vec3 rotateVec = selectedObject->getWorldRotation();
+		glm::vec3 rotateVec = glm::degrees(selectedObject->getWorldRotation());
 		glm::vec3 scaleVec = selectedObject->getWorldScale();      
 
 		glm::mat4 objectMatrix = glm::mat4(1.0f);
@@ -206,7 +206,7 @@ void UserInterface::Render(VkCommandBuffer commandBuffer, const Vulkan::FrameBuf
 
 			selectedObject->setLocalPosition(glm::vec3(translation[0], translation[1], translation[2]));
 
-			selectedObject->setLocalRotation(glm::vec3(rotation[0], rotation[1], rotation[2]));
+			selectedObject->setLocalRotation(glm::vec3(glm::degrees(rotation[0]), glm::degrees(rotation[1]), glm::degrees(rotation[2])));
 
 			glm::vec3 newScale(scale[0], scale[1], scale[2]);
 			selectedObject->setLocalScale(newScale);

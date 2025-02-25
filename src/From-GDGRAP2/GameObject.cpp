@@ -93,13 +93,51 @@ void GameObject::setLocalPosition(float x, float y, float z)
 
 void GameObject::setLocalRotation(vec3 newRot)
 {
+	newRot.x = fmod(newRot.x + 180.0f, 360.0f);
+
+	if (newRot.x < 0)
+		newRot.x += 360.0f;
+	newRot.x -= 180.0f;
+
+	newRot.y = fmod(newRot.y + 180.0f, 360.0f);
+
+	if (newRot.y < 0)
+		newRot.y += 360.0f;
+	newRot.y -= 180.0f;
+
+	newRot.z = fmod(newRot.z + 180.0f, 360.0f);
+
+	if (newRot.z < 0)
+		newRot.z += 360.0f;
+	newRot.z -= 180.0f;
+
 	this->localRotation = newRot;
 	this->updateWorldTransform();
 }
 
 void GameObject::setLocalRotation(float x, float y, float z)
 {
-	this->localRotation = vec3(x, y, z);
+	vec3 newRot(x, y, z);
+
+	newRot.x = fmod(newRot.x + 180.0f, 360.0f);
+
+	if (newRot.x < 0) 
+		newRot.x += 360.0f;
+	newRot.x -= 180.0f;
+
+	newRot.y = fmod(newRot.y + 180.0f, 360.0f);
+
+	if (newRot.y < 0) 
+		newRot.y += 360.0f;
+	newRot.y -= 180.0f;
+
+	newRot.z = fmod(newRot.z + 180.0f, 360.0f);
+
+	if (newRot.z < 0)
+		newRot.z += 360.0f;
+	newRot.z -= 180.0f;
+
+	this->localRotation = newRot;
 	this->updateWorldTransform();
 }
 
@@ -294,20 +332,6 @@ void GameObject::updateWorldTransform()
 				computedCenter += pos;
 			}
 			computedCenter /= static_cast<float>(worldPositions.size());
-
-			//std::cout << "Object worldPosition: (" << this->worldPosition.x << ", "
-			//	<< this->worldPosition.y << ", " << this->worldPosition.z << ")\n";
-			//std::cout << "Computed center from vertices: (" << computedCenter.x << ", "
-			//	<< computedCenter.y << ", " << computedCenter.z << ")\n";
-
-			//if (glm::length(computedCenter - this->worldPosition) < 0.001f)
-			//{
-			//	std::cout << "The computed center matches the world position.\n";
-			//}
-			//else
-			//{
-			//	std::cout << "Mismatch: the computed center does not equal the world position!\n";
-			//}
 
 			BoundingBox newOBB(this->worldPosition, worldPositions, axes);
 
