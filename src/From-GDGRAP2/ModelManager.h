@@ -19,6 +19,7 @@ public:
 	typedef std::string String;
 	typedef std::vector<std::shared_ptr<GameObject>> List;
 	typedef std::vector<std::shared_ptr<Light>> LightList;
+	typedef std::unordered_map<std::string, std::shared_ptr<Light>> LightTable;
 	typedef std::unordered_map<String, std::shared_ptr<GameObject>> HashTable;
 
 	typedef std::vector<std::shared_ptr<ObjectGroup>> ObjectGroupList;
@@ -31,6 +32,7 @@ public:
 	static void destroy();
 
 	std::shared_ptr<GameObject> findObjectByName(String name);
+	std::shared_ptr<Light> findLightObjectByName(String name);
 	List getAllObjects() const;
 	
 	int activeObjects() const;
@@ -64,6 +66,7 @@ private:
 	List gameObjectList;
 	ObjectGroupList objectGroupList;
 	LightList lightList;
+	LightTable lightTable;
 
 	std::shared_ptr<GameObject> selectedObject = nullptr;
 

@@ -13,7 +13,8 @@ public:
     ~GameObject() = default;
 
     enum PrimitiveType {
-        CAMERA, CUBE, OBJECT_GROUP, QUAD, PLANE, CYLINDER, CAPSULE, SPHERE, LIGHT, NONE
+        CAMERA, CUBE, OBJECT_GROUP, QUAD, PLANE, CYLINDER, CAPSULE, SPHERE,
+    	POINT_LIGHT, DIRECTIONAL_LIGHT, SPOT_LIGHT, NONE
     };
 
     typedef glm::vec3 vec3;

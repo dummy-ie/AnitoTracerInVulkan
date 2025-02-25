@@ -1,5 +1,6 @@
 #pragma once
 #include "AUIScreen.h"
+#include "Engine/LightSystem/Light.h"
 
 class MenuScreen :    public AUIScreen
 {
@@ -15,6 +16,7 @@ private:
 	void onCreateCapsuleClicked();
 	void onCreateCylinderClicked();
 	void OnCreatePlaneClicked();
+	void OnCreateLightClicked(Light::LightType type);
 	void ShowLoadObjMenu();
 	void OnMaterialComponentClicked();
 

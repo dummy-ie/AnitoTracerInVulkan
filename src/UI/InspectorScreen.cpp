@@ -18,14 +18,16 @@ InspectorScreen::~InspectorScreen()
 
 void InspectorScreen::drawUI()
 {
-
 	ImGui::Begin("Inspector Window", 0, ImGuiWindowFlags_NoResize);
 	this->selectedObject = ModelManager::getInstance()->getSelectedObject();
 	if (this->selectedObject != nullptr)
 	{
 		String name = this->selectedObject->getName();
 		ImGui::Text("Selected Object: %s", name.c_str());
+
 		this->updateTransformDisplays();
+		this->updateLightPropsDisplays();
+
 		bool enabled = this->selectedObject->isEnabled();
 		if (ImGui::Checkbox("Enabled", &enabled)) { this->selectedObject->setEnabled(enabled); }
 		ImGui::SameLine();
@@ -42,6 +44,35 @@ void InspectorScreen::drawUI()
 		}
 		else {
 			if (ImGui::InputFloat3("Scale", this->scaleDisplay, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue)) { this->onTransformUpdate(); }
+		}
+
+		// Light "Component"
+		if (this->selectedObject->getType() == GameObject::PrimitiveType::POINT_LIGHT
+			|| this->selectedObject->getType() == GameObject::PrimitiveType::DIRECTIONAL_LIGHT
+			|| this->selectedObject->getType() == GameObject::PrimitiveType::SPOT_LIGHT)
+		{
+			if (ImGui::InputFloat4("Light Color", this->lightColorDisplay, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue)) { this->onLightPropsUpdate(); }
+			if (ImGui::InputFloat4("Ambient Color", this->ambientColorDisplay, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue)) { this->onLightPropsUpdate(); }
+
+			// TODO : Light Type
+			std::string lightTypes[3] = {"Point Light", "Directional Light", "Spot Light"};
+			std::string currentType = (this->selectedObject->getType() == GameObject::POINT_LIGHT) ? lightTypes[0] :
+				(this->selectedObject->getType() == GameObject::DIRECTIONAL_LIGHT) ? lightTypes[1] :
+				(this->selectedObject->getType() == GameObject::SPOT_LIGHT) ? lightTypes[2] : "None";
+			if (ImGui::BeginCombo("Light Type", currentType.c_str(), ImGuiComboFlags_None))
+			{
+				for (std::string type: lightTypes)
+				{
+					if (ImGui::Selectable(type.c_str()))
+					{
+						lightTypeDisplay = (type == lightTypes[0]) ? Light::PointLight :
+							(type == lightTypes[1]) ? Light::DirectionalLight :
+							(type == lightTypes[2]) ? Light::SpotLight : Light::PointLight;
+						this->onLightPropsUpdate();
+					}
+				}
+				ImGui::EndCombo();
+			}
 		}
 
 		this->drawMaterialsTab();
@@ -70,6 +101,30 @@ void InspectorScreen::updateTransformDisplays()
 	this->scaleDisplay[0] = scale.x;
 	this->scaleDisplay[1] = scale.y;
 	this->scaleDisplay[2] = scale.z;
+}
+
+void InspectorScreen::updateLightPropsDisplays()
+{
+	std::shared_ptr<Light> light = ModelManager::getInstance()->findLightObjectByName(this->selectedObject->getName());
+	if (light)
+	{
+		glm::vec4 lightCol = light->getLightColor();
+		this->lightColorDisplay[0] = lightCol.x;
+		this->lightColorDisplay[1] = lightCol.y;
+		this->lightColorDisplay[2] = lightCol.z;
+		this->lightColorDisplay[3] = lightCol.w;
+
+		glm::vec4 ambientCol = light->getAmbientColor();
+		this->ambientColorDisplay[0] = ambientCol.x;
+		this->ambientColorDisplay[1] = ambientCol.y;
+		this->ambientColorDisplay[2] = ambientCol.z;
+		this->ambientColorDisplay[3] = ambientCol.w;
+
+		Light::LightType type = (light->getLightType() == Assets::LightProperties::Enum::PointLight) ? Light::PointLight :
+			(light->getLightType() == Assets::LightProperties::Enum::DirectionalLight) ? Light::DirectionalLight :
+			(light->getLightType() == Assets::LightProperties::Enum::SpotLight) ? Light::SpotLight : Light::PointLight;
+		this->lightTypeDisplay = type;
+	}
 }
 
 void InspectorScreen::SendResult(String materialPath)
@@ -136,5 +191,19 @@ void InspectorScreen::onTransformUpdate() const
 			this->selectedObject->setLocalScale(this->scaleDisplay[0], this->scaleDisplay[1], this->scaleDisplay[2]);
 		}
 
+	}
+}
+
+void InspectorScreen::onLightPropsUpdate() const
+{
+	if (this->selectedObject != nullptr)
+	{
+		std::shared_ptr<Light> light = ModelManager::getInstance()->findLightObjectByName(this->selectedObject->getName());
+		if (light)
+		{
+			light->setLightColor(this->lightColorDisplay[0], this->lightColorDisplay[1], this->lightColorDisplay[2], this->lightColorDisplay[3]);
+			light->setAmbientColor(this->ambientColorDisplay[0], this->ambientColorDisplay[1], this->ambientColorDisplay[2], this->ambientColorDisplay[3]);
+			light->setLightType(lightTypeDisplay);
+		}
 	}
 }

@@ -88,7 +88,9 @@ void MenuScreen::drawUI()
 			}
 
 			if (ImGui::BeginMenu("Light")) {
-				if (ImGui::MenuItem("Point Light")) { /* Do stuff */ }
+				if (ImGui::MenuItem("Point Light")) { OnCreateLightClicked(Light::PointLight); }
+				if (ImGui::MenuItem("Directional Light")) { OnCreateLightClicked(Light::DirectionalLight); }
+				if (ImGui::MenuItem("Spot Light")) { OnCreateLightClicked(Light::SpotLight); }
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenu();
@@ -295,6 +297,22 @@ void MenuScreen::OnCreatePlaneClicked()
 	//initialize vertex for object
 	ModelManager::getInstance()->createObject(GameObject::PLANE);
 	// GameObjectManager::getInstance()->createObject(AGameObject::PrimitiveType::QUAD);
+}
+
+void MenuScreen::OnCreateLightClicked(Light::LightType type)
+{
+	switch (type)
+	{
+	case Light::PointLight:
+		ModelManager::getInstance()->createObject(GameObject::POINT_LIGHT);
+		break;
+	case Light::DirectionalLight:
+		ModelManager::getInstance()->createObject(GameObject::DIRECTIONAL_LIGHT);
+		break;
+	case Light::SpotLight:
+		ModelManager::getInstance()->createObject(GameObject::SPOT_LIGHT);
+		break;
+	}
 }
 
 void MenuScreen::OnMaterialComponentClicked()

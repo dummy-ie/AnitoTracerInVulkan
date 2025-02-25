@@ -38,6 +38,17 @@ std::shared_ptr<GameObject> ModelManager::findObjectByName(String name)
 	}
 }
 
+std::shared_ptr<Light> ModelManager::findLightObjectByName(String name)
+{
+	if (this->lightTable[name] != nullptr) {
+		return this->lightTable[name];
+	}
+	else {
+		std::cout << "Object " << name << " not found!";
+		return nullptr;
+	}
+}
+
 ModelManager::List ModelManager::getAllObjects() const
 {
 	ModelManager::List objectList;
@@ -103,6 +114,7 @@ std::shared_ptr<GameObject> ModelManager::getLastObject()
 void ModelManager::addLightObject(std::shared_ptr<Light> lightObj)
 {
 	this->lightList.push_back(lightObj);
+	this->lightTable[lightObj->getName()] = lightObj;
 
 	this->addObject(lightObj);
 }
@@ -190,6 +202,24 @@ void ModelManager::createObject(GameObject::PrimitiveType type)
 		Assets::Model capsuleModel = Assets::Model::CreateCapsule(25, 100, *Assets::Material::Lambertian(vec3(0.5f, 0.5f, 0.5f)));
 		std::shared_ptr<GameObject> capsule = std::make_shared<GameObject>("Capsule", GameObject::PrimitiveType::CAPSULE, std::make_shared<Assets::Model>(capsuleModel));
 		addObject(capsule);
+	}
+		break;
+	case GameObject::POINT_LIGHT:
+	{
+		std::shared_ptr<Light> pl = std::make_shared<Light>("Light Source", Light::LightType::PointLight);
+		addLightObject(pl);
+	}
+	break;
+	case GameObject::DIRECTIONAL_LIGHT:
+	{
+		std::shared_ptr<Light> dl = std::make_shared<Light>("Light Source", Light::LightType::DirectionalLight);
+		addLightObject(dl);
+	}
+	break;
+	case GameObject::SPOT_LIGHT:
+	{
+		std::shared_ptr<Light> sl = std::make_shared<Light>("Light Source", Light::LightType::SpotLight);
+		addLightObject(sl);
 	}
 		break;
 	case GameObject::NONE:

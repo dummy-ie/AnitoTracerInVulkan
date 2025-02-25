@@ -1,5 +1,6 @@
 #pragma once
 #include "AUIScreen.h"
+#include "Engine/LightSystem/Light.h"
 #include "From-GDGRAP2/GameObject.h"
 
 class Texture;
@@ -14,8 +15,10 @@ public:
 private:
 
 	void onTransformUpdate() const;
+	void onLightPropsUpdate() const;
 	virtual void drawUI() override;
 	void updateTransformDisplays();
+	void updateLightPropsDisplays();
 	void FormatMatImage();
 	void drawMaterialsTab();
 	friend class UIManager;
@@ -24,6 +27,10 @@ private:
 	float rotationDisplay[3] = {0.0f, 0.0f, 0.0f};
 	float scaleDisplay[3] = { 1.0f, 1.0f, 1.0f };
 	bool popupOpen = false;
+
+	float lightColorDisplay[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	float ambientColorDisplay[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	Light::LightType lightTypeDisplay = Light::PointLight;
 
 	std::shared_ptr<GameObject> selectedObject = nullptr;
 	const String DEFAULT_MATERIAL = "None";

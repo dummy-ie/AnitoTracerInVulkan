@@ -33,21 +33,20 @@ protected:
 public:
 	enum LightType { PointLight = 0, DirectionalLight = 1, SpotLight = 2 };
 
-	Light(String name, LightType type) : GameObject(name, LIGHT)
+	Light(String name, LightType type) : GameObject(name, convertLightTypeToGameObjectType(type))
 	{
 		// Default Properties
-		props_.LightPos = glm::vec3(1600, 20.0, 0);
+		props_.LightPos = glm::vec3(0, 0, 0);
 		props_.AmbientColor = glm::vec4(1.0, 1.0, 1.0, 0.02);
-		props_.LightColor = glm::vec4(0.0, 1.0, 0.0, 1000000.0f); // Purple
+		props_.LightColor = glm::vec4(1.0, 1.0, 1.0, 1000000.0f);
 		props_.LightType = convertLightTypeEnum(type);
 
 		GameObject::setLocalPosition(props_.LightPos);
 	}
 
 	Light(String name, LightType type, glm::vec3 pos, glm::vec4 ambientCol, glm::vec4 lightCol)
-		: GameObject(name, LIGHT)
+		: GameObject(name, convertLightTypeToGameObjectType(type))
 	{
-		// Default Properties
 		props_.LightPos = pos;
 		props_.AmbientColor = ambientCol;
 		props_.LightColor = lightCol;
@@ -57,6 +56,21 @@ public:
 	}
 
 	const Assets::LightProperties Properties() const { return this->props_; }
+
+	glm::vec4 getAmbientColor()
+	{
+		return this->props_.AmbientColor;
+	}
+
+	glm::vec4 getLightColor()
+	{
+		return this->props_.LightColor;
+	}
+
+	Assets::LightProperties::Enum getLightType()
+	{
+		return this->props_.LightType;
+	}
 
 	// setposition sets lightpos also
 	void setLocalPosition(float x, float y, float z) override
@@ -68,6 +82,32 @@ public:
 	{
 		props_.LightPos = newPos;
 		GameObject::setLocalPosition(newPos);
+	}
+
+	void setAmbientColor(float r, float g, float b, float a)
+	{
+		this->props_.AmbientColor = glm::vec4(r, g, b, a);
+	}
+
+	void setAmbientColor(glm::vec4 ambientCol)
+	{
+		this->props_.AmbientColor = ambientCol;
+	}
+
+	void setLightColor(float r, float g, float b, float a)
+	{
+		this->props_.LightColor = glm::vec4(r, g, b, a);
+	}
+
+	void setLightColor(glm::vec4 lightCol)
+	{
+		this->props_.LightColor = lightCol;
+	}
+
+	void setLightType(LightType type)
+	{
+		this->props_.LightType = convertLightTypeEnum(type);
+		this->type = convertLightTypeToGameObjectType(type);
 	}
 
 private:
@@ -83,6 +123,21 @@ private:
 			break;
 		case SpotLight:
 			return Assets::LightProperties::Enum::SpotLight;
+			break;
+		}
+	}
+	PrimitiveType convertLightTypeToGameObjectType(LightType type)
+	{
+		switch (type)
+		{
+		case PointLight:
+			return POINT_LIGHT;
+			break;
+		case DirectionalLight:
+			return DIRECTIONAL_LIGHT;
+			break;
+		case SpotLight:
+			return SPOT_LIGHT;
 			break;
 		}
 	}
