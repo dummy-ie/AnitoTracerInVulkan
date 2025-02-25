@@ -399,9 +399,14 @@ void GameObject::performModelScale()
 {
 	vec3 scaleOffset = this->worldScale / this->originScale;
 
-	mat4 scaleOp = glm::scale(mat4(1), scaleOffset);
+	mat4 translateToOrigin = glm::translate(mat4(1.0f), -this->worldPosition);
+	mat4 scaleOp = glm::scale(mat4(1.0f), scaleOffset);
+	mat4 translateBack = glm::translate(mat4(1.0f), this->worldPosition);
+
+	mat4 finalScale = translateBack * scaleOp * translateToOrigin;
+
 	if (modelRef)
-		this->modelRef->Transform(scaleOp);
+		this->modelRef->Transform(finalScale);
 
 	this->originScale = this->worldScale;
 
