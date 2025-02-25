@@ -143,15 +143,15 @@ void RayTracer::DeleteSwapChain()
 void RayTracer::DrawFrame()
 {
 
-	if (!userSettings_.IsRayTraced && this->isSceneDirty)
-	{
-		this->isSceneDirty = false;
-		DeleteSwapChain();
-		ReloadModifiedScene();
-		CreateSwapChain();
-		Application::DrawFrame();
-		return;
-	}
+	//if (!userSettings_.IsRayTraced && this->isSceneDirty)
+	//{
+	//	this->isSceneDirty = false;
+	//	DeleteSwapChain();
+	//	ReloadModifiedScene();
+	//	CreateSwapChain();
+	//	Application::DrawFrame();
+	//	return;
+	//}
 
 	// Check if the scene has been changed by the user via select new scene
 	if (sceneIndex_ != static_cast<uint32_t>(userSettings_.SceneIndex))
