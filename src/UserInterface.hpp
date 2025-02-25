@@ -56,5 +56,6 @@ private:
 
 	const Vulkan::SwapChain& swapChain;
 
-	bool imguizmoOpen = false;
+	float translation[3], rotation[3], scale[3];
+	bool isUsingImguizmo = false;
 };

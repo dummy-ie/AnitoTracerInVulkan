@@ -42,8 +42,8 @@ namespace
 }
 
 UserInterface::UserInterface(
-	Vulkan::CommandPool& commandPool, 
-	const Vulkan::SwapChain& swapChain, 
+	Vulkan::CommandPool& commandPool,
+	const Vulkan::SwapChain& swapChain,
 	const Vulkan::DepthBuffer& depthBuffer,
 	UserSettings& userSettings) :
 	userSettings_(userSettings), swapChain(swapChain)
@@ -112,13 +112,13 @@ UserInterface::UserInterface(
 		Throw(std::runtime_error("failed to load ImGui font"));
 	}
 
-	Vulkan::SingleTimeCommands::Submit(commandPool, [] (VkCommandBuffer commandBuffer)
-	{
-		if (!ImGui_ImplVulkan_CreateFontsTexture(commandBuffer))
+	Vulkan::SingleTimeCommands::Submit(commandPool, [](VkCommandBuffer commandBuffer)
 		{
-			Throw(std::runtime_error("failed to create ImGui font textures"));
-		}
-	});
+			if (!ImGui_ImplVulkan_CreateFontsTexture(commandBuffer))
+			{
+				Throw(std::runtime_error("failed to create ImGui font textures"));
+			}
+		});
 
 
 	ImGui_ImplVulkan_DestroyFontUploadObjects();
@@ -143,12 +143,10 @@ void UserInterface::Render(VkCommandBuffer commandBuffer, const Vulkan::FrameBuf
 	// Draw the rest of your UI first.
 	UIManager::getInstance()->drawAllUI();
 
-	imguizmoOpen = false;
 
 	//Start ImGuizmo frame.
 	if (ModelManager::getInstance()->getSelectedObject() != nullptr)
 	{
-		imguizmoOpen = true;
 		static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 
 		if (ImGui::IsKeyPressed(ImGuiKey_W)) mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
@@ -173,28 +171,40 @@ void UserInterface::Render(VkCommandBuffer commandBuffer, const Vulkan::FrameBuf
 		glm::mat4 viewMatrix = CameraManager::getInstance()->getActiveCamera()->ModelView();
 		glm::mat4 projMatrix = glm::perspective(glm::radians(userSettings_.FieldOfView), viewportWidth / viewportHeight, 0.1f, 10000.0f);
 
+
 		if (ImGuizmo::Manipulate(glm::value_ptr(viewMatrix), glm::value_ptr(projMatrix),
 			mCurrentGizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(objectMatrix)))
 		{
-			float translation[3], rotation[3], scale[3];
 			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(objectMatrix), translation, rotation, scale);
 
 			if (mCurrentGizmoOperation == ImGuizmo::TRANSLATE)
 			{
-				selectedObject->setLocalPosition(glm::vec3(translation[0], translation[1], translation[2]));
+				isUsingImguizmo = true;
+
 			}
 			else if (mCurrentGizmoOperation == ImGuizmo::ROTATE)
 			{
-				glm::vec3 newRotation(rotation[0], rotation[1], rotation[2]);
-				selectedObject->setLocalRotation(newRotation);
+				isUsingImguizmo = true;
 			}
 			else if (mCurrentGizmoOperation == ImGuizmo::SCALE)
 			{
-				glm::vec3 newScale(scale[0], scale[1], scale[2]);
-				selectedObject->setLocalScale(newScale);
+				isUsingImguizmo = true;
 			}
 
-			EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
+		}
+
+		if (isUsingImguizmo && !ImGuizmo::IsUsingAny())
+		{
+
+			selectedObject->setLocalPosition(glm::vec3(translation[0], translation[1], translation[2]));
+
+			glm::vec3 newRotation(rotation[0], rotation[1], rotation[2]);
+			selectedObject->setLocalRotation(newRotation);
+			
+			glm::vec3 newScale(scale[0], scale[1], scale[2]);
+			selectedObject->setLocalScale(newScale);
+
+			isUsingImguizmo = false;
 		}
 	}
 
@@ -258,7 +268,7 @@ void UserInterface::DrawSettings()
 		ImGui::BulletText("F1: toggle Settings.");
 		ImGui::BulletText("F2: toggle Statistics.");
 		ImGui::BulletText(
-			"%c%c%c%c/SHIFT/CTRL: move camera.", 
+			"%c%c%c%c/SHIFT/CTRL: move camera.",
 			std::toupper(window.GetKeyName(GLFW_KEY_W, 0)[0]),
 			std::toupper(window.GetKeyName(GLFW_KEY_A, 0)[0]),
 			std::toupper(window.GetKeyName(GLFW_KEY_S, 0)[0]),
