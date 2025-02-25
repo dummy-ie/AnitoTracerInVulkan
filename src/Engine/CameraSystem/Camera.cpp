@@ -13,7 +13,6 @@ Camera::Camera(std::string name, ProjectionMode proj) : GameObject(name, Primiti
 {
 	this->name = name;
 	this->projMode = proj;
-	this->setLocalPosition(0,0,0);
 }
 
 Camera::~Camera() {}
@@ -63,11 +62,11 @@ bool Camera::OnKey(const int key, const int scancode, const int action, const in
 
 	case GLFW_KEY_F: {
 
-			auto selected = ModelManager::getInstance()->getSelectedObject();
+		auto selected = ModelManager::getInstance()->getSelectedObject();
 
-			this->Reset(lookAt(selected->getWorldPosition(), selected->getWorldPosition() - vec3(0, 0, 100), vec3(0, 1, 0)));
+		this->Reset(lookAt(selected->getWorldPosition(), selected->getWorldPosition() - vec3(0, 0, 100), vec3(0, 1, 0)));
 
-			break;
+		break;
 	}
 
 	default: return false;
@@ -83,9 +82,7 @@ bool Camera::OnCursorPosition(const double xpos, const double ypos)
 	if (mouseRightPressed_)
 	{
 		cameraRotX_ += deltaX;
-		this->localRotation.x += deltaX;
-		if (localRotation.x > limit) {cameraRotX_ = 0; this->localRotation.x -= deltaX;}
-		if (localRotation.x < -limit) {cameraRotX_ = 0; this->localRotation.x -= deltaX;}
+		this->localRotation.x -= deltaX;
 
 		cameraRotY_ += deltaY;
 		this->localRotation.y += deltaY;
@@ -93,14 +90,7 @@ bool Camera::OnCursorPosition(const double xpos, const double ypos)
 		if (localRotation.y < -limit) { cameraRotY_ = 0; this->localRotation.y -= deltaY; }
 
 		this->setLocalRotation(glm::vec3(localRotation));
-
-		//Debug::Log("Camera rotation: " + std::to_string(localRotation.x) + ", " + std::to_string(localRotation.y) + "\n");
-	} else
-	{
-		this->localRotation.x = 0;
-		this->localRotation.y = 0;
-	}
-
+	} 
 	//if (mouseRightPressed_)
 	//{
 	//	modelRotX_ += deltaX;

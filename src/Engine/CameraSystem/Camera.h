@@ -41,10 +41,10 @@ protected:
 	ProjectionMode projMode;
 
 	// Matrices and vectors.
-	glm::mat4 orientation_{};
+	glm::mat4 orientation_ = glm::mat4(1);
 	glm::mat4 projection_{};
 
-	glm::vec4 position_{};
+	glm::vec4 position_{0, 0, 0, 0};
 	glm::vec4 right_{ 1, 0, 0, 0 };
 	glm::vec4 up_{ 0, 1, 0, 0 };
 	glm::vec4 forward_{ 0, 0, -1, 0 };
