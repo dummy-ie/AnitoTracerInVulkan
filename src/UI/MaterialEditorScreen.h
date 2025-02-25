@@ -50,6 +50,8 @@ namespace gdeng03
 
 		ImVec4 diffuse = ImVec4(1, 1, 1, 1);
 		int textureId;
+		float normal = 0.5f;
+		int normalTextureId;
 		//
 		// // Base material
 		// //glm::vec4 Diffuse;

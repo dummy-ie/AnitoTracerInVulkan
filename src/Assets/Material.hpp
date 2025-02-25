@@ -9,29 +9,29 @@ namespace Assets
 
 	struct alignas(16) Material final
 	{
-		static std::shared_ptr<Material> Lambertian(const glm::vec3& diffuse, const int32_t textureId = -1)
+		static std::shared_ptr<Material> Lambertian(const glm::vec3& diffuse, const int32_t textureId = -1, const float normal = 0.5f, const int32_t normalId = -1, const float bump = 0.5f, const int32_t bumpId = -1)
 		{
-			return std::make_shared<Material>(glm::vec4(diffuse, 1), textureId, 0.0f, 0.0f, Enum::Lambertian);
+			return std::make_shared<Material>(glm::vec4(diffuse, 1), textureId, 0.0f, 0.0f, Enum::Lambertian, normal, normalId, bump, bumpId);
 		}
 
-		static std::shared_ptr<Material> Metallic(const glm::vec3& diffuse, const float fuzziness, const int32_t textureId = -1)
+		static std::shared_ptr<Material> Metallic(const glm::vec3& diffuse, const float fuzziness, const int32_t textureId = -1, const float normal = 0.5f, const int32_t normalId = -1, const float bump = 0.5f, const int32_t bumpId = -1)
 		{
-			return std::make_shared<Material>(glm::vec4(diffuse, 1), textureId, fuzziness, 0.0f, Enum::Metallic);
+			return std::make_shared<Material>(glm::vec4(diffuse, 1), textureId, fuzziness, 0.0f, Enum::Metallic, normal, normalId, bump, bumpId);
 		}
 
-		static std::shared_ptr<Material> Dielectric(const float refractionIndex, const int32_t textureId = -1)
+		static std::shared_ptr<Material> Dielectric(const float refractionIndex, const int32_t textureId = -1, const float normal = 0.5f, const int32_t normalId = -1, const float bump = 0.5f, const int32_t bumpId = -1)
 		{
-			return std::make_shared<Material>(glm::vec4(0.7f, 0.7f, 1.0f, 1), textureId,  0.0f, refractionIndex, Enum::Dielectric);
+			return std::make_shared<Material>(glm::vec4(0.7f, 0.7f, 1.0f, 1), textureId,  0.0f, refractionIndex, Enum::Dielectric, normal, normalId, bump, bumpId);
 		}
 
-		static std::shared_ptr<Material> Isotropic(const glm::vec3& diffuse, const int32_t textureId = -1)
+		static std::shared_ptr<Material> Isotropic(const glm::vec3& diffuse, const int32_t textureId = -1, const float normal = 0.5f, const int32_t normalId = -1, const float bump = 0.5f, const int32_t bumpId = -1)
 		{
-			return std::make_shared<Material>(glm::vec4(diffuse, 1), textureId, 0.0f, 0.0f, Enum::Isotropic);
+			return std::make_shared<Material>(glm::vec4(diffuse, 1), textureId, 0.0f, 0.0f, Enum::Isotropic, normal, normalId, bump, bumpId);
 		}
 
-		static std::shared_ptr<Material> DiffuseLight(const glm::vec3& diffuse, const int32_t textureId = -1)
+		static std::shared_ptr<Material> DiffuseLight(const glm::vec3& diffuse, const int32_t textureId = -1, const float normal = 0.5f, const int32_t normalId = -1, const float bump = 0.5f, const int32_t bumpId = -1)
 		{
-			return std::make_shared<Material>(glm::vec4(diffuse, 1), textureId, 0.0f, 0.0f, Enum::DiffuseLight);
+			return std::make_shared<Material>(glm::vec4(diffuse, 1), textureId, 0.0f, 0.0f, Enum::DiffuseLight, normal, normalId, bump, bumpId);
 		}
 
 		enum class Enum : uint32_t
@@ -59,6 +59,10 @@ namespace Assets
 		Enum MaterialModel;
 
 		//const char* Name = "Material";
+		float Normal;
+		int32_t NormalTextureId;
+		float Bump;
+		int32_t BumpTextureId;
 	};
 
 }

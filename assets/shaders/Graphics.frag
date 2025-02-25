@@ -20,8 +20,22 @@ const vec3 dirLightDir = normalize(vec3(5.0, 4.0, 3.0));
 void main() 
 {
 	const int textureId = Materials[FragMaterialIndex].DiffuseTextureId;
-	const float d = max(dot(dirLightDir, normalize(FragNormal)), 0.2);
-	
+	const int normalTextureId = Materials[FragMaterialIndex].NormalTextureId;
+	const float normalStrength = Materials[FragMaterialIndex].Normal;
+	//const float d = max(dot(dirLightDir, normalize(FragNormal)), 0.2);
+
+	float d;
+	if (normalTextureId >= 0)
+	{
+		vec3 normal = texture(TextureSamplers[normalTextureId], FragTexCoord).rgb;
+		normal = normalize(normal * 2.0 - 1.0);
+		normal = normalize(FragNormal * normal);
+		d = max(dot(dirLightDir, normal), 0.2);
+	}
+	else {
+		d = max(dot(dirLightDir, normalize(FragNormal)), 0.2);
+	}
+
 	vec3 c = FragColor * d;
 	if (textureId >= 0)
 	{

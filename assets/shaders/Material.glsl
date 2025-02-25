@@ -12,8 +12,11 @@ struct Material
 	float Fuzziness;
 	float RefractionIndex;
 	uint MaterialModel;
+	float Normal;
+	int NormalTextureId;
+	float Bump;
+	int BumpTextureId;
 };
-
 
 const uint PointLight = 0;
 const uint DirectionalLight = 1;
@@ -22,11 +25,11 @@ const uint SpotLight = 2;
 struct LightProperties 
 {
 	vec3 LightPos;
-	float padding1;
+	//float padding1;
 	vec4 AmbientColor;
 	vec4 LightColor;
 	uint LightType;
-	uint padding2[3];
+	//uint padding2[3];
 };
 
 LightProperties InitializeTestPLProperties() 

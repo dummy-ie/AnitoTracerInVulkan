@@ -28,6 +28,8 @@ void MaterialEditorScreen::setSelectedMaterial(Material* mat)
 
 	diffuse = { mat->Diffuse.x, mat->Diffuse.y, mat->Diffuse.z, mat->Diffuse.w };
 	textureId = mat->DiffuseTextureId;
+	normal = mat->Normal;
+	normalTextureId = mat->NormalTextureId;
 	// diffuseTextureId = mat->DiffuseTextureId;
 	// fuzziness = mat->Fuzziness;
 	// refractionIndex = mat->RefractionIndex;
@@ -126,6 +128,8 @@ void MaterialEditorScreen::updateSelectedMaterial()
 
 	selectedMaterial->Diffuse = { this->diffuse.x, this->diffuse.y, this->diffuse.z, this->diffuse.w };
 	selectedMaterial->DiffuseTextureId = this->textureId;
+	selectedMaterial->Normal = this->normal;
+	selectedMaterial->NormalTextureId = this->normalTextureId;
 }
 
 void MaterialEditorScreen::showMaterialEditorWindow()
@@ -196,6 +200,18 @@ void MaterialEditorScreen::showMaterialEditorWindow()
 		EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
 	}
 
+	if (ImGui::InputFloat("Normal", &normal))
+	{
+		selectedMaterial->Normal = normal;
+		EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
+	}
+
+	if (ImGui::InputInt("Normal Texture Id", &normalTextureId))
+	{
+		selectedMaterial->NormalTextureId = normalTextureId;
+		EventBroadcaster::getInstance()->broadcastEvent(EventNames::ON_MARK_SCENE_DIRTY);
+	}
+	
 	ImGui::NewLine();
 
 	//slider size
