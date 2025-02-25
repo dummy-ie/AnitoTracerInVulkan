@@ -21,6 +21,10 @@
 #include <Assimp/postprocess.h>
 #include <Assimp/texture.h>
 
+#include "From-GDGRAP2/TextureLibrary.h"
+#include "Utilities/FileUtils.h"
+#include "Texture.hpp"
+
 #include "Capsule.hpp"
 #include "Cylinder.hpp"
 #include "Plane.hpp"
@@ -79,7 +83,7 @@ namespace Assets {
 
 			aiColor4D diffuse;
 			model->mMaterials[i]->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
-
+		
 			//m.Diffuse.r = diffuse[0];
 			//m.Diffuse.g = diffuse[1];
 			//m.Diffuse.b = diffuse[2];
@@ -236,6 +240,7 @@ std::vector<Model> Model::LoadModelGroup(const std::string& filename)
 	//}
 
 	size_t faceId = 0;
+	int texlibcount = TextureLibrary::getInstance()->getTextureLibraryList().size();
 
 	for (int m = 0; m < scene->mNumMeshes; m++)
 	{
@@ -254,11 +259,27 @@ std::vector<Model> Model::LoadModelGroup(const std::string& filename)
 			material.Diffuse = vec4(0.7f, 0.7f, 0.7f, 1.0);
 			material.DiffuseTextureId = -1;
 
+			std::cout << "No Texture in Scene!" << std::endl;
+			
 		}
 		else 
 		{
 			material.Diffuse = vec4(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
-			material.DiffuseTextureId = -1;
+			material.DiffuseTextureId = scene->mMeshes[m]->mMaterialIndex + 1;
+
+			int texcount = scene->mMaterials[scene->mMeshes[m]->mMaterialIndex]->GetTextureCount(aiTextureType_DIFFUSE);
+
+			std::cout << "Material has " << texcount << " Textures" << std::endl;
+
+			if (texcount > 0) {
+				aiString texture_file;
+				scene->mMaterials[scene->mMeshes[m]->mMaterialIndex]->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texture_file);
+				TextureLibrary::getInstance()->addTexture(scene->mMaterials[scene->mMeshes[m]->mMaterialIndex]->GetName().C_Str(), FileUtils::getAssetsFolderPath().generic_string() + "/models/" + texture_file.C_Str());
+
+			}
+
+
+
 		}
 
 		materials.emplace_back(material);
