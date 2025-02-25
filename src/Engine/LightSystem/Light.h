@@ -44,6 +44,18 @@ public:
 		GameObject::setLocalPosition(props_.LightPos);
 	}
 
+	Light(String name, LightType type, glm::vec3 pos, glm::vec4 ambientCol, glm::vec4 lightCol)
+		: GameObject(name, LIGHT)
+	{
+		// Default Properties
+		props_.LightPos = pos;
+		props_.AmbientColor = ambientCol;
+		props_.LightColor = lightCol;
+		props_.LightType = convertLightTypeEnum(type);
+
+		GameObject::setLocalPosition(props_.LightPos);
+	}
+
 	const Assets::LightProperties Properties() const { return this->props_; }
 
 	// setposition sets lightpos also

@@ -4,6 +4,7 @@
 #include "imgui.h"
 #include "From-GDGRAP2/ModelManager.h"
 #include "UIManager.h"
+#include "Engine/CameraSystem/CameraManager.h"
 #include "From-GDGRAP2/RTConfig.h"
 
 HierarchyScreen::HierarchyScreen() : AUIScreen("HierarchyScreen")
@@ -30,6 +31,9 @@ void HierarchyScreen::drawUI()
 void HierarchyScreen::updateObjectList(const char* filter) const
 {
     const ModelManager::List objectList = ModelManager::getInstance()->getAllObjects();
+
+    std::string activeCamName = CameraManager::getInstance()->getActiveCamera()->getName();
+    ImGui::Text("Active Camera: %s", activeCamName.c_str());
 
     for (const auto& obj : objectList)
     {
@@ -69,6 +73,16 @@ void HierarchyScreen::drawObjectNode(GameObject* obj) const
     if (ImGui::IsItemClicked())
     {
         ModelManager::getInstance()->setSelectedObject(objectName);
+
+        // If Camera is selected, set main camera. If not, deactivate main camera.
+        if (ModelManager::getInstance()->getSelectedObject()->getType() == GameObject::CAMERA)
+        {
+            std::shared_ptr<Camera> cam = CameraManager::getInstance()->findCameraByName(objectName);
+            CameraManager::getInstance()->setMainCamera(cam);
+        } else
+        {
+            CameraManager::getInstance()->setMainCamera(nullptr);
+        }
     }
 
     // Drag Source

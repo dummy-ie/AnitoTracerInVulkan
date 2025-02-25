@@ -1,46 +1,39 @@
 #include "CameraManager.h"
 
+#include <iostream>
+
 #include "SceneCamera.h"
 
 CameraManager* CameraManager::P_SHARED_INSTANCE = NULL;
 
-Camera* CameraManager::getActiveCamera()
+std::shared_ptr<Camera> CameraManager::getActiveCamera()
 {
 	//TODO : if (EngineState != PLAY)
-	return this->getSceneCamera();
+	if (this->mainCamera != nullptr)
+		return this->mainCamera;
+	else
+		return this->selectedSceneCamera;
 }
 
-SceneCamera* CameraManager::getSceneCamera()
+std::shared_ptr<Camera> CameraManager::findCameraByName(std::string name)
 {
-	return this->selectedSceneCamera;
-}
-
-SceneCamera* CameraManager::getSceneCameraByIndex(int index)
-{
-	if (index > sceneCameraList.size())
-	{
-		return NULL;
+	if (this->cameraTable[name] != nullptr) {
+		return this->cameraTable[name];
 	}
-	return this->sceneCameraList[index];
+	else {
+		std::cout << "Object " << name << " not found!";
+		return nullptr;
+	}
 }
 
-std::vector<SceneCamera*> CameraManager::getSceneCameras()
+std::vector<std::shared_ptr<SceneCamera>> CameraManager::getSceneCameras()
 {
 	return this->sceneCameraList;
 }
 
-void CameraManager::setMainCamera(Camera* camera)
+void CameraManager::setMainCamera(std::shared_ptr<Camera> camera)
 {
 	mainCamera = camera;
-}
-
-void CameraManager::setMainCameraByIndex(int index)
-{
-	if (index > cameraList.size())
-	{
-		return;
-	}
-	setMainCamera(cameraList[index]);
 }
 
 void CameraManager::setSceneCameraProjection(int type)
@@ -53,22 +46,22 @@ void CameraManager::updateSceneCamera(float deltaTime)
 	this->selectedSceneCamera->UpdateCamera(1, deltaTime);
 }
 
-void CameraManager::addCamera(Camera* camera)
+void CameraManager::addCamera(std::shared_ptr<Camera> camera)
 {
-	if (mainCamera == NULL)
-		setMainCamera(camera);
 	this->cameraList.push_back(camera);
+	this->cameraTable[camera->getName()] = camera;
 }
 
-void CameraManager::addSceneCamera(SceneCamera* camera)
+void CameraManager::addSceneCamera(std::shared_ptr<SceneCamera> camera)
 {
 	if (this->selectedSceneCamera == NULL)
 		this->selectedSceneCamera = camera;
 
 	this->sceneCameraList.push_back(camera);
+	this->cameraTable[camera->getName()] = camera;
 }
 
-void CameraManager::removeSceneCamera(SceneCamera* camera)
+void CameraManager::removeSceneCamera(std::shared_ptr<SceneCamera> camera)
 {
 	int index = -1;
 
@@ -84,7 +77,7 @@ void CameraManager::removeSceneCamera(SceneCamera* camera)
 	}
 }
 
-void CameraManager::removeCamera(Camera* camera)
+void CameraManager::removeCamera(std::shared_ptr<Camera> camera)
 {
 	int index = -1;
 
@@ -102,9 +95,8 @@ void CameraManager::removeCamera(Camera* camera)
 
 CameraManager::CameraManager()
 {
-	this->selectedSceneCamera = new SceneCamera("Scene Camera");
-	/*this->selectedSceneCamera->setPosition(0, 1, -8);
-	this->selectedSceneCamera->updateViewMatrix();*/
+	this->selectedSceneCamera = std::make_shared<SceneCamera>("Scene Camera");
+	this->mainCamera = nullptr;
 	this->addCamera(this->selectedSceneCamera);
 }
 
@@ -112,8 +104,6 @@ CameraManager::~CameraManager()
 {
 	P_SHARED_INSTANCE = nullptr;
 }
-
-CameraManager::CameraManager(const CameraManager&) {}
 
 CameraManager* CameraManager::getInstance() {
 	return P_SHARED_INSTANCE;

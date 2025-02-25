@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 #include "Camera.h"
 #include "SceneCamera.h"
@@ -8,28 +9,29 @@
 class CameraManager
 {
 private:
-    typedef std::vector<Camera*> CameraList;
-    typedef std::vector<SceneCamera*> SceneCameraList;
+    typedef std::vector<std::shared_ptr<Camera>> CameraList;
+    typedef std::unordered_map<std::string, std::shared_ptr<Camera>> CameraTable;
+    typedef std::vector<std::shared_ptr<SceneCamera>> SceneCameraList;
 
 private:
-    SceneCamera* selectedSceneCamera;
-    Camera* mainCamera;
+    std::shared_ptr<SceneCamera> selectedSceneCamera;
+    std::shared_ptr<Camera> mainCamera;
     CameraList cameraList;
+    CameraTable cameraTable;
     SceneCameraList sceneCameraList;
 
 public:
-    Camera* getActiveCamera();
-    SceneCamera* getSceneCamera();
-    SceneCamera* getSceneCameraByIndex(int index);
-    std::vector<SceneCamera*> getSceneCameras();
-    void setMainCamera(Camera* camera);
-    void setMainCameraByIndex(int index);
+    std::shared_ptr<Camera> getActiveCamera();
+    std::vector<std::shared_ptr<SceneCamera>> getSceneCameras();
+    std::shared_ptr<Camera> findCameraByName(std::string name);
+    void setMainCamera(std::shared_ptr<Camera> camera);
     void setSceneCameraProjection(int type);
+
     void updateSceneCamera(float deltaTime);
-    void addCamera(Camera* camera);
-    void addSceneCamera(SceneCamera* camera);
-    void removeSceneCamera(SceneCamera* camera);
-    void removeCamera(Camera* camera);
+    void addCamera(std::shared_ptr<Camera> camera);
+    void addSceneCamera(std::shared_ptr<SceneCamera> camera);
+    void removeSceneCamera(std::shared_ptr<SceneCamera> camera);
+    void removeCamera(std::shared_ptr<Camera> camera);
 
 private:
     static CameraManager* P_SHARED_INSTANCE;
@@ -37,7 +39,7 @@ private:
 private:
     CameraManager();
     ~CameraManager();
-    CameraManager(const CameraManager&);
+    CameraManager(const CameraManager&) {}
     CameraManager& operator = (const CameraManager&);
 
 public:

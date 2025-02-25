@@ -13,6 +13,7 @@ Camera::Camera(std::string name, ProjectionMode proj) : GameObject(name, Primiti
 {
 	this->name = name;
 	this->projMode = proj;
+	this->setLocalPosition(0,0,0);
 }
 
 Camera::~Camera() {}
@@ -94,6 +95,10 @@ bool Camera::OnCursorPosition(const double xpos, const double ypos)
 		this->setLocalRotation(glm::vec3(localRotation));
 
 		//Debug::Log("Camera rotation: " + std::to_string(localRotation.x) + ", " + std::to_string(localRotation.y) + "\n");
+	} else
+	{
+		this->localRotation.x = 0;
+		this->localRotation.y = 0;
 	}
 
 	//if (mouseRightPressed_)
@@ -202,6 +207,7 @@ bool Camera::OnMouseButton(const int button, const int action, const int mods)
 
 bool Camera::UpdateCamera(const double speed, const double timeDelta)
 {
+	Debug::Log(name + " updating.\n");
 	const auto d = static_cast<float>(speed * timeDelta);
 
 	if (cameraMovingLeft_) MoveRight(-d);
@@ -254,22 +260,34 @@ void Camera::SetProjectionType(ProjectionMode type)
 	this->projMode = type;
 }
 
+void Camera::setLocalPosition(float x, float y, float z)
+{
+	this->position_ = glm::vec4(x, y, z, 1.0);
+	GameObject::setLocalPosition(x,y,z);
+}
+
+void Camera::setLocalPosition(glm::vec3 pos)
+{
+	this->position_ = glm::vec4(pos, 1.0);
+	GameObject::setLocalPosition(pos);
+}
+
 void Camera::MoveForward(const float d)
 {
 	position_ += d * forward_;
-	this->setLocalPosition(glm::vec3(position_));
+	GameObject::setLocalPosition(position_.x, position_.y, position_.z);
 }
 
 void Camera::MoveRight(const float d)
 {
 	position_ += d * right_;
-	this->setLocalPosition(glm::vec3(position_));
+	GameObject::setLocalPosition(position_.x, position_.y, position_.z);
 }
 
 void Camera::MoveUp(const float d)
 {
 	position_ += d * up_;
-	this->setLocalPosition(glm::vec3(position_));
+	GameObject::setLocalPosition(position_.x, position_.y, position_.z);
 }
 
 void Camera::Rotate(const float y, const float x)

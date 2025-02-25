@@ -7,6 +7,7 @@
 #include <random>
 
 #include "Assets/SphereProc.hpp"
+#include "Engine/CameraSystem/CameraManager.h"
 #include "From-GDGRAP2/GameObject.h"
 #include "From-GDGRAP2/GlobalConfig.h"
 #include "From-GDGRAP2/MaterialLibrary.h"
@@ -596,87 +597,88 @@ SceneAssets SceneList::AnitoTracer_DemoScene(CameraInitialState& camera)
 	areaLightObject->setLocalPosition(0, 1000.0f, 500.0f);
 	ModelManager::getInstance()->addObject(areaLightObject);
 
-	std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>("Camera", GameObject::PrimitiveType::CAMERA);
-	ModelManager::getInstance()->addObject(cameraObj);
-	cameraObj->setLocalPosition(vec3(0, 0, 0));
+	std::shared_ptr<Camera> camObj = std::make_shared<Camera>("Camera");
+	ModelManager::getInstance()->addObject(camObj);
+	CameraManager::getInstance()->addCamera(camObj);
+	camObj->setLocalPosition(0, 100, 0);
 
 	const auto i = mat4(1);
 	const auto white = MaterialLibrary::getInstance()->getMaterial(L"White");
 	const auto mirror = MaterialLibrary::getInstance()->getMaterial(L"Mirror");
 	//const auto mirror = Material::Dielectric(1.6f, 0.0f); 
 
-	//Model box0 = Model::CreateBox(vec3(0, 0, -165), vec3(165, 165, 0), *white);
-	//Model box1 = Model::CreateBox(vec3(0, 0, -165), vec3(165, 330, 0), *white);
+	Model box0 = Model::CreateBox(vec3(0, 0, -165), vec3(165, 165, 0), *white);
+	Model box1 = Model::CreateBox(vec3(0, 0, -165), vec3(165, 330, 0), *white);
 
-	//box0.Transform(rotate(translate(i, vec3(555 - 130 - 165, 80, -65)), radians(-18.0f), vec3(0, 1, 0)));
-	//box1.Transform(rotate(translate(i, vec3(555 - 265 - 165, 175, -295)), radians(15.0f), vec3(0, 1, 0)));
+	box0.Transform(rotate(translate(i, vec3(555 - 130 - 165, 80, -65)), radians(-18.0f), vec3(0, 1, 0)));
+	box1.Transform(rotate(translate(i, vec3(555 - 265 - 165, 175, -295)), radians(15.0f), vec3(0, 1, 0)));
 
-	//std::shared_ptr<GameObject> box0Obj = std::make_shared<GameObject>("Box", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(box0));
-	//ModelManager::getInstance()->addObject(box0Obj);
+	std::shared_ptr<GameObject> box0Obj = std::make_shared<GameObject>("Box", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(box0));
+	ModelManager::getInstance()->addObject(box0Obj);
 
-	//std::shared_ptr<GameObject> box1Obj = std::make_shared<GameObject>("Box 1", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(box1));
-	//ModelManager::getInstance()->addObject(box1Obj);
+	std::shared_ptr<GameObject> box1Obj = std::make_shared<GameObject>("Box 1", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(box1));
+	ModelManager::getInstance()->addObject(box1Obj);
 
-	//Model cornellBoxModel = Model::CreateCornellBox(555);
-	//std::shared_ptr<GameObject> cornellBoxObject = std::make_shared<GameObject>("CornellBox", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(cornellBoxModel));
-	//ModelManager::getInstance()->addObject(cornellBoxObject);
-	//cornellBoxObject->setLocalPosition(0, 0, 0);
+	Model cornellBoxModel = Model::CreateCornellBox(555);
+	std::shared_ptr<GameObject> cornellBoxObject = std::make_shared<GameObject>("CornellBox", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(cornellBoxModel));
+	ModelManager::getInstance()->addObject(cornellBoxObject);
+	cornellBoxObject->setLocalPosition(0, 0, 0);
 
-	//Model capsuleTest = Model::CreateCapsule(100, 500, *white.get());
-	//std::shared_ptr<GameObject> capsuleObject = std::make_shared<GameObject>("Capsule", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(capsuleTest));
-	//ModelManager::getInstance()->addObject(capsuleObject);
+	Model capsuleTest = Model::CreateCapsule(100, 500, *white.get());
+	std::shared_ptr<GameObject> capsuleObject = std::make_shared<GameObject>("Capsule", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(capsuleTest));
+	ModelManager::getInstance()->addObject(capsuleObject);
 
-	//Model cylinderTest = Model::CreateCylinder(100, 200, *white.get());
-	//std::shared_ptr<GameObject> cylinderObject = std::make_shared<GameObject>("Cylinder", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(cylinderTest));
-	//ModelManager::getInstance()->addObject(cylinderObject);
+	Model cylinderTest = Model::CreateCylinder(100, 200, *white.get());
+	std::shared_ptr<GameObject> cylinderObject = std::make_shared<GameObject>("Cylinder", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(cylinderTest));
+	ModelManager::getInstance()->addObject(cylinderObject);
 
-	//auto lucy0 = Model::LoadModel(FileUtils::getAssetsFolderPath().generic_string() + "/models/lucy.obj");
+	auto lucy0 = Model::LoadModel(FileUtils::getAssetsFolderPath().generic_string() + "/models/lucy.obj");
 
-	//lucy0.Transform(
-	//	rotate(
-	//		scale(
-	//			translate(i, vec3(555 - 300 - 165 / 2, -9, -295 - 165 / 2)),
-	//			vec3(0.6f)),
-	//		radians(75.0f), vec3(0, 1, 0)));
+	lucy0.Transform(
+		rotate(
+			scale(
+				translate(i, vec3(555 - 300 - 165 / 2, -9, -295 - 165 / 2)),
+				vec3(0.6f)),
+			radians(75.0f), vec3(0, 1, 0)));
 
-	//std::shared_ptr<GameObject> lucyObj = std::make_shared<GameObject>("Lucy", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(lucy0));
-	//ModelManager::getInstance()->addObject(lucyObj);
+	std::shared_ptr<GameObject> lucyObj = std::make_shared<GameObject>("Lucy", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(lucy0));
+	ModelManager::getInstance()->addObject(lucyObj);
 
-	//Model teapot = Model::LoadModel(FileUtils::getAssetsFolderPath().generic_string() + "/models/teapot.obj");
-	//teapot.SetMaterial(*white);
-	//teapot.Transform(
-	//	rotate(
-	//		scale(
-	//			translate(i, vec3(1)),
-	//			vec3(75.0f)),
-	//		radians(0.0f), vec3(0, 1, 0)));
+	Model teapot = Model::LoadModel(FileUtils::getAssetsFolderPath().generic_string() + "/models/teapot.obj");
+	teapot.SetMaterial(*white);
+	teapot.Transform(
+		rotate(
+			scale(
+				translate(i, vec3(1)),
+				vec3(75.0f)),
+			radians(0.0f), vec3(0, 1, 0)));
 
-	//std::shared_ptr<GameObject> teapotObj = std::make_shared<GameObject>("Teapot", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(teapot));
-	//ModelManager::getInstance()->addObject(teapotObj);
+	std::shared_ptr<GameObject> teapotObj = std::make_shared<GameObject>("Teapot", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(teapot));
+	ModelManager::getInstance()->addObject(teapotObj);
 
-	//Model bunny = Model::LoadModel(FileUtils::getAssetsFolderPath().generic_string() + "/models/bunny.obj");
-	//bunny.SetMaterial(*white);
-	//bunny.Transform(
-	//	rotate(
-	//		scale(
-	//			translate(i, vec3(1)),
-	//			vec3(1500.0f)),
-	//		radians(0.0f), vec3(0, 1, 0)));
-	//std::shared_ptr<GameObject> bunnyObj = std::make_shared<GameObject>("Bunny", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(bunny));
-	//ModelManager::getInstance()->addObject(bunnyObj);
+	Model bunny = Model::LoadModel(FileUtils::getAssetsFolderPath().generic_string() + "/models/bunny.obj");
+	bunny.SetMaterial(*white);
+	bunny.Transform(
+		rotate(
+			scale(
+				translate(i, vec3(1)),
+				vec3(1500.0f)),
+			radians(0.0f), vec3(0, 1, 0)));
+	std::shared_ptr<GameObject> bunnyObj = std::make_shared<GameObject>("Bunny", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(bunny));
+	ModelManager::getInstance()->addObject(bunnyObj);
 
-	//Model plane = Model::CreatePlane(vec3(0, 0, -1), vec3(1, 1, 0), *white);
-	//std::shared_ptr<GameObject> planeObj = std::make_shared<GameObject>("Plane", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(plane));
-	//ModelManager::getInstance()->addObject(planeObj);
-	//planeObj->setLocalScale(vec3(5000));
+	Model plane = Model::CreatePlane(vec3(0, 0, -1), vec3(1, 1, 0), *white);
+	std::shared_ptr<GameObject> planeObj = std::make_shared<GameObject>("Plane", GameObject::PrimitiveType::CUBE, std::make_shared<Model>(plane));
+	ModelManager::getInstance()->addObject(planeObj);
+	planeObj->setLocalScale(vec3(5000));
 
-	//teapotObj->setLocalPosition(1000, 0, 0);
-	//bunnyObj->setLocalPosition(1750, -10, 0);
-	//lucyObj->setLocalPosition(2500, 0, 0);
-	//planeObj->setLocalPosition(1000, 2250, 500);
+	teapotObj->setLocalPosition(1000, 0, 0);
+	bunnyObj->setLocalPosition(1750, -10, 0);
+	lucyObj->setLocalPosition(2500, 0, 0);
+	planeObj->setLocalPosition(1000, 2250, 500);
 
-	//capsuleObject->setLocalPosition(2000, 500, 300);
-	//cylinderObject->setLocalPosition(2000, 200, 0);
+	capsuleObject->setLocalPosition(2000, 500, 300);
+	cylinderObject->setLocalPosition(2000, 200, 0);
 
 	// Add light objects
 	std::shared_ptr<Light> pl1 = std::make_shared<Light>("Point Light 1", Light::LightType::PointLight);
@@ -717,9 +719,10 @@ SceneAssets SceneList::Sponza(CameraInitialState& camera)
 	//areaLightObject2->setLocalPosition(-1500, 1000, -1500);
 	//ModelManager::getInstance()->addObject(areaLightObject2);
 
-	std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>("Camera", GameObject::PrimitiveType::CAMERA);
+	std::shared_ptr<Camera> cameraObj = std::make_shared<Camera>("Camera");
 	ModelManager::getInstance()->addObject(cameraObj);
 	cameraObj->setLocalPosition(0, 10.0f, 0);
+	CameraManager::getInstance()->addCamera(cameraObj);
 
 	const auto i = mat4(1);
 	const auto white = MaterialLibrary::getInstance()->getMaterial(L"White");

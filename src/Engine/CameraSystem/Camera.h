@@ -26,6 +26,9 @@ public:
 	glm::mat4 GetProjection(UserSettings settings, const VkExtent2D extent);
 	void SetProjectionType(ProjectionMode type);
 
+	void setLocalPosition(float x, float y, float z) override;
+	void setLocalPosition(glm::vec3 pos) override;
+
 protected:
 
 	virtual void MoveForward(float d);
