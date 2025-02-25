@@ -63,6 +63,16 @@ std::vector<Assets::Texture> TextureLibrary::getTextureLibraryList()
 	return textureList;
 }
 
+bool TextureLibrary::doesTextureExist(std::string textureName)
+{
+	auto search = this->textureMap.find(textureName);
+	if (search != this->textureMap.end())
+		return true;
+	else
+		return false;
+	
+}
+
 void TextureLibrary::initialize()
 {
 	sharedInstance = new TextureLibrary();
