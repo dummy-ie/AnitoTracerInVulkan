@@ -161,14 +161,14 @@ bool Camera::OnMouseButton(const int button, const int action, const int mods)
 				glm::vec3 minCorner = obb->center - obb->halfExtents;
 				glm::vec3 maxCorner = obb->center + obb->halfExtents;
 
-				if (obj->getName().find("Light") == std::string::npos)
-				{
-					std::cout << obj->getName() << " center: " << glm::to_string(obb->center) << std::endl;
-					std::cout << "Min Corner: " << glm::to_string(minCorner) << std::endl;
-					std::cout << "Max Corner: " << glm::to_string(maxCorner) << std::endl;
+				//if (obj->getName().find("Light") == std::string::npos)
+				//{
+				//	std::cout << obj->getName() << " center: " << glm::to_string(obb->center) << std::endl;
+				//	std::cout << "Min Corner: " << glm::to_string(minCorner) << std::endl;
+				//	std::cout << "Max Corner: " << glm::to_string(maxCorner) << std::endl;
 
-					std::cout << "----------------\n\n" << std::endl;
-				}
+				//	std::cout << "----------------\n\n" << std::endl;
+				//}
 
 				float tHit = 0.0f;
 				if (pickingRay.intersects(*obb, tHit))
@@ -207,7 +207,6 @@ bool Camera::OnMouseButton(const int button, const int action, const int mods)
 
 bool Camera::UpdateCamera(const double speed, const double timeDelta)
 {
-	Debug::Log(name + " updating.\n");
 	const auto d = static_cast<float>(speed * timeDelta);
 
 	if (cameraMovingLeft_) MoveRight(-d);

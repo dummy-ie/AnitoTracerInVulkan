@@ -295,19 +295,19 @@ void GameObject::updateWorldTransform()
 			}
 			computedCenter /= static_cast<float>(worldPositions.size());
 
-			std::cout << "Object worldPosition: (" << this->worldPosition.x << ", "
-				<< this->worldPosition.y << ", " << this->worldPosition.z << ")\n";
-			std::cout << "Computed center from vertices: (" << computedCenter.x << ", "
-				<< computedCenter.y << ", " << computedCenter.z << ")\n";
+			//std::cout << "Object worldPosition: (" << this->worldPosition.x << ", "
+			//	<< this->worldPosition.y << ", " << this->worldPosition.z << ")\n";
+			//std::cout << "Computed center from vertices: (" << computedCenter.x << ", "
+			//	<< computedCenter.y << ", " << computedCenter.z << ")\n";
 
-			if (glm::length(computedCenter - this->worldPosition) < 0.001f)
-			{
-				std::cout << "The computed center matches the world position.\n";
-			}
-			else
-			{
-				std::cout << "Mismatch: the computed center does not equal the world position!\n";
-			}
+			//if (glm::length(computedCenter - this->worldPosition) < 0.001f)
+			//{
+			//	std::cout << "The computed center matches the world position.\n";
+			//}
+			//else
+			//{
+			//	std::cout << "Mismatch: the computed center does not equal the world position!\n";
+			//}
 
 			BoundingBox newOBB(this->worldPosition, worldPositions, axes);
 
