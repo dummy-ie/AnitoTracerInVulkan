@@ -9,28 +9,58 @@
 TextureLibrary* TextureLibrary::sharedInstance = nullptr;
 void TextureLibrary::addTexture(const std::string& textureName, const std::string& fileName)
 {
-	//this->textureMap[textureName] = std::make_shared<Assets::Texture>(Assets::Texture::LoadTexture(fileName, Vulkan::SamplerConfig()));
-	this->textureMap.insert(std::make_pair(textureName, Assets::Texture::LoadTexture(fileName, Vulkan::SamplerConfig())));
+	std::shared_ptr<Assets::Texture> texture = std::make_shared<Assets::Texture>(Assets::Texture::LoadTexture(fileName, Vulkan::SamplerConfig()));
+
+	this->textureMap.insert(std::make_pair(textureName, texture));
+	this->textureList.push_back(texture);
 }
 
 void TextureLibrary::deleteTexture(std::string textureName)
 {
+	std::shared_ptr<Assets::Texture> texture = this->textureMap[textureName];
+
+	int index = -1;
+	for (int i = 0; i < this->textureList.size(); i++) {
+		if (this->textureList[i] == texture) {
+			index = i;
+			break;
+		}
+	}
+
+	if (index != -1) {
+		this->textureList.erase(this->textureList.begin() + index);
+	}
+
 	this->textureMap.erase(textureName);
 }
 
 Assets::Texture TextureLibrary::getTexture(std::string textureName)
 {
-	return this->textureMap[textureName];
+	return *this->textureMap[textureName];
+}
+
+int TextureLibrary::getTextureId(std::string textureName)
+{
+	std::shared_ptr<Assets::Texture> texture = this->textureMap[textureName];
+
+	int index = -1;
+	for (int i = 0; i < this->textureList.size(); i++) {
+		if (this->textureList[i] == texture) {
+			index = i;
+			break;
+		}
+	}
+
+	return index;
 }
 
 std::vector<Assets::Texture> TextureLibrary::getTextureLibraryList()
 {
-	std::vector<Assets::Texture> textures;
-	for (auto& texture : this->textureMap)
-	{
-		textures.push_back(texture.second);
+	std::vector<Assets::Texture> textureList;
+	for (auto& texture : this->textureList) {
+		textureList.push_back(*texture);
 	}
-	return textures;
+	return textureList;
 }
 
 void TextureLibrary::initialize()
