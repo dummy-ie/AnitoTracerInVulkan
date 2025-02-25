@@ -54,7 +54,7 @@ namespace Assets
 		uint32_t NumberOfMaterials() const { return static_cast<uint32_t>(materials_.size()); }
 		std::string GetName() const { return name; }
 
-	private:
+	public:
 
 		std::string name;
 		std::vector<Vertex> vertices_;

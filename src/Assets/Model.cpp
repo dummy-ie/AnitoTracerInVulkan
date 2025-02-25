@@ -259,26 +259,25 @@ std::vector<Model> Model::LoadModelGroup(const std::string& filename)
 			material.Diffuse = vec4(0.7f, 0.7f, 0.7f, 1.0);
 			material.DiffuseTextureId = -1;
 
-			std::cout << "No Texture in Scene!" << std::endl;
+			std::cout << "No Texture in Mesh!" << std::endl;
 			
 		}
 		else 
 		{
 			material.Diffuse = vec4(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
-			material.DiffuseTextureId = scene->mMeshes[m]->mMaterialIndex + 1;
+			material.DiffuseTextureId = -1;
 
 			int texcount = scene->mMaterials[scene->mMeshes[m]->mMaterialIndex]->GetTextureCount(aiTextureType_DIFFUSE);
-
-			std::cout << "Material has " << texcount << " Textures" << std::endl;
 
 			if (texcount > 0) {
 				aiString texture_file;
 				scene->mMaterials[scene->mMeshes[m]->mMaterialIndex]->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texture_file);
-				TextureLibrary::getInstance()->addTexture(scene->mMaterials[scene->mMeshes[m]->mMaterialIndex]->GetName().C_Str(), FileUtils::getAssetsFolderPath().generic_string() + "/models/" + texture_file.C_Str());
 
+				if (!TextureLibrary::getInstance()->doesTextureExist(scene->mMaterials[scene->mMeshes[m]->mMaterialIndex]->GetName().C_Str()))
+					TextureLibrary::getInstance()->addTexture(scene->mMaterials[scene->mMeshes[m]->mMaterialIndex]->GetName().C_Str(), FileUtils::getAssetsFolderPath().generic_string() + "/models/" + texture_file.C_Str());	
+
+				material.DiffuseTextureId = TextureLibrary::getInstance()->getTextureId(scene->mMaterials[scene->mMeshes[m]->mMaterialIndex]->GetName().C_Str());
 			}
-
-
 
 		}
 
